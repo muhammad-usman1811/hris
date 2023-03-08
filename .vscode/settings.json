@@ -1,0 +1,4 @@
+{
+  "appService.defaultWebAppToDeploy": "/subscriptions/75454d79-9582-41ee-b161-972d8629f87c/resourceGroups/dgfloathris_group/providers/Microsoft.Web/sites/dgfloathris",
+  "appService.deploySubpath": "."
+}

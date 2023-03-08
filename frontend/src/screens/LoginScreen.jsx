@@ -92,7 +92,6 @@ const LoginScreen = () => {
     if (!emailIsValid && !passwordIsValid) {
       return;
     }
-
     const credentials = {
       email: enteredEmail,
       password: enteredPassword,
@@ -134,7 +133,7 @@ const LoginScreen = () => {
           <TextField
             label="Email"
             variant="outlined"
-            placeholder="abc@digifloat.com"
+            placeholder="first.last@digifloat.com"
             type={"email"}
             margin="normal"
             size="small"
@@ -168,6 +167,10 @@ const LoginScreen = () => {
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
                     edge="end"
+                    sx={{
+                      padding: "8px 11px 8px 0",
+                      ":hover": { background: "white" },
+                    }}
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
@@ -208,7 +211,7 @@ const LoginScreen = () => {
                     margin: " 20px auto",
                   }}
                 >
-                  <Typography variant="h5">Reset Password</Typography>
+                  <Typography variant="h5">Forgot Password</Typography>
                   <TextField
                     fullWidth
                     label="Enter your email"
