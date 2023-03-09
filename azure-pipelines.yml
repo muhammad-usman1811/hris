@@ -14,7 +14,7 @@ steps:
     appType: 'functionAppLinux'
     appName: 'dgapp'
     package: '$(System.DefaultWorkingDirectory)/myFunctionApp.zip'
-    runtimeStack: 'NODE|14-lts'
+    runtimeStack: 'NODE|18-lts'
   displayName: 'Deploy to Azure Functions'
 
 - task: NodeTool@0
