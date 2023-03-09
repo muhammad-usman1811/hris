@@ -42,6 +42,6 @@ steps:
   inputs:
     azureSubscription: 'Azure subscription 1(75454d79-9582-41ee-b161-972d8629f87c)'
     appType: 'webAppLinux'
-    appName: 'my-nodejs-hris-app'
+    appName: 'dgapp'
     package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
   displayName: 'Deploy to Azure Web App'
