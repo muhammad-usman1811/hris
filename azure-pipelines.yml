@@ -14,11 +14,6 @@ variables:
   nodejsVersion: '14.x'
 
 steps:
-- script: |
-    npm install -g azure-functions-core-tools@3 --unsafe-perm true
-    func azure functionapp publish $(azureWebAppServiceName) --javascript --no-build
-  displayName: 'Deploy to Azure Functions'
-
 - task: NodeTool@0
   inputs:
     versionSpec: $(nodejsVersion)
