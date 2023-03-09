@@ -16,13 +16,14 @@ steps:
   displayName: 'Build and Test'
   workingDirectory: '$(System.DefaultWorkingDirectory)/frontend'
 - task: ArchiveFiles@2
+- task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/frontend'
     includeRootFolder: false
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
     replaceExistingArchive: true
-
+ 
 - task: AzureWebApp@1
   inputs:
     azureSubscription: 'Azure subscription 1(75454d79-9582-41ee-b161-972d8629f87c)'
