@@ -11,7 +11,7 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    cd my-app
+    cd frontend
     npm install
     npm run build
     npm run test
