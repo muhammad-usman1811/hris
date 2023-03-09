@@ -15,13 +15,17 @@ steps:
     npm run build
   displayName: 'Build and Test'
   workingDirectory: '$(System.DefaultWorkingDirectory)/frontend'
-
 - task: ArchiveFiles@2
+  displayName: 'Archive frontend'
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/frontend'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/frontend/dist'
     includeRootFolder: false
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
     replaceExistingArchive: true
- 
-
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
+    ArtifactName: 'frontend'
+    publishLocation: 'Container'
