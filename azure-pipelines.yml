@@ -11,10 +11,12 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
+    cd frontend
     npm install
     npm run build
     npm run test
-  workingDirectory: '$(System.DefaultWorkingDirectory)/package.json'
+  displayName: 'Build and Test'
+  workingDirectory: '$(System.DefaultWorkingDirectory)/frontend'
 
   displayName: 'npm install and build'
 
