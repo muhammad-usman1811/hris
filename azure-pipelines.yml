@@ -18,7 +18,7 @@ steps:
 - task: ArchiveFiles@2
   displayName: 'Archive frontend'
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/frontend/dist'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/frontend'
     includeRootFolder: false
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
