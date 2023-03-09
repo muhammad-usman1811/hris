@@ -11,11 +11,10 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    cd frontend
     npm install
     npm run build
     npm run test
-  workingDirectory: 'frontend/package.json'
+  workingDirectory: '*/frontend/package.json'
 
   displayName: 'npm install and build'
 
