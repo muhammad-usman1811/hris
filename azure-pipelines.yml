@@ -18,8 +18,6 @@ steps:
   displayName: 'Build and Test'
   workingDirectory: '$(System.DefaultWorkingDirectory)/frontend'
 
-  displayName: 'npm install and build'
-
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist'
