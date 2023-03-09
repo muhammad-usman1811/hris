@@ -15,10 +15,9 @@ steps:
     npm run build
   displayName: 'Build and Test'
   workingDirectory: '$(System.DefaultWorkingDirectory)/frontend'
-
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/dist'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
     includeRootFolder: false
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
