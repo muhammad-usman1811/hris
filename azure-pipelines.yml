@@ -13,9 +13,6 @@ steps:
     azureSubscription: 'Azure subscription 1(75454d79-9582-41ee-b161-972d8629f87c)'
     appType: 'functionAppLinux'
     appName: 'dgapp2'
-    deployToSlotOrASE: true
-    resourceGroupName: 'Bysaad'
-    slotName: 'production'
     package: '$(System.DefaultWorkingDirectory)/myFunctionApp.zip'
     runtimeStack: 'NODE|18-lts'
   displayName: 'Deploy to Azure Functions'
