@@ -11,16 +11,9 @@ steps:
   displayName: 'Install Node.js'
 
 - script: |
-    npm install -g yarn
-  displayName: 'Install Yarn'
-
-- script: |
-    yarn install --frozen-lockfile
-  displayName: 'Install dependencies'
-
-- script: |
-    yarn build
-  displayName: 'Build application'
+    npm install
+    npm run build
+  displayName: 'npm install and build'
 
 - task: ArchiveFiles@2
   inputs:
@@ -29,7 +22,6 @@ steps:
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
     replaceExistingArchive: true
-  displayName: 'Archive files'
 
 - task: AzureWebApp@1
   inputs:
@@ -37,4 +29,3 @@ steps:
     appType: 'webAppLinux'
     appName: 'dgapp'
     package: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
-  displayName: 'Deploy to Azure Web App'
