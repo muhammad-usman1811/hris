@@ -29,3 +29,9 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
     ArtifactName: 'frontend'
     publishLocation: 'Container'
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'Azure subscription 1(75454d79-9582-41ee-b161-972d8629f87c)'
+    appType: 'webAppLinux'
+    appName: 'dgapp'
+    package: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
