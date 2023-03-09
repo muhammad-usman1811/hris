@@ -1,0 +1,53 @@
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    exclude:
+    - README.md # Exclude any files/folders you don't want to trigger pipeline on
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  azureWebAppServiceName: 'my-nodejs-hris-app' # Replace with your Azure Web App name
+  nodejsVersion: '14.x'
+
+steps:
+- script: |
+    npm install -g azure-functions-core-tools@3 --unsafe-perm true
+    func azure functionapp publish $(azureWebAppServiceName) --javascript --no-build
+  displayName: 'Deploy to Azure Functions'
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: $(nodejsVersion)
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+    npm run build
+  displayName: 'Install dependencies and build'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+    replaceExistingArchive: true
+  displayName: 'Create artifact'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    artifactName: 'nodejs-app'
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+  displayName: 'Publish artifact'
+
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'azurepipelinehris'
+    appType: 'webAppLinux'
+    appName: '$(azureWebAppServiceName)'
+    package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+  displayName: 'Deploy to Azure Web App'
