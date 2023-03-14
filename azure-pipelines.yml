@@ -12,7 +12,6 @@ steps:
 
 - script: |
     npm install
-    npm run build
   displayName: 'Build and Test'
   workingDirectory: '$(System.DefaultWorkingDirectory)/frontend'
 - task: ArchiveFiles@2
