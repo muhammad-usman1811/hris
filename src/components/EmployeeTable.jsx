@@ -25,6 +25,11 @@ function EmployeeTable() {
             selector: row=> row.department,
             sortable: true
         },
+        {
+            name: 'Date of Joining',
+            selector: row=> row.dateofjoining,
+            sortable: true
+        }
         
     ];
     const data = [
@@ -33,7 +38,8 @@ function EmployeeTable() {
             name: 'Anas Safder',
             email: 'anas.safder@digifloat.com',
             desigantion: 'Associate Consultant',
-            department: 'Web Development'
+            department: 'Web Development',
+            dateofjoining: '01/02/2020'
 
         },
         {
@@ -41,7 +47,8 @@ function EmployeeTable() {
             name: 'M Usman',
             email: 'm.usman@digifloat.com',
             desigantion: 'Associate Consultant',
-            department: 'Web Development'
+            department: 'Web Development',
+            dateofjoining: '01/02/2018'
 
         },
         {
@@ -49,7 +56,8 @@ function EmployeeTable() {
             name: 'Hammas Nasir',
             email: 'hammas.nasir@digifloat.com',
             desigantion: 'Associate Consultant',
-            department: 'HR'
+            department: 'HR',
+            dateofjoining: '01/02/2023'
 
         },
         {
@@ -57,7 +65,8 @@ function EmployeeTable() {
             name: 'Sana Miraj',
             email: 'sana.miraj@digifloat.com',
             desigantion: 'Human Resources Generalist',
-            department: 'HR'
+            department: 'HR',
+            dateofjoining: '01/02/2022'
 
         },
         {
@@ -66,6 +75,7 @@ function EmployeeTable() {
             email: 'Komal.aqeel@digifloat.com',
             desigantion: 'Associate Project Cordinator',
             department: 'Project Management',
+            dateofjoining: '01/02/2019'
 
         },
         {
@@ -74,6 +84,7 @@ function EmployeeTable() {
             email: '@digifloat.com',
             desigantion: 'Any',
             department: 'Any',
+            dateofjoining: '01/01/01'
 
         },
         {
@@ -82,6 +93,7 @@ function EmployeeTable() {
             email: '@digifloat.com',
             desigantion: 'Any',
             department: 'Any',
+            dateofjoining: '01/01/01'
 
         },
         {
@@ -90,6 +102,7 @@ function EmployeeTable() {
             email: '@digifloat.com',
             desigantion: 'Any',
             department: 'Any',
+            dateofjoining: '01/01/01'
 
         },
         {
@@ -98,6 +111,7 @@ function EmployeeTable() {
             email: '@digifloat.com',
             desigantion: 'Any',
             department: 'Any',
+            dateofjoining: '01/01/01'
 
         },
         {
@@ -106,6 +120,7 @@ function EmployeeTable() {
             email: '@digifloat.com',
             desigantion: 'Any',
             department: 'Any',
+            dateofjoining: '01/01/01'
 
         },
         {
@@ -114,6 +129,7 @@ function EmployeeTable() {
             email: '@digifloat.com',
             desigantion: 'Any',
             department: 'Any',
+            dateofjoining: '01/01/01'
 
         }
         
@@ -128,7 +144,7 @@ function EmployeeTable() {
 
     }
     return(
-        <div className='container mt-5'>
+        <div className='container'>
             <div className='search' 
              style={{width: "fit-content",
               height: "fit-content",
