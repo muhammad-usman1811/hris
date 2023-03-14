@@ -30,3 +30,11 @@ steps:
     ArtifactName: 'frontend'
     publishLocation: 'Container'
 
+- task: AzureStaticWebApp@0
+  inputs:
+    app_location: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
+    output_location: '$(System.ArtifactsDirectory)/wwwroot'
+    azure_static_web_apps_name: 'digiapp'
+    azure_static_web_apps_location: 'Global'
+    sku: 'Free'
+    displayName: 'Deploy Azure Static Web App'
