@@ -1,11 +1,11 @@
 import './App.css';
-import AdminPortalMain from './components/AdminPortalMain';
 import EmployeeTable from './components/EmployeeTable';
+import EmployeeProfile from './components/EmployeeProfile';
 
 function App() {
   return (
     <div>
-      <EmployeeTable />
+      <EmployeeProfile />
     </div>
     );
 }
