@@ -33,6 +33,7 @@ steps:
 - task: AzureStaticWebApp@0
   inputs:
     app_location: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
+    azure_static_web_apps_api_token: '7e094e2b1b2b134b2387ce3a9ab64377dbbb568b73a31f78970ff60a04692c0a2-996770df-dd73-4710-b33a-659612a27bb2010179447'
     output_location: '$(System.ArtifactsDirectory)/wwwroot'
     azure_static_web_apps_name: 'digiapp'
     azure_static_web_apps_location: 'Global'
