@@ -1,4 +1,3 @@
-import { color } from "@mui/system"
 import ReactEcharts from "echarts-for-react"
 
 

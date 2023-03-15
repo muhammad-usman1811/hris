@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
 import DataTable from 'react-data-table-component';
+import InputAdornment from '@mui/material/InputAdornment';
+import TextField from '@mui/material/TextField';
+import { Search, Upgrade } from '@mui/icons-material';
+import Button from '@mui/material/Button';
 
 
 
@@ -149,11 +153,23 @@ function EmployeeTable() {
              style={{width: "fit-content",
               height: "fit-content",
               margin: "16px" }}>
-                <input type="text" placeholder='Search Employee'
-                 style={{borderRadius: "10px",
-                height: "25px",
-                border: "1px solid lightgrey"}}
-                 onChange={handleFilter} /></div>
+                 <TextField sx={{width:'20ch'}} color='error'
+        id="input-with-icon-textfield"
+        placeholder='Search'
+        onChange={handleFilter}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+              <Search />
+            </InputAdornment>
+          ),
+        }}
+        variant="standard"
+      />
+       <Button sx={{ml:4,}} color='error' variant="contained" endIcon={<Upgrade />}>
+        Export to Excel
+      </Button>
+                 </div>
             <DataTable
             columns= {columns}
             data={records}

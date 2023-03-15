@@ -97,7 +97,7 @@ const EmployeeProfile = () => {
       </FormControl> <br />
 
       <FormControl sx={{mt:3 , ml:8}} variant="standard">
-        <InputLabel htmlFor="component-simple">Superviser</InputLabel>
+        <InputLabel htmlFor="component-simple">Supervisor</InputLabel>
         <Input id="component-simple" defaultValue="Osama Saeed" />
       </FormControl> <br />
 
