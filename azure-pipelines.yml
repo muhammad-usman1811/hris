@@ -44,11 +44,10 @@ steps:
     ConnectionType: 'AzureRM'
     azureSubscription: 'Azure subscription 1 (307a75f7-29a2-475e-b627-710fc78cc0d5)'
     appType: 'webAppLinux'
-    WebAppName: 'hriswebapp'
+    WebAppName: 'hrisapp'
     packageForLinux: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
     RuntimeStack: 'NODE|18.14.0'
     ScriptType: 'Inline Script'
     InlineScript: |
       npm install
-      npm run build --if-present
-    StartupCommand: 'npm run start'
+    StartupCommand: 'npm start'
