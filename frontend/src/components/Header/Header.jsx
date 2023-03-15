@@ -2,46 +2,30 @@ import React from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import AccountMenu from "./../common/AccountMenu";
+import AppBar from "@mui/material/AppBar";
+import Toolbar from "@mui/material/Toolbar";
+import IconButton from "@mui/material/IconButton";
 
 const Header = ({ title }) => {
-  const headerStyles = {
-    wrapper: {
-      width: "100%",
-      display: "flex",
-      flexDirection: "column",
-      backgroundColor: "#009be5",
-      padding: "20px",
-    },
-    topRow: {
-      display: "flex",
-      flexDirection: "row",
-      justifyContent: "end",
-      alignItems: "center",
-      marginBottom: "20px",
-      "*": {
-        marginRight: "5px",
-      },
-    },
-    middleRow: {
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "space-between",
-      marginBottom: "20px",
-      marginLeft: "320px",
-    },
-  };
-
   return (
-    <Box sx={headerStyles.wrapper}>
-      <Box sx={headerStyles.topRow}>
-        <AccountMenu />
-      </Box>
-      <Box sx={headerStyles.middleRow}>
-        <Typography variant="h4" color="white">
-          {title}
-        </Typography>
-      </Box>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static" sx={{ bgcolor: "#E23D3F" }}>
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            {title}
+          </Typography>
+          <IconButton
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "end",
+              alignItems: "center",
+            }}
+          >
+            <AccountMenu />
+          </IconButton>
+        </Toolbar>
+      </AppBar>
     </Box>
   );
 };

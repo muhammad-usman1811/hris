@@ -21,7 +21,7 @@ const AccountMenu = () => {
   return (
     <React.Fragment>
       <Box sx={{ display: "flex", alignItems: "center", textAlign: "center" }}>
-        <Tooltip title="Account">
+        <Tooltip title="My Account">
           <IconButton
             onClick={handleClick}
             size="small"
@@ -30,7 +30,7 @@ const AccountMenu = () => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar src="https://mui.com/static/images/avatar/3.jpg" />
+            <Avatar src="https://mui.com/static/images/avatar/2.jpg" />
           </IconButton>
         </Tooltip>
       </Box>

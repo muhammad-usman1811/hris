@@ -5,13 +5,15 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
-const BasicCard = ({ text, content }) => {
+const BasicCard = ({ text, content, colorCode }) => {
   return (
     <Card
       sx={{
+        bgcolor: colorCode,
         marginBottom: "10px",
         borderRadius: "8px",
-        width: "300px",
+        width: "250px",
+        boxShadow: "10px 10px 10px -3px rgba(0,0,0,0.1)",
       }}
     >
       <CardContent>

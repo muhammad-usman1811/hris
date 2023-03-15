@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import EmailIcon from "@mui/icons-material/Email";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import LoginIcon from "@mui/icons-material/Login";
-import Backdrop from "@mui/material/Backdrop";
-import Paper from "@mui/material/Paper";
+import Alert from "@mui/material/Alert";
 import {
   Button,
   TextField,
@@ -15,20 +14,25 @@ import {
   Box,
   Checkbox,
   FormControlLabel,
-  Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import BasicModal from "../components/common/BasicModal";
+import { login } from "./../actions/userActions";
 
-const LoginScreen = () => {
+const LoginScreen = ({ history }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [enteredEmail, setEnteredEmail] = useState("");
   const [emailIsTouched, setEmailIsTouched] = useState(false);
   const [enteredPassword, setEnteredPassword] = useState("");
   const [passwordIsTouched, setPasswordIsTouched] = useState(false);
-  const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo, error } = userLogin;
 
   //Email validity & Invalidity
   const emailIsValid = enteredEmail.trim() !== "";
@@ -60,28 +64,8 @@ const LoginScreen = () => {
     setPasswordIsTouched(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
   const handleToggle = () => {
     setOpen(!open);
-  };
-
-  const validateUser = async (inputData) => {
-    const response = await fetch("/api/users/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(inputData),
-    });
-    const data = await response.json();
-
-    if (data.token) {
-      navigate("/home");
-    }
-
-    if (data.message) {
-      setError(data.message);
-    }
   };
 
   const submitHandler = (event) => {
@@ -92,15 +76,14 @@ const LoginScreen = () => {
     if (!emailIsValid && !passwordIsValid) {
       return;
     }
-    const credentials = {
-      email: enteredEmail,
-      password: enteredPassword,
-    };
-
-    validateUser(credentials);
-    setError("");
+    dispatch(login(enteredEmail, enteredPassword));
   };
 
+  useEffect(() => {
+    if (userInfo) {
+      navigate("/home/dashboard");
+    }
+  }, [userInfo, navigate]);
   return (
     <Grid container sx={{ minHeight: "100vh" }}>
       <Grid item xs={12} sm={6}>
@@ -196,43 +179,11 @@ const LoginScreen = () => {
             <Button variant="text" sx={{ marginTop: 3 }} onClick={handleToggle}>
               Forgot Password?
             </Button>
-            <Backdrop
-              sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
-              open={open}
-              onClick={handleClose}
-            >
-              <Grid align="center">
-                <Paper
-                  elevation={3}
-                  sx={{
-                    height: "30vh",
-                    padding: 20,
-                    width: 280,
-                    margin: " 20px auto",
-                  }}
-                >
-                  <Typography variant="h5">Forgot Password</Typography>
-                  <TextField
-                    fullWidth
-                    label="Enter your email"
-                    size="small"
-                    margin="normal"
-                  />
-                  <Button
-                    variant="contained"
-                    sx={{ marginTop: 2 }}
-                    size="small"
-                    fullWidth
-                  >
-                    Verify
-                  </Button>
-                </Paper>
-              </Grid>
-            </Backdrop>
+            <BasicModal open={open} onClose={() => setOpen(false)} />
           </div>
 
-          {error !== "" && (
-            <Alert severity="error" sx={{ marginTop: 2 }}>
+          {error && (
+            <Alert severity="error" sx={{ marginTop: "10px" }}>
               {error}
             </Alert>
           )}

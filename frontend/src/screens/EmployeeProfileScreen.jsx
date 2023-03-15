@@ -1,23 +1,22 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
-import LeaveTable from "../components/LeaveTable";
+import NewProfile from "./../components/NewProfile";
 
-const LeaveScreen = () => {
+const EmployeeProfileScreen = () => {
   return (
     <Grid
       item
       xs={12}
       sx={{
         marginLeft: "256px",
-        padding: "32px",
         backgroundColor: "#eaeff1",
+        padding: "15px 30px 15px 30px ",
         minHeight: "calc(100vh - 67px)",
-        position: "relative",
       }}
     >
-      <LeaveTable />
+      <NewProfile />
     </Grid>
   );
 };
 
-export default LeaveScreen;
+export default EmployeeProfileScreen;
