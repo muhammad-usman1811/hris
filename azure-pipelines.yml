@@ -38,8 +38,8 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
     ArtifactName: 'application'
     publishLocation: 'Container'
+
 - task: AzureRmWebAppDeployment@4
-  displayName: 'Azure App Service Deploy: '
   inputs:
     ConnectionType: 'AzureRM'
     azureSubscription: 'Azure subscription 1 (307a75f7-29a2-475e-b627-710fc78cc0d5)'
@@ -48,6 +48,5 @@ steps:
     packageForLinux: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
     RuntimeStack: 'NODE|18.14.0'
     ScriptType: 'Inline Script'
-    InlineScript: |
-      npm install
+    InlineScript: 'npm install'
     StartupCommand: 'npm start'
