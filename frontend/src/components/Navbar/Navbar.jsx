@@ -15,14 +15,21 @@ import Logout from "@mui/icons-material/Logout";
 import { navbarStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { logout } from "./../../actions/userActions";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
   };
+  const logoutHandler = () => {
+    dispatch(logout());
+  };
+
   return (
     <Drawer sx={navbarStyles.drawer} variant="permanent" anchor="left">
       <Toolbar>
@@ -100,7 +107,7 @@ const Navbar = () => {
         </ListItemButton>
       </List>
       <List component="nav" sx={{ marginTop: "265px" }}>
-        <ListItemButton>
+        <ListItemButton onClick={logoutHandler}>
           <ListItemIcon>
             <Logout />
           </ListItemIcon>
