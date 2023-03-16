@@ -1,0 +1,52 @@
+trigger:
+  branches:
+    include:
+    - admin-dashboard
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
+    Contents: |
+      **
+      !frontend
+    TargetFolder: '$(System.DefaultWorkingDirectory)/frontend'
+- task: NodeTool@0
+  inputs:
+    versionSpec: '18.14.0'
+  displayName: 'Install Node.js'
+
+- script: |
+    npm install
+    npm run build 
+  displayName: 'Build and Test'
+  workingDirectory: '$(System.DefaultWorkingDirectory)/frontend'
+- task: ArchiveFiles@2
+  displayName: 'Archive frontend'
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/frontend'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
+    replaceExistingArchive: true
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact'
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
+    ArtifactName: 'application'
+    publishLocation: 'Container'
+
+- task: AzureRmWebAppDeployment@4
+  inputs:
+    ConnectionType: 'AzureRM'
+    azureSubscription: 'Azure subscription 1 (307a75f7-29a2-475e-b627-710fc78cc0d5)'
+    appType: 'webAppLinux'
+    WebAppName: 'hrisapp'
+    packageForLinux: '$(Build.ArtifactStagingDirectory)/myFunctionApp.zip'
+    RuntimeStack: 'NODE|18.14.0'
+    ScriptType: 'Inline Script'
+    InlineScript: 'npm install'
+    StartupCommand: 'npm start'
