@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import DataTable from 'react-data-table-component';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
-import { Search, Upgrade } from '@mui/icons-material';
+import { Add, Delete, Search, Upgrade } from '@mui/icons-material';
 import Button from '@mui/material/Button';
 
 
@@ -166,6 +166,12 @@ function EmployeeTable() {
         }}
         variant="standard"
       />
+       <Button sx={{ml:4}} variant="outlined" color="error" startIcon={<Add />}>
+        Add Employee
+      </Button>
+       <Button sx={{ml:4}} variant="outlined" color="error" startIcon={<Delete />}>
+        Delete Employee
+      </Button>
        <Button sx={{ml:4,}} color='error' variant="contained" endIcon={<Upgrade />}>
         Export to Excel
       </Button>
