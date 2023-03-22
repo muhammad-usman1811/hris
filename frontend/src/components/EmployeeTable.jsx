@@ -1,8 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import DataTable from "react-data-table-component";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
 import { Button } from "@mui/material";
-import { Upgrade } from "@mui/icons-material";
+import { Add } from "@mui/icons-material";
+import { Search, Upgrade } from "@mui/icons-material";
+import { listUsers } from "../actions/userActions";
 function EmployeeTable() {
   const columns = [
     {
@@ -16,7 +21,7 @@ function EmployeeTable() {
     },
     {
       name: <b>Designation</b>,
-      selector: (row) => row.desigantion,
+      selector: (row) => row.designation,
     },
     {
       name: <b>Department</b>,
@@ -25,124 +30,71 @@ function EmployeeTable() {
     },
     {
       name: <b>Date of Joining</b>,
-      selector: (row) => row.dateofjoining,
+      selector: (row) => row.dateOfJoining,
       sortable: true,
     },
   ];
-  const data = [
-    {
-      id: 1,
-      name: "Anas Safder",
-      email: "anas.safder@digifloat.com",
-      desigantion: "Associate Consultant",
-      department: "Web Development",
-      dateofjoining: "01/02/2020",
-    },
-    {
-      id: 2,
-      name: "M Usman",
-      email: "m.usman@digifloat.com",
-      desigantion: "Associate Consultant",
-      department: "Web Development",
-      dateofjoining: "02/02/2020",
-    },
-    {
-      id: 3,
-      name: "Hammas Nasir",
-      email: "hammas.nasir@digifloat.com",
-      desigantion: "Associate Consultant",
-      department: "HR",
-      dateofjoining: "03/02/2020",
-    },
-    {
-      id: 4,
-      name: "Sana Miraj",
-      email: "sana.miraj@digifloat.com",
-      desigantion: "Human Resources Generalist",
-      department: "HR",
-      dateofjoining: "04/02/2020",
-    },
-    {
-      id: 5,
-      name: "Komal Aqeel",
-      email: "Komal.aqeel@digifloat.com",
-      desigantion: "Associate Project Cordinator",
-      department: "Project Management",
-      dateofjoining: "05/02/2020",
-    },
-    {
-      id: 6,
-      name: "Abc",
-      email: "@digifloat.com",
-      desigantion: "Any",
-      department: "Any",
-      dateofjoining: "06/02/2020",
-    },
-    {
-      id: 7,
-      name: "bca",
-      email: "@digifloat.com",
-      desigantion: "Any",
-      department: "Any",
-      dateofjoining: "06/02/2020",
-    },
-    {
-      id: 8,
-      name: "cab",
-      email: "@digifloat.com",
-      desigantion: "Any",
-      department: "Any",
-      dateofjoining: "07/02/2020",
-    },
-    {
-      id: 9,
-      name: "xyz",
-      email: "@digifloat.com",
-      desigantion: "Any",
-      department: "Any",
-      dateofjoining: "15/02/2020",
-    },
-    {
-      id: 10,
-      name: "mno",
-      email: "@digifloat.com",
-      desigantion: "Any",
-      department: "Any",
-      dateofjoining: "03/05/2020",
-    },
-    {
-      id: 11,
-      name: "pqr",
-      email: "@digifloat.com",
-      desigantion: "Any",
-      department: "Any",
-      dateofjoining: "09/11/2020",
-    },
-  ];
-  const [records, setRecords] = useState(data);
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  const userList = useSelector((state) => state.userList);
+  const { users } = userList;
+
+  const [records, setRecords] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   function handleFilter(event) {
-    const newData = data.filter((row) => {
+    const newData = records.filter((row) => {
       return row.name.toLowerCase().includes(event.target.value.toLowerCase());
     });
-    setRecords(newData);
+    setFilteredRows(newData);
   }
+
+  useEffect(() => {
+    if (userInfo && userInfo.isAdmin) {
+      dispatch(listUsers());
+      const userData =
+        users &&
+        users.map((user) => {
+          return {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            designation: user.jobDetails.designation,
+            department: user.jobDetails.department,
+            dateOfJoining: user.jobDetails.dateOfJoining,
+          };
+        });
+      setRecords(userData);
+    } else {
+      navigate("/");
+    }
+  }, [dispatch, userInfo, navigate, users]);
+
   return (
-    <div className="container mt-5">
+    <div className="container">
       <div
         className="search"
         style={{ width: "fit-content", height: "fit-content", margin: "16px" }}
       >
-        <input
-          type="text"
-          placeholder="Search Employee"
-          style={{
-            borderRadius: "10px",
-            height: "25px",
-            border: "1px solid lightgrey",
-          }}
+        <TextField
+          sx={{ width: "20ch" }}
+          color="error"
+          id="input-with-icon-textfield"
+          placeholder="Search"
           onChange={handleFilter}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <Search />
+              </InputAdornment>
+            ),
+          }}
+          variant="standard"
         />
         <Button
           sx={{ ml: 4 }}
@@ -152,14 +104,26 @@ function EmployeeTable() {
         >
           Export to Excel
         </Button>
+        <Button
+          sx={{ ml: 4 }}
+          color="error"
+          variant="contained"
+          startIcon={<Add />}
+          onClick={() => navigate("/home/add")}
+        >
+          Add an Employee
+        </Button>
       </div>
       <DataTable
         columns={columns}
-        data={records}
+        data={filteredRows.length === 0 ? records : filteredRows}
         selectableRows
         fixedHeader
         pagination
-        onRowClicked={() => navigate("/home/profile")}
+        highlightOnHover
+        onRowClicked={(row) => {
+          navigate(`/home/profile/${row.id}`);
+        }}
       ></DataTable>
     </div>
   );

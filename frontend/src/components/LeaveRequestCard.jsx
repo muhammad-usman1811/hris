@@ -9,8 +9,12 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Chip from "@mui/material/Chip";
+import CardActions from "@mui/material/CardActions";
+import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 
 const LeaveRequestCard = () => {
+  const navigate = useNavigate();
   return (
     <Card
       sx={{
@@ -19,9 +23,7 @@ const LeaveRequestCard = () => {
       }}
     >
       <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Leave Requests
-        </Typography>
+        <Typography variant="h6">Leave Requests</Typography>
         <List
           sx={{
             width: "100%",
@@ -31,7 +33,7 @@ const LeaveRequestCard = () => {
           <Box
             sx={{
               bgcolor: "#E7EBEE",
-              marginBottom: "8px",
+              marginBottom: "10px",
               borderRadius: "8px",
             }}
           >
@@ -90,6 +92,11 @@ const LeaveRequestCard = () => {
           </Box>
         </List>
       </CardContent>
+      <CardActions>
+        <Button size="small" onClick={() => navigate("/home/leaves")}>
+          Details
+        </Button>
+      </CardActions>
     </Card>
   );
 };

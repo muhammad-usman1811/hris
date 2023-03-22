@@ -20,6 +20,54 @@ const userSchema = mongoose.Schema(
       required: true,
       default: false,
     },
+    contactNum: {
+      type: String,
+      required: true,
+    },
+    address: {
+      type: String,
+      required: true,
+    },
+    cnic: {
+      type: String,
+      required: true,
+    },
+    passport: String,
+    jobDetails: {
+      title: {
+        type: String,
+        required: true,
+      },
+      designation: {
+        type: String,
+        required: true,
+      },
+      department: {
+        type: String,
+        required: true,
+      },
+      dateOfJoining: {
+        type: Date,
+        required: true,
+        default: () => new Date().toLocaleDateString("en-US"),
+      },
+    },
+    emergencyDetails: {
+      name: {
+        type: String,
+        required: true,
+      },
+      contact: {
+        type: String,
+        required: true,
+      },
+      relation: String,
+      address: String,
+      blood: {
+        type: String,
+        required: true,
+      },
+    },
   },
   {
     timestamps: true,

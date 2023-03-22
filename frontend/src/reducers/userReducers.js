@@ -10,3 +10,30 @@ export const userLoginReducer = (state = {}, action) => {
       return state;
   }
 };
+
+export const userListReducer = (state = { users: [] }, action) => {
+  switch (action.type) {
+    case "USER_LIST_SUCCESS":
+      return { users: action.payload };
+    case "USER_LIST_FAIL":
+      return { error: action.payload };
+    case "USER_LIST_RESET":
+      return { users: [] };
+
+    default:
+      return state;
+  }
+};
+
+export const userDetailsReducer = (state = { user: {} }, action) => {
+  switch (action.type) {
+    case "USER_DETAILS_SUCCESS":
+      return { user: action.payload };
+    case "USER_DETAILS_FAIL":
+      return { error: action.payload };
+    case "USER_DETAILS_RESET":
+      return { user: {} };
+    default:
+      return state;
+  }
+};

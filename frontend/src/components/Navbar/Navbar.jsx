@@ -3,6 +3,7 @@ import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
+import Box from "@mui/material/Box";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
@@ -114,9 +115,22 @@ const Navbar = () => {
           <ListItemText primary="Logout" />
         </ListItemButton>
       </List>
-      <Typography variant="caption" color="red" sx={{ margin: "auto" }}>
-        Powered by Digifloat
-      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          alignContent: "center",
+          justifyContent: "center",
+          bgcolor: "#eaeff1",
+          width: "255px",
+          paddingTop: "10px",
+          paddingBottom: "10px",
+          marginTop: "52px",
+        }}
+      >
+        <Typography variant="caption" color="red">
+          Copyright © 2023 Digifloat
+        </Typography>
+      </Box>
     </Drawer>
   );
 };

@@ -12,7 +12,11 @@ function App() {
     const parsedTitle = location.pathname.replace(/^\/home\//, "");
     const alteredTitle =
       parsedTitle.charAt(0).toUpperCase() + parsedTitle.slice(1);
-    setTitle(alteredTitle);
+    if (alteredTitle.startsWith("Profile")) {
+      setTitle("Edit Profile");
+    } else {
+      setTitle(alteredTitle);
+    }
   }, [location]);
 
   return (

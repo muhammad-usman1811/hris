@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
+import React, { useState } from "react";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -8,9 +6,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { Typography } from "@mui/material";
-import { getUserDetails } from "../actions/userActions";
 
-const EmployeeProfile = () => {
+const NewEmployee = () => {
   const departments = [
     {
       value: "Development",
@@ -25,15 +22,6 @@ const EmployeeProfile = () => {
       value: "Project Management",
     },
   ];
-  const { id } = useParams();
-
-  const dispatch = useDispatch();
-
-  const userDetails = useSelector((state) => state.userDetails);
-  const {
-    user,
-    user: { jobDetails, emergencyDetails },
-  } = userDetails;
 
   const [name, setName] = useState(null);
   const [email, setEmail] = useState(null);
@@ -42,7 +30,7 @@ const EmployeeProfile = () => {
   const [passport, setPassport] = useState(null);
   const [cnic, setCnic] = useState(null);
   const [department, setDepartment] = useState(null);
-  const [employeeId, setEmployeeId] = useState(user._id);
+  const [employeeId, setEmployeeId] = useState();
   const [designation, setDesignation] = useState(null);
   const [title, setTitle] = useState(null);
   const [supervisor, setSupervisor] = useState(null);
@@ -54,31 +42,17 @@ const EmployeeProfile = () => {
   const [contact, setContact] = useState(null);
   const [blood, setBlood] = useState(null);
 
-  const handleName = (event) => {
-    setName((prevState) => (prevState = event.target.value));
-  };
-
-  useEffect(() => {
-    dispatch(getUserDetails(id));
-    setName(user.name);
-    setEmail(user.email);
-    setAddress(user.address);
-    setPhone(user.contactNum);
-    setPassport(user.passport);
-    setCnic(user.cnic);
-    setDepartment(jobDetails && jobDetails.department);
-    setEmployeeId(user._id);
-    setTitle(jobDetails && jobDetails.title);
-    setDate(jobDetails && jobDetails.dateOfJoining);
-    setEmergencyName(emergencyDetails && emergencyDetails.name);
-    setRelation(emergencyDetails && emergencyDetails.relation);
-    setEmergencyAddress(emergencyDetails && emergencyDetails.address);
-    setContact(emergencyDetails && emergencyDetails.contact);
-    setBlood(emergencyDetails && emergencyDetails.blood);
-  }, [dispatch, id, user, jobDetails, emergencyDetails]);
-
   return (
-    <Grid container>
+    <Grid
+      container
+      sx={{
+        marginLeft: "256px",
+        backgroundColor: "#eaeff1",
+        padding: "32px",
+        minHeight: "calc(100vh - 67px)",
+        position: "relative",
+      }}
+    >
       <Grid item xs={4}>
         <img
           src="/images/userPhoto.jpg"
@@ -95,7 +69,7 @@ const EmployeeProfile = () => {
             label="Full Name"
             variant="standard"
             value={name}
-            onChange={handleName}
+            onChange={(event) => setName(event.target.value)}
           />
           <br />
           <TextField
@@ -280,4 +254,4 @@ const EmployeeProfile = () => {
   );
 };
 
-export default EmployeeProfile;
+export default NewEmployee;

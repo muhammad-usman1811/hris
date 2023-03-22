@@ -8,7 +8,7 @@ const DataTable = ({ rows, columns }) => {
       sx={{
         height: "100%",
         width: "100%",
-        backgroundColor: "#eaeff1",
+        backgroundColor: "white",
       }}
     >
       <DataGrid

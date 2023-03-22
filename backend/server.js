@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import "colors";
 import connectDb from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js";
+import attendanceRoutes from "./routes/attendanceRoutes.js";
+import leaveRoutes from "./routes/leaveRoutes.js";
 import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
 
 dotenv.config();
@@ -19,8 +21,10 @@ app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
-//Middleware to use user routes
+//Middlewares to use routes
 app.use("/api/users", userRoutes);
+app.use("/api/attendance", attendanceRoutes);
+app.use("/api/leaves", leaveRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

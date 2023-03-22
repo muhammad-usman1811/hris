@@ -1,8 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import thunk from "redux-thunk";
-import { userLoginReducer } from "./reducers/userReducers";
+import {
+  userLoginReducer,
+  userListReducer,
+  userDetailsReducer,
+} from "./reducers/userReducers";
 
-const reducer = { userLogin: userLoginReducer };
+const reducer = {
+  userLogin: userLoginReducer,
+  userList: userListReducer,
+  userDetails: userDetailsReducer,
+};
 const middleware = [thunk];
 
 const userInfoFromStorage = localStorage.getItem("userInfo")

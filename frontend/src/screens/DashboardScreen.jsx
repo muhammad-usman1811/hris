@@ -12,8 +12,10 @@ import BasicCard from "../components/common/BasicCard";
 import LeaveRequestCard from "../components/LeaveRequestCard";
 import BasicCalendar from "../components/BasicCalendar";
 import DashboardGraph from "./../components/DashboardGraph";
+import { useNavigate } from "react-router-dom";
 
 const DashboardScreen = () => {
+  const navigate = useNavigate();
   return (
     <Grid
       item
@@ -32,6 +34,7 @@ const DashboardScreen = () => {
             text={"Total Employees"}
             content={1409}
             colorCode="#EFEAFA"
+            onClick={() => navigate("/home/employees")}
           />
         </Grid>
         <Grid item xs={3}>

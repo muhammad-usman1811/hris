@@ -1,6 +1,6 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
-import NewProfile from "./../components/NewProfile";
+import EmployeeProfile from "../components/EmployeeProfile";
 
 const EmployeeProfileScreen = () => {
   return (
@@ -14,7 +14,7 @@ const EmployeeProfileScreen = () => {
         minHeight: "calc(100vh - 67px)",
       }}
     >
-      <NewProfile />
+      <EmployeeProfile />
     </Grid>
   );
 };

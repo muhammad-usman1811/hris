@@ -8,13 +8,18 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "./../../actions/userActions";
+import { useNavigate } from "react-router-dom";
 
 const AccountMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -23,6 +28,9 @@ const AccountMenu = () => {
     setAnchorEl(null);
   };
 
+  const handleProfile = () => {
+    navigate(`/home/profile/${userInfo._id}`);
+  };
   const handleLogout = () => {
     dispatch(logout());
   };
@@ -78,7 +86,7 @@ const AccountMenu = () => {
         transformOrigin={{ horizontal: "right", vertical: "top" }}
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleProfile}>
           <Avatar /> Profile
         </MenuItem>
         <Divider />

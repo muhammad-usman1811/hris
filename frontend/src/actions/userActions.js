@@ -1,4 +1,5 @@
 import axios from "axios";
+
 export const login = (email, password) => async (dispatch) => {
   try {
     const config = {
@@ -31,5 +32,58 @@ export const login = (email, password) => async (dispatch) => {
 export const logout = () => (dispatch) => {
   localStorage.removeItem("userInfo");
   dispatch({ type: "USER_LOGOUT" });
+  dispatch({ type: "USER_LIST_RESET" });
   document.location.href = "/";
+};
+
+export const listUsers = () => async (dispatch, getState) => {
+  try {
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await axios.get(`/api/users`, config);
+
+    dispatch({ type: "USER_LIST_SUCCESS", payload: data });
+  } catch (error) {
+    dispatch({
+      type: "USER_LIST_FAIL",
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const getUserDetails = (id) => async (dispatch, getState) => {
+  try {
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/users/${id}`, config);
+    dispatch({
+      type: "USER_DETAILS_SUCCESS",
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: "USER_DETAILS_FAIL",
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
 };
