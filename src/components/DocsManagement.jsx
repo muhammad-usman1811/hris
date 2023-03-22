@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import { PictureAsPdf, Add, Delete, Visibility } from '@mui/icons-material';
 import DownloadIcon from '@mui/icons-material/Download';
 import Button from '@mui/material/Button';
+import PictureAsPdfOutlinedIcon from '@mui/icons-material/PictureAsPdfOutlined';
 
 function generate(element) {
   return [0, 1, 2,3,4,5,6].map((value) =>
@@ -60,7 +61,7 @@ export default function InteractiveList() {
                   
                   <ListItemAvatar >
                     <Avatar >
-                      <PictureAsPdf color='primary'  />
+                      <PictureAsPdfOutlinedIcon color='error' />
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
