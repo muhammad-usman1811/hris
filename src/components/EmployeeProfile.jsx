@@ -8,7 +8,8 @@ import Box from '@mui/material/Box';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-
+import IconButton from '@mui/material/IconButton';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
 
 
 
@@ -20,17 +21,20 @@ const EmployeeProfile = () => {
     const handleChange = (event) => {
       setDepartment(event.target.value);
     };
+    
     return (
         <>
         <div className="mainempp" style={{display:"flex",flexDirection:"row"}}>
         <div className="employeeprofile" style={{display:"flex",flexDirection:"column"}}>
                 <div className="row1"
                 style={{width:"20%"}}>
+                   <input hidden accept="image/*" type="file" />
                    <img src={employee}
                    style={{width: "auto",
                     height: "200px",
                     margin: "70px"}}
                    alt="" />
+                   
                 </div>
 
                 <div className="empinfo" style={{marginLeft: "70px"}}>
