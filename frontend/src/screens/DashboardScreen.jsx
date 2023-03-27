@@ -38,17 +38,23 @@ const DashboardScreen = () => {
           />
         </Grid>
         <Grid item xs={3}>
-          <BasicCard text={"Open Positions"} content={35} colorCode="#E7F1F9" />
+          <BasicCard
+            text={"Open Positions"}
+            content={35}
+            colorCode="#E7F1F9"
+            disabled={true}
+          />
         </Grid>
         <Grid item xs={3}>
           <BasicCard
             text={"Received Applications"}
             content={120}
             colorCode="#F6E2E9"
+            disabled={true}
           />
         </Grid>
         <Grid item xs={3}>
-          <BasicCard text={"Onboarding"} content={15} />
+          <BasicCard text={"Onboarding"} content={15} disabled={true} />
         </Grid>
         <Grid item xs={8}>
           <DashboardGraph />

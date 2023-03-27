@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import EmailIcon from "@mui/icons-material/Email";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import LoginIcon from "@mui/icons-material/Login";
 import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
+import LoadingButton from "@mui/lab/LoadingButton";
 import {
   Button,
   TextField,
@@ -15,24 +19,23 @@ import {
   Checkbox,
   FormControlLabel,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
 import BasicModal from "../components/common/BasicModal";
 import { login } from "./../actions/userActions";
 
-const LoginScreen = ({ history }) => {
+const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [enteredEmail, setEnteredEmail] = useState("");
   const [emailIsTouched, setEmailIsTouched] = useState(false);
   const [enteredPassword, setEnteredPassword] = useState("");
   const [passwordIsTouched, setPasswordIsTouched] = useState(false);
   const [open, setOpen] = useState(false);
+  const [openToast, setOpenToast] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
-  const { userInfo, error } = userLogin;
+  const { userInfo, error, loading } = userLogin;
 
   //Email validity & Invalidity
   const emailIsValid = enteredEmail.trim() !== "";
@@ -52,7 +55,7 @@ const LoginScreen = ({ history }) => {
     setEnteredEmail(event.target.value);
   };
 
-  const emailBlurHandler = (event) => {
+  const emailBlurHandler = () => {
     setEmailIsTouched(true);
   };
 
@@ -60,7 +63,7 @@ const LoginScreen = ({ history }) => {
     setEnteredPassword(event.target.value);
   };
 
-  const passwordBlurHandler = (event) => {
+  const passwordBlurHandler = () => {
     setPasswordIsTouched(true);
   };
 
@@ -77,6 +80,14 @@ const LoginScreen = ({ history }) => {
       return;
     }
     dispatch(login(enteredEmail, enteredPassword));
+  };
+
+  const handleClick = () => {
+    setOpenToast(true);
+  };
+
+  const handleClose = () => {
+    setOpenToast(false);
   };
 
   useEffect(() => {
@@ -162,30 +173,42 @@ const LoginScreen = ({ history }) => {
             }}
           />
           <FormControlLabel
-            control={<Checkbox defaultChecked size="small" />}
+            control={<Checkbox size="small" />}
             label="Remember me"
           />
 
-          <Button
+          <LoadingButton
+            loading={loading}
             variant="contained"
             color="error"
             type="submit"
+            onClick={handleClick}
             sx={{ marginTop: 3 }}
             endIcon={<LoginIcon />}
           >
             Log In
-          </Button>
+          </LoadingButton>
           <div>
             <Button variant="text" sx={{ marginTop: 3 }} onClick={handleToggle}>
               Forgot Password?
             </Button>
             <BasicModal open={open} onClose={() => setOpen(false)} />
           </div>
-
           {error && (
-            <Alert severity="error" sx={{ marginTop: "10px" }}>
-              {error}
-            </Alert>
+            <Snackbar
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              open={openToast}
+              autoHideDuration={3000}
+              onClose={handleClose}
+            >
+              <Alert
+                onClose={handleClose}
+                severity="error"
+                sx={{ width: "100%" }}
+              >
+                {error}
+              </Alert>
+            </Snackbar>
           )}
         </Box>
       </Grid>

@@ -5,7 +5,7 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
-const BasicCard = ({ text, content, colorCode, onClick }) => {
+const BasicCard = ({ text, content, colorCode, onClick, disabled }) => {
   return (
     <Card
       sx={{
@@ -23,7 +23,7 @@ const BasicCard = ({ text, content, colorCode, onClick }) => {
         <Typography variant="h5">{content}</Typography>
       </CardContent>
       <CardActions>
-        <Button size="small" onClick={onClick}>
+        <Button size="small" onClick={onClick} disabled={disabled}>
           Details
         </Button>
       </CardActions>

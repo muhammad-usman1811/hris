@@ -18,7 +18,11 @@ const authUser = asyncHandler(async (req, res) => {
       token: generateToken(user._id),
     });
   } else {
-    throw new Error("Invalid email or password");
+    if (user && user.password !== password) {
+      throw new Error("Password is invalid");
+    } else {
+      throw new Error("Email is invalid");
+    }
   }
 });
 

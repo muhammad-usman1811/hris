@@ -1,7 +1,10 @@
 import axios from "axios";
-
 export const login = (email, password) => async (dispatch) => {
   try {
+    dispatch({
+      type: "USER_LOGIN_REQUEST",
+    });
+
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -33,7 +36,7 @@ export const logout = () => (dispatch) => {
   localStorage.removeItem("userInfo");
   dispatch({ type: "USER_LOGOUT" });
   dispatch({ type: "USER_LIST_RESET" });
-  document.location.href = "/";
+  window.location.replace("/hris.digifloat.com");
 };
 
 export const listUsers = () => async (dispatch, getState) => {
