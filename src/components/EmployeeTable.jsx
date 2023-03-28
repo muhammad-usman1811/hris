@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import DataTable from 'react-data-table-component';
 import InputAdornment from '@mui/material/InputAdornment';
 import TextField from '@mui/material/TextField';
 import { Add, Delete, Search, Upgrade } from '@mui/icons-material';
 import Button from '@mui/material/Button';
+import { useDownloadExcel } from 'react-export-table-to-excel';
 
 
 
@@ -145,8 +146,15 @@ function EmployeeTable() {
             return row.name.toLowerCase().includes(event.target.value.toLowerCase())
         })
         setRecords(newData)
-
     }
+
+    const tableRef = useRef(null);
+
+    const {onDownload} = useDownloadExcel({
+        currentTableRef: tableRef.current,
+        filename: "Employees",
+        sheet: "Employees"
+    });
     return(
         <div className='container'>
             <div className='search' 
@@ -166,17 +174,19 @@ function EmployeeTable() {
         }}
         variant="standard"
       />
+      
        <Button sx={{ml:4}} variant="outlined" color="error" startIcon={<Add />}>
         Add Employee
       </Button>
        <Button sx={{ml:4}} variant="outlined" color="error" startIcon={<Delete />}>
         Delete Employee
       </Button>
-       <Button sx={{ml:4,}} color='error' variant="contained" endIcon={<Upgrade />}>
+       <Button onClick={onDownload} sx={{ml:4,}} color='error' variant="contained" endIcon={<Upgrade />}>
         Export to Excel
       </Button>
                  </div>
-            <DataTable
+            <DataTable 
+            ref={tableRef}
             columns= {columns}
             data={records}
             selectableRows

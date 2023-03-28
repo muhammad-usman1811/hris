@@ -8,7 +8,7 @@ import EmployeeDashboard from './components/EmployeeDashboard';
 function App() {
   return (
     <div>
-      <DocsManagement />
+      <EmployeeTable />
     </div>
     );
 }

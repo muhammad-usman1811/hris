@@ -9,7 +9,7 @@ import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { PictureAsPdf, Add, Delete, Visibility } from '@mui/icons-material';
+import { Add, Delete, Visibility } from '@mui/icons-material';
 import DownloadIcon from '@mui/icons-material/Download';
 import Button from '@mui/material/Button';
 import PictureAsPdfOutlinedIcon from '@mui/icons-material/PictureAsPdfOutlined';
