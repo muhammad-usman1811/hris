@@ -11,6 +11,7 @@ import { Add, Delete, Visibility } from "@mui/icons-material";
 import DownloadIcon from "@mui/icons-material/Download";
 import Button from "@mui/material/Button";
 import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined";
+import DocModal from "./DocModal";
 
 function generate(element) {
   return [0, 1, 2, 3, 4, 5, 6].map((value) =>
@@ -27,6 +28,11 @@ const Demo = styled("div")(({ theme }) => ({
 const ManageDocs = () => {
   const [dense, setDense] = React.useState(false);
   const [secondary, setSecondary] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+
+  const handleToggle = () => {
+    setOpen(!open);
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -35,10 +41,12 @@ const ManageDocs = () => {
           sx={{ mt: 2, ml: 2, mb: 2 }}
           color="error"
           variant="contained"
+          onClick={handleToggle}
           startIcon={<Add />}
         >
           Add Document
         </Button>
+        <DocModal open={open} onClose={() => setOpen(false)} />
       </Box>
       <Demo>
         <List dense={dense}>

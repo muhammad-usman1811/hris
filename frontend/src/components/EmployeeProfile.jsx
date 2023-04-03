@@ -90,6 +90,7 @@ const EmployeeProfile = () => {
             Employee Details
           </Typography>
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px" }}
             id="name"
             label="Full Name"
@@ -99,6 +100,7 @@ const EmployeeProfile = () => {
           />
           <br />
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px" }}
             id="email"
             label="Email"
@@ -108,6 +110,7 @@ const EmployeeProfile = () => {
           />
           <br />
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px" }}
             id="phone"
             label="Phone Number"
@@ -117,6 +120,7 @@ const EmployeeProfile = () => {
           />
           <br />
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px" }}
             id="address"
             label="Address"
@@ -126,6 +130,7 @@ const EmployeeProfile = () => {
           />
           <br />
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px" }}
             id="cnic"
             label="CNIC"
@@ -135,6 +140,7 @@ const EmployeeProfile = () => {
           />
           <br />
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px" }}
             id="passport"
             label="Passport"
@@ -150,6 +156,7 @@ const EmployeeProfile = () => {
             Job Details
           </Typography>
           <TextField
+            InputLabelProps={{ shrink: true }}
             id="department"
             select
             value={department}
@@ -165,6 +172,7 @@ const EmployeeProfile = () => {
           </TextField>
           <br />
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px" }}
             id="employeeId"
             label="Employee ID"
@@ -174,6 +182,7 @@ const EmployeeProfile = () => {
           />
           <br />
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px" }}
             id="title"
             label="Title"
@@ -183,6 +192,7 @@ const EmployeeProfile = () => {
           />
           <br />
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px" }}
             id="designation"
             label="Designation"
@@ -192,6 +202,7 @@ const EmployeeProfile = () => {
           />
           <br />
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px" }}
             id="supervisor"
             label="Supervisor"
@@ -201,6 +212,7 @@ const EmployeeProfile = () => {
           />
           <br />
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px" }}
             id="date"
             label="Joining Date"
@@ -210,6 +222,7 @@ const EmployeeProfile = () => {
           />
           <br />
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px" }}
             id="type"
             label="Work Location"
@@ -223,6 +236,7 @@ const EmployeeProfile = () => {
         <Box>
           <Typography variant="h6">Emergency Contact Information</Typography>
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px", ml: "6px" }}
             id="emergency-name"
             label="Name"
@@ -232,6 +246,7 @@ const EmployeeProfile = () => {
           />
           <br />
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px", ml: "6px" }}
             id="relation"
             label="Relation"
@@ -241,6 +256,7 @@ const EmployeeProfile = () => {
           />
           <br />
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px", ml: "6px" }}
             id="emergency-address"
             label="Address"
@@ -250,6 +266,7 @@ const EmployeeProfile = () => {
           />
           <br />
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px" }}
             id="contact"
             label="Contact Number"
@@ -259,6 +276,7 @@ const EmployeeProfile = () => {
           />
           <br />
           <TextField
+            InputLabelProps={{ shrink: true }}
             sx={{ marginTop: "20px", ml: "6px" }}
             id="blood"
             label="Blood"
