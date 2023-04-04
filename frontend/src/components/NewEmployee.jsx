@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
+import { useDropzone } from "react-dropzone";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -6,6 +7,8 @@ import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import { Typography } from "@mui/material";
+import HighlightAltIcon from "@mui/icons-material/HighlightAlt";
+import ImageListItem from "@mui/material/ImageListItem";
 
 const NewEmployee = () => {
   const departments = [
@@ -22,6 +25,19 @@ const NewEmployee = () => {
       value: "Project Management",
     },
   ];
+  const [files, setFiles] = useState([]);
+  const onDrop = useCallback((acceptedFiles) => {
+    if (acceptedFiles?.length) {
+      setFiles((previousFiles) => [
+        ...previousFiles,
+        ...acceptedFiles.map((file) =>
+          Object.assign(file, { preview: URL.createObjectURL(file) })
+        ),
+      ]);
+    }
+  }, []);
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const [name, setName] = useState(null);
   const [email, setEmail] = useState(null);
@@ -54,13 +70,27 @@ const NewEmployee = () => {
       }}
     >
       <Grid item xs={4}>
-        <img
-          src="/images/userPhoto.jpg"
-          style={{ width: "auto", height: "200px", marginBottom: "5px" }}
-          alt="Employee visual"
-        />
         <Box>
-          <Typography variant="h6" sx={{ marginBottom: "5px" }}>
+          <div {...getRootProps()}>
+            <input {...getInputProps()} />
+            <Button variant="outlined" startIcon={<HighlightAltIcon />}>
+              Click to select photo
+            </Button>
+          </div>
+          {files.map((file) => (
+            <ImageListItem
+              key={file.name}
+              sx={{ width: 200, height: 200, mt: 2 }}
+            >
+              <img src={file.preview} alt="Profile" loading="lazy" />
+            </ImageListItem>
+          ))}
+        </Box>
+        <Box>
+          <Typography
+            variant="h6"
+            sx={{ marginBottom: "2px", marginTop: "5px" }}
+          >
             Employee Details
           </Typography>
           <TextField

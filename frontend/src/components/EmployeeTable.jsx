@@ -8,6 +8,8 @@ import { Button } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { Search, Upgrade } from "@mui/icons-material";
 import { listUsers } from "../actions/userActions";
+const XLSX = require("xlsx");
+
 function EmployeeTable() {
   const columns = [
     {
@@ -52,6 +54,13 @@ function EmployeeTable() {
       return row.name.toLowerCase().includes(event.target.value.toLowerCase());
     });
     setFilteredRows(newData);
+  }
+
+  function exportToExcel() {
+    const worksheet = XLSX.utils.json_to_sheet(records);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    XLSX.writeFile(workbook, "Employees.xlsx");
   }
 
   useEffect(() => {
@@ -100,6 +109,7 @@ function EmployeeTable() {
           sx={{ ml: 4 }}
           color="error"
           variant="contained"
+          onClick={exportToExcel}
           endIcon={<Upgrade />}
         >
           Export to Excel

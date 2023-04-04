@@ -1,4 +1,6 @@
-import * as React from "react";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -8,31 +10,39 @@ import ListItemText from "@mui/material/ListItemText";
 import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import { Add, Delete, Visibility } from "@mui/icons-material";
-import DownloadIcon from "@mui/icons-material/Download";
+import EditIcon from "@mui/icons-material/Edit";
 import Button from "@mui/material/Button";
-import PictureAsPdfOutlinedIcon from "@mui/icons-material/PictureAsPdfOutlined";
+import ArticleIcon from "@mui/icons-material/Article";
 import DocModal from "./DocModal";
-
-function generate(element) {
-  return [0, 1, 2, 3, 4, 5, 6].map((value) =>
-    React.cloneElement(element, {
-      key: value,
-    })
-  );
-}
-
-const Demo = styled("div")(({ theme }) => ({
-  backgroundColor: theme.palette.background.paper,
-}));
+import { getDocs } from "../actions/docActions";
 
 const ManageDocs = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  const docList = useSelector((state) => state.docList);
+  const { documents } = docList;
   const [dense, setDense] = React.useState(false);
-  const [secondary, setSecondary] = React.useState(false);
   const [open, setOpen] = React.useState(false);
+
+  const Demo = styled("div")(({ theme }) => ({
+    backgroundColor: theme.palette.background.paper,
+  }));
 
   const handleToggle = () => {
     setOpen(!open);
   };
+
+  useEffect(() => {
+    if (userInfo && userInfo.isAdmin) {
+      dispatch(getDocs());
+    } else {
+      navigate("/");
+    }
+  }, [dispatch, userInfo, navigate]);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -50,51 +60,56 @@ const ManageDocs = () => {
       </Box>
       <Demo>
         <List dense={dense}>
-          {generate(
-            <ListItem
-              sx={{ borderBottom: 1, borderColor: "grey.500" }}
-              secondaryAction={
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    pl: 1,
-                    pb: 1,
-                  }}
+          {documents &&
+            documents.map((doc) => {
+              return (
+                <ListItem
+                  sx={{ borderBottom: 1, borderColor: "grey.500" }}
+                  secondaryAction={
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        pl: 1,
+                        pb: 1,
+                      }}
+                    >
+                      <IconButton
+                        sx={{ ml: 3 }}
+                        color="error"
+                        edge="end"
+                        aria-label="view"
+                      >
+                        <Visibility />
+                      </IconButton>
+                      <IconButton
+                        color="error"
+                        edge="end"
+                        aria-label="edit"
+                        sx={{ ml: 3 }}
+                      >
+                        <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        sx={{ ml: 3, mr: 2 }}
+                        color="error"
+                        edge="end"
+                        aria-label="delete"
+                      >
+                        <Delete />
+                      </IconButton>
+                    </Box>
+                  }
                 >
-                  <IconButton color="error" edge="end" aria-label="download">
-                    <DownloadIcon />
-                  </IconButton>
-                  <IconButton
-                    sx={{ ml: 3 }}
-                    color="error"
-                    edge="end"
-                    aria-label="view"
-                  >
-                    <Visibility />
-                  </IconButton>
-                  <IconButton
-                    sx={{ ml: 3 }}
-                    color="error"
-                    edge="end"
-                    aria-label="delete"
-                  >
-                    <Delete />
-                  </IconButton>
-                </Box>
-              }
-            >
-              <ListItemAvatar>
-                <Avatar>
-                  <PictureAsPdfOutlinedIcon color="error" />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary="Employee Handbook"
-                secondary={secondary ? "employee handbook" : null}
-              />
-            </ListItem>
-          )}
+                  <ListItemAvatar>
+                    <Avatar>
+                      <ArticleIcon color="error" />
+                    </Avatar>
+                  </ListItemAvatar>
+                  <ListItemText primary={doc.name} />
+                </ListItem>
+              );
+            })}
         </List>
       </Demo>
     </Box>

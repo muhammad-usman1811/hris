@@ -1,18 +1,16 @@
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Input from "@mui/material/Input";
-import Button from "@mui/material/Button";
-import axios from "axios";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import LoadingButton from "@mui/lab/LoadingButton";
+import { uploadDoc } from "../actions/docActions";
 
 const DocModal = ({ open, onClose }) => {
-  const [enteredName, setEnteredName] = useState("");
-  const [selectedFile, setSelectedFile] = useState("");
-
   const modalStyles = {
     wrapper: {
-      flexGrow: 1,
       position: "absolute",
       top: "50%",
       left: "50%",
@@ -27,39 +25,40 @@ const DocModal = ({ open, onClose }) => {
       display: "flex",
       flexDirection: "column",
       marginTop: "20px",
-      marginBottom: "15px",
+      marginBottom: "20px",
       ".MuiInput-root": {
         marginBottom: "20px",
       },
-      button: {
-        display: "flex",
-        justifyContent: "flex-end",
-      },
     },
   };
+  const [enteredName, setEnteredName] = useState("");
+  const [selectedFile, setSelectedFile] = useState("");
+
+  const dispatch = useDispatch();
+
+  const docUpload = useSelector((state) => state.docUpload);
+  const { loading, message, error } = docUpload;
+
+  const nameIsInvalid = enteredName.trim() === "";
+  const fileIsInvalid = selectedFile === "";
 
   const handleName = (event) => {
     setEnteredName(event.target.value);
   };
 
   const handleFile = (event) => {
-    setSelectedFile(event.target.files[0].name);
+    setSelectedFile(event.target.files[0]);
   };
 
   const handleUpload = (event) => {
     event.preventDefault();
-    const formData = new FormData();
-    formData.append("document", selectedFile);
-    formData.append("filename", enteredName);
 
-    axios
-      .post("/api/documents/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((res) => console.log(res.data.message))
-      .catch((err) => console.log(err));
+    if (nameIsInvalid && fileIsInvalid) {
+      return;
+    }
+
+    dispatch(uploadDoc(enteredName, selectedFile));
+    document.location.reload();
   };
 
   return (
@@ -69,34 +68,42 @@ const DocModal = ({ open, onClose }) => {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box sx={modalStyles.wrapper}>
+      <Box sx={modalStyles.wrapper} component="form" onSubmit={handleUpload}>
         <Typography id="modal-modal-title" variant="h6" component="h2">
           Add a Document
         </Typography>
         <Input
           placeholder="Enter name"
-          sx={modalStyles.input}
+          type="text"
           onChange={handleName}
+          sx={modalStyles.input}
         />
-        <input
-          style={{ display: "none" }}
+        <Input
           id="contained-button-file"
           type="file"
           onChange={handleFile}
+          sx={modalStyles.input}
         />
-        <label htmlFor="contained-button-file">
-          <Button variant="contained" component="span">
-            Select file
-          </Button>
-          {selectedFile && (
-            <Typography variant="subtitle1">{selectedFile}</Typography>
-          )}
-        </label>
-        <Box sx={modalStyles.button}>
-          <Button variant="contained" type="submit" onClick={handleUpload}>
-            Upload
-          </Button>
-        </Box>
+        <LoadingButton
+          loading={loading}
+          disabled={nameIsInvalid || fileIsInvalid}
+          variant="contained"
+          type="submit"
+          color="error"
+          startIcon={<FileUploadIcon />}
+        >
+          Upload
+        </LoadingButton>
+        {message && (
+          <Typography variant="subtitle1" sx={{ mt: 2 }}>
+            {message}
+          </Typography>
+        )}
+        {error && (
+          <Typography variant="subtitle1" sx={{ mt: 2 }}>
+            {error}
+          </Typography>
+        )}
       </Box>
     </Modal>
   );

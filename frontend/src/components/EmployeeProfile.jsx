@@ -25,6 +25,7 @@ const EmployeeProfile = () => {
       value: "Project Management",
     },
   ];
+
   const { id } = useParams();
 
   const dispatch = useDispatch();

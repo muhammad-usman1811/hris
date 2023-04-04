@@ -35,8 +35,7 @@ const uploadDocument = asyncHandler(async (req, res) => {
 
     document.save((err) => {
       if (err) {
-        res.status(500);
-        throw new Error("Error saving document");
+        res.status(500).json({ message: "Error saving document" });
       }
       return res.status(200).json({ message: "File uploaded successfully" });
     });

@@ -49,7 +49,10 @@ const userSchema = mongoose.Schema(
       dateOfJoining: {
         type: Date,
         required: true,
-        default: () => new Date().toLocaleDateString("en-US"),
+        default: Date.now,
+        get: function (date) {
+          return new Date(date).toISOString().slice(0, 10);
+        },
       },
     },
     emergencyDetails: {
