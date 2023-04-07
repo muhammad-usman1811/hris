@@ -24,6 +24,11 @@ const LeaveTable = () => {
       headerName: "Days",
       width: 150,
     },
+    {
+      field: "status",
+      headerName: "Status",
+      width: 150,
+    },
   ];
 
   const rows = [
@@ -33,6 +38,7 @@ const LeaveTable = () => {
       department: "Development",
       type: "Sick",
       days: 2,
+      status: "Approved",
     },
     {
       id: 2,
@@ -40,6 +46,7 @@ const LeaveTable = () => {
       department: "Project Management",
       type: "Casual",
       days: 1,
+      status: "Pending",
     },
     {
       id: 3,
@@ -47,6 +54,7 @@ const LeaveTable = () => {
       department: "Data",
       type: "Urgent",
       days: 2,
+      status: "Pending",
     },
     {
       id: 4,
@@ -54,6 +62,7 @@ const LeaveTable = () => {
       department: "Data",
       type: "Urgent",
       days: 2,
+      status: "Approved",
     },
     {
       id: 5,
@@ -61,6 +70,7 @@ const LeaveTable = () => {
       department: "Data",
       type: "Sick",
       days: 2,
+      status: "Pending",
     },
     {
       id: 6,
@@ -68,6 +78,7 @@ const LeaveTable = () => {
       department: "Development",
       type: "Casual",
       days: 1,
+      status: "Approved",
     },
     {
       id: 7,
@@ -75,6 +86,7 @@ const LeaveTable = () => {
       department: "Data",
       type: "Urgent",
       days: 1,
+      status: "Cancelled",
     },
     {
       id: 8,
@@ -82,6 +94,7 @@ const LeaveTable = () => {
       department: "Data",
       type: "Urgent",
       days: 1,
+      status: "Pending",
     },
     {
       id: 9,
@@ -89,6 +102,7 @@ const LeaveTable = () => {
       department: "Data",
       type: "Sick",
       days: 2,
+      status: "Cancelled",
     },
   ];
   return <DataTable rows={rows} columns={columns} />;

@@ -47,6 +47,77 @@ const getUserById = asyncHandler(async (req, res) => {
   }
 });
 
+// Description: Add a new user
+// Route: POST /api/users
+// Access: Private/Admin
+const addUser = asyncHandler(async (req, res) => {
+  const file = req.file;
+  const {
+    address,
+    blood,
+    cnic,
+    contact,
+    date,
+    department,
+    designation,
+    email,
+    emergencyAddress,
+    emergencyName,
+    employeeId,
+    name,
+    passport,
+    password,
+    phone,
+    relation,
+    role,
+    supervisor,
+    title,
+    workType,
+  } = req.body;
+
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    res.status(400);
+    throw new Error("User already exists");
+  }
+
+  const user = await User.create({
+    imageUrl: file.path,
+    name,
+    email,
+    password,
+    role,
+    phone,
+    address,
+    cnic,
+    passport,
+    jobDetails: {
+      title,
+      designation,
+      department,
+      employeeId,
+      supervisor,
+      dateOfJoining: date,
+      workType,
+    },
+    emergencyDetails: {
+      name: emergencyName,
+      contact,
+      relation,
+      address: emergencyAddress,
+      blood,
+    },
+  });
+
+  if (user) {
+    res.status(201).json({ message: "User added successfully" });
+  } else {
+    res.status(400);
+    throw new Error("Invalid user data");
+  }
+});
+
 // @desc Update user
 // @route PUT /api/users/:id
 // @access Private/Admin
@@ -82,4 +153,4 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
-export { authUser, getUsers, getUserById, updateUser, deleteUser };
+export { authUser, getUsers, getUserById, addUser, updateUser, deleteUser };

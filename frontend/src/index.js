@@ -17,7 +17,7 @@ import NewEmployee from "./components/NewEmployee";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
-    <Router basename="/hris.digifloat.com">
+    <Router>
       <Routes>
         <Route path="/" element={<LoginScreen />} />
         <Route path="/home" element={<App />}>

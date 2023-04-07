@@ -39,3 +39,16 @@ export const userDetailsReducer = (state = { user: {} }, action) => {
       return state;
   }
 };
+
+export const userAddReducer = (state = {}, action) => {
+  switch (action.type) {
+    case "USER_ADD_REQUEST":
+      return { loading: true };
+    case "USER_ADD_SUCCESS":
+      return { success: true, message: action.payload };
+    case "USER_ADD_FAIL":
+      return { error: action.payload };
+    default:
+      return state;
+  }
+};

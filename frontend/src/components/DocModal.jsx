@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Input from "@mui/material/Input";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
-import LoadingButton from "@mui/lab/LoadingButton";
+import Button from "@mui/lab/LoadingButton";
 import { uploadDoc } from "../actions/docActions";
 
 const DocModal = ({ open, onClose }) => {
@@ -31,13 +31,11 @@ const DocModal = ({ open, onClose }) => {
       },
     },
   };
+
   const [enteredName, setEnteredName] = useState("");
   const [selectedFile, setSelectedFile] = useState("");
 
   const dispatch = useDispatch();
-
-  const docUpload = useSelector((state) => state.docUpload);
-  const { loading, message, error } = docUpload;
 
   const nameIsInvalid = enteredName.trim() === "";
   const fileIsInvalid = selectedFile === "";
@@ -58,7 +56,7 @@ const DocModal = ({ open, onClose }) => {
     }
 
     dispatch(uploadDoc(enteredName, selectedFile));
-    document.location.reload();
+    onClose();
   };
 
   return (
@@ -84,8 +82,7 @@ const DocModal = ({ open, onClose }) => {
           onChange={handleFile}
           sx={modalStyles.input}
         />
-        <LoadingButton
-          loading={loading}
+        <Button
           disabled={nameIsInvalid || fileIsInvalid}
           variant="contained"
           type="submit"
@@ -93,17 +90,7 @@ const DocModal = ({ open, onClose }) => {
           startIcon={<FileUploadIcon />}
         >
           Upload
-        </LoadingButton>
-        {message && (
-          <Typography variant="subtitle1" sx={{ mt: 2 }}>
-            {message}
-          </Typography>
-        )}
-        {error && (
-          <Typography variant="subtitle1" sx={{ mt: 2 }}>
-            {error}
-          </Typography>
-        )}
+        </Button>
       </Box>
     </Modal>
   );

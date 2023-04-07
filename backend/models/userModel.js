@@ -2,6 +2,10 @@ import mongoose from "mongoose";
 
 const userSchema = mongoose.Schema(
   {
+    imageUrl: {
+      type: String,
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -15,12 +19,11 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    isAdmin: {
-      type: Boolean,
+    role: {
+      type: String,
       required: true,
-      default: false,
     },
-    contactNum: {
+    phone: {
       type: String,
       required: true,
     },
@@ -32,7 +35,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    passport: String,
+    passport: {
+      type: String,
+      required: true,
+    },
     jobDetails: {
       title: {
         type: String,
@@ -46,13 +52,21 @@ const userSchema = mongoose.Schema(
         type: String,
         required: true,
       },
-      dateOfJoining: {
-        type: Date,
+      employeeId: {
+        type: String,
         required: true,
-        default: Date.now,
-        get: function (date) {
-          return new Date(date).toISOString().slice(0, 10);
-        },
+      },
+      supervisor: {
+        type: String,
+        required: true,
+      },
+      dateOfJoining: {
+        type: String,
+        required: true,
+      },
+      workType: {
+        type: String,
+        required: true,
       },
     },
     emergencyDetails: {
@@ -64,8 +78,14 @@ const userSchema = mongoose.Schema(
         type: String,
         required: true,
       },
-      relation: String,
-      address: String,
+      relation: {
+        type: String,
+        required: true,
+      },
+      address: {
+        type: String,
+        required: true,
+      },
       blood: {
         type: String,
         required: true,

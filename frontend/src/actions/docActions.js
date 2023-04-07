@@ -1,4 +1,5 @@
 import axios from "axios";
+
 export const uploadDoc = (name, file) => async (dispatch) => {
   try {
     dispatch({
@@ -61,6 +62,35 @@ export const getDocs = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: "DOC_LIST_FAIL",
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const deleteDoc = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: "CLEAR_MESSAGE" });
+    dispatch({ type: "DOC_DELETE_REQUEST" });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    await axios.delete(`/api/documents/${id}`, config);
+
+    dispatch({ type: "DOC_DELETE_SUCCESS" });
+  } catch (error) {
+    dispatch({
+      type: "DOC_DELETE_FAIL",
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

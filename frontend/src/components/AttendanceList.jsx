@@ -25,6 +25,11 @@ const AttendanceList = () => {
       width: 150,
     },
     {
+      field: "checkedOut",
+      headerName: "Checked-Out",
+      width: 150,
+    },
+    {
       field: "workHours",
       headerName: "Work Hours",
       width: 150,
@@ -38,6 +43,7 @@ const AttendanceList = () => {
       department: "Development",
       status: "Present",
       checkedIn: "09:00 am",
+      checkedOut: "05:00 pm",
       workHours: "8",
     },
     {
@@ -46,6 +52,7 @@ const AttendanceList = () => {
       department: "Project Management",
       status: "Absent",
       checkedIn: "09:00 am",
+      checkedOut: "05:00 pm",
       workHours: "8",
     },
     {
@@ -54,6 +61,7 @@ const AttendanceList = () => {
       department: "Data",
       status: "Present",
       checkedIn: "09:00 am",
+      checkedOut: "05:00 pm",
       workHours: "8",
     },
     {
@@ -62,6 +70,7 @@ const AttendanceList = () => {
       department: "Data",
       status: "WFH",
       checkedIn: "09:00 am",
+      checkedOut: "05:00 pm",
       workHours: "8",
     },
     {
@@ -70,6 +79,7 @@ const AttendanceList = () => {
       department: "Data",
       status: "Present",
       checkedIn: "09:00 am",
+      checkedOut: "05:00 pm",
       workHours: "8",
     },
     {
@@ -78,6 +88,7 @@ const AttendanceList = () => {
       department: "Development",
       status: "WFH",
       checkedIn: "09:00 am",
+      checkedOut: "05:00 pm",
       workHours: "8",
     },
     {
@@ -86,6 +97,7 @@ const AttendanceList = () => {
       department: "Data",
       status: "Absent",
       checkedIn: "09:00 am",
+      checkedOut: "05:00 pm",
       workHours: "8",
     },
     {
@@ -94,6 +106,7 @@ const AttendanceList = () => {
       department: "Data",
       status: "Present",
       checkedIn: "09:00 am",
+      checkedOut: "05:00 pm",
       workHours: "8",
     },
     {
@@ -102,6 +115,7 @@ const AttendanceList = () => {
       department: "Data",
       status: "Absent",
       checkedIn: "09:00 am",
+      checkedOut: "05:00 pm",
       workHours: "8",
     },
   ];

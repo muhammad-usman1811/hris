@@ -4,15 +4,22 @@ import {
   userLoginReducer,
   userListReducer,
   userDetailsReducer,
+  userAddReducer,
 } from "./reducers/userReducers";
-import { docListReducer, docUploadReducer } from "./reducers/docReducers";
+import {
+  docDeleteReducer,
+  docListReducer,
+  docUploadReducer,
+} from "./reducers/docReducers";
 
 const reducer = {
   userLogin: userLoginReducer,
   userList: userListReducer,
   userDetails: userDetailsReducer,
+  userAdd: userAddReducer,
   docUpload: docUploadReducer,
   docList: docListReducer,
+  docDelete: docDeleteReducer,
 };
 const middleware = [thunk];
 

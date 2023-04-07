@@ -127,7 +127,6 @@ function EmployeeTable() {
       <DataTable
         columns={columns}
         data={filteredRows.length === 0 ? records : filteredRows}
-        selectableRows
         fixedHeader
         pagination
         highlightOnHover
