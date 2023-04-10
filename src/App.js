@@ -17,7 +17,7 @@ import LeaveStatus from "./components/LeaveStatus";
 function App() {
   return (
     <div>
-      <LeaveRequestform />
+      <EmployeeDashboard1 />
     </div>
     
 

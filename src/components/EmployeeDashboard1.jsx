@@ -24,7 +24,7 @@ import Typography from '@mui/material/Typography';
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         <CardContent sx={{ flex: '1 0 auto' }}>
           <Typography component="div" variant="h4">
-            Greetings, Anas Safder
+            <span style={{color: 'red'}}>Greetings,</span> Anas Safder
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" component="div">
             Full-Stack Developer
@@ -38,7 +38,7 @@ import Typography from '@mui/material/Typography';
       <CardContent sx={{mr:2, p:0, mb:0}}>
        <h1>{time}</h1>
        </CardContent>
-       <CardContent sx={{ml:4, p:0, color:"text.secondary" }}>
+       <CardContent sx={{ml:4, p:0, color:"text.primary" }}>
        <h3>{date}</h3>
        </CardContent>
        </Box>
