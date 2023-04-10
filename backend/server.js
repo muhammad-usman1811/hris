@@ -23,9 +23,18 @@ app.use(express.json());
 const __dirname = path.resolve();
 const uploadDir = path.join(__dirname, "/uploads");
 
-//Create directory
+//Define directory to store uploaded profile photos
+const __dirname2 = path.resolve();
+const photoDir = path.join(__dirname2, "/profilePhotos");
+
+//Create directory for documents
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
+}
+
+//Create directory for photos
+if (!fs.existsSync(photoDir)) {
+  fs.mkdirSync(photoDir);
 }
 
 //Root route

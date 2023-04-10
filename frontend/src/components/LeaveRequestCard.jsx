@@ -19,7 +19,7 @@ const LeaveRequestCard = () => {
     <Card
       sx={{
         borderRadius: "8px",
-        width: "500px",
+        width: "400px",
       }}
     >
       <CardContent>
@@ -27,7 +27,7 @@ const LeaveRequestCard = () => {
         <List
           sx={{
             width: "100%",
-            maxWidth: 460,
+            maxWidth: 400,
           }}
         >
           <Box
@@ -56,7 +56,7 @@ const LeaveRequestCard = () => {
                     >
                       Urgent Leave
                     </Typography>
-                    {" — I'll be in your neighborhood doing errands this…"}
+                    {" — I'll be in your neighborhood doing errands…"}
                   </React.Fragment>
                 }
               />

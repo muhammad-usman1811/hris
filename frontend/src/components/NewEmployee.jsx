@@ -11,9 +11,12 @@ import Button from "@mui/material/Button";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import CancelIcon from "@mui/icons-material/Cancel";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Visibility from "@mui/icons-material/Visibility";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import { addUser } from "../actions/userActions";
 
@@ -47,7 +50,7 @@ const NewEmployee = () => {
 
   const workTypes = [
     {
-      value: "On-site",
+      value: "On-Site",
     },
     {
       value: "Remote",
@@ -113,11 +116,13 @@ const NewEmployee = () => {
   const navigate = useNavigate();
 
   const userAdd = useSelector((state) => state.userAdd);
-  const { message, loading } = userAdd;
+  const { loading, message, error } = userAdd;
 
+  const [showPassword, setShowPassword] = useState(false);
   const [openToast, setOpenToast] = useState(true);
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
+  const [attemptedUpload, setAttemptedUpload] = useState(false);
   const [isTouched, setIsTouched] = useState({
     name: false,
     email: false,
@@ -178,10 +183,9 @@ const NewEmployee = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setIsTouched(true);
     if (isValid) {
       dispatch(addUser(formData));
-      console.log("Form Data:", formData);
+      setFormData({});
     } else {
       return;
     }
@@ -216,21 +220,38 @@ const NewEmployee = () => {
     setOpenToast(true);
   };
 
+  const handleClickShowPassword = () => {
+    setShowPassword((show) => !show);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  const handleAttempt = () => {
+    setAttemptedUpload(true);
+  };
+
   useEffect(() => {
     const errors = {};
     let isValid = true;
 
-    if (!formData.name.trim()) {
+    if (!formData.file) {
+      errors.file = "Please select photo";
+      isValid = false;
+    }
+
+    if (!formData.name || !formData.name.trim()) {
       errors.name = "Please enter name";
       isValid = false;
     }
 
-    if (!formData.email.trim()) {
+    if (!formData.email || !formData.email.trim()) {
       errors.email = "Please enter email";
       isValid = false;
     }
 
-    if (!formData.password.trim()) {
+    if (!formData.password || !formData.password.trim()) {
       errors.password = "Please enter password";
       isValid = false;
     } else if (formData.password.length < 8 && hasBlurred.password) {
@@ -238,12 +259,12 @@ const NewEmployee = () => {
       isValid = false;
     }
 
-    if (!formData.address.trim()) {
+    if (!formData.address || !formData.address.trim()) {
       errors.address = "Please enter address";
       isValid = false;
     }
 
-    if (!formData.phone.trim()) {
+    if (!formData.phone || !formData.phone.trim()) {
       errors.phone = "Please enter phone number";
       isValid = false;
     } else if (
@@ -254,7 +275,7 @@ const NewEmployee = () => {
       isValid = false;
     }
 
-    if (!formData.passport.trim()) {
+    if (!formData.passport || !formData.passport.trim()) {
       errors.passport = "Please enter passport number";
       isValid = false;
     } else if (
@@ -265,7 +286,7 @@ const NewEmployee = () => {
       isValid = false;
     }
 
-    if (!formData.cnic.trim()) {
+    if (!formData.cnic || !formData.cnic.trim()) {
       errors.cnic = "Please enter your CNIC";
       isValid = false;
     } else if (
@@ -281,27 +302,27 @@ const NewEmployee = () => {
       isValid = false;
     }
 
-    if (!formData.employeeId.trim()) {
+    if (!formData.employeeId || !formData.employeeId.trim()) {
       errors.employeeId = "Please enter employee ID";
       isValid = false;
     }
 
-    if (!formData.designation.trim()) {
+    if (!formData.designation || !formData.designation.trim()) {
       errors.designation = "Please enter designation";
       isValid = false;
     }
 
-    if (!formData.title.trim()) {
+    if (!formData.title || !formData.title.trim()) {
       errors.title = "Please enter title";
       isValid = false;
     }
 
-    if (!formData.supervisor.trim()) {
+    if (!formData.supervisor || !formData.supervisor.trim()) {
       errors.supervisor = "Please enter supervisor";
       isValid = false;
     }
 
-    if (!formData.date.trim()) {
+    if (!formData.date) {
       errors.date = "Please enter date of joining";
       isValid = false;
     }
@@ -315,17 +336,17 @@ const NewEmployee = () => {
       errors.role = "Please specify a role";
     }
 
-    if (!formData.emergencyName.trim()) {
+    if (!formData.emergencyName || !formData.emergencyName.trim()) {
       errors.emergencyName = "Please enter emergency contact's name";
       isValid = false;
     }
 
-    if (!formData.relation.trim()) {
+    if (!formData.relation || !formData.relation.trim()) {
       errors.relation = "Please enter emergency contact's relation";
       isValid = false;
     }
 
-    if (!formData.contact.trim()) {
+    if (!formData.contact || !formData.contact.trim()) {
       errors.contact = "Please enter emergency contact";
       isValid = false;
     } else if (
@@ -336,7 +357,7 @@ const NewEmployee = () => {
       isValid = false;
     }
 
-    if (!formData.emergencyAddress.trim()) {
+    if (!formData.emergencyAddress || !formData.emergencyAddress.trim()) {
       errors.emergencyAddress = "Please enter emergency contact's address";
       isValid = false;
     }
@@ -353,8 +374,13 @@ const NewEmployee = () => {
     <Grid
       component="form"
       onSubmit={handleSubmit}
+      item
       container
+      columnSpacing={2}
       sx={{
+        width: "100%",
+        height: "100%",
+        boxSizing: "border-box",
         marginLeft: "256px",
         backgroundColor: "#eaeff1",
         padding: "32px",
@@ -406,9 +432,16 @@ const NewEmployee = () => {
               </IconButton>
             </>
           ) : (
-            <IconButton color="primary" size="large">
-              <PhotoCamera />
-            </IconButton>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <IconButton color="primary" onClick={handleAttempt}>
+                <PhotoCamera />
+              </IconButton>
+              {!!errors.file && attemptedUpload && (
+                <Typography color="error" variant="body2">
+                  {errors.file}
+                </Typography>
+              )}
+            </Box>
           )}
           <input {...getInputProps()} accept="image/*" />
         </Box>
@@ -420,7 +453,7 @@ const NewEmployee = () => {
             Employee Details
           </Typography>
           <TextField
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="name"
             label="Full Name"
             variant="standard"
@@ -432,7 +465,7 @@ const NewEmployee = () => {
           />
           <br />
           <TextField
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="email"
             type="email"
             label="Email"
@@ -445,9 +478,9 @@ const NewEmployee = () => {
           />
           <br />
           <TextField
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             label="Password"
             variant="standard"
             value={formData.password}
@@ -458,10 +491,24 @@ const NewEmployee = () => {
             helperText={
               errors.password && isTouched.password && errors.password
             }
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
           <br />
           <TextField
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="phone"
             type="tel"
             label="Phone Number"
@@ -475,7 +522,7 @@ const NewEmployee = () => {
           />
           <br />
           <TextField
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="address"
             label="Address"
             variant="standard"
@@ -488,7 +535,7 @@ const NewEmployee = () => {
           />
           <br />
           <TextField
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="cnic"
             label="CNIC"
             variant="standard"
@@ -501,7 +548,7 @@ const NewEmployee = () => {
           />
           <br />
           <TextField
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="passport"
             label="Passport"
             variant="standard"
@@ -522,6 +569,7 @@ const NewEmployee = () => {
             Job Details
           </Typography>
           <TextField
+            sx={{ width: "50%" }}
             name="department"
             select
             value={formData.department}
@@ -531,7 +579,7 @@ const NewEmployee = () => {
             helperText={
               errors.department && isTouched.department
                 ? errors.department
-                : "Please select relevant department"
+                : "Please select the department"
             }
             variant="standard"
           >
@@ -543,7 +591,7 @@ const NewEmployee = () => {
           </TextField>
           <br />
           <TextField
-            sx={{ marginTop: "15px" }}
+            sx={{ marginTop: "15px", width: "50%" }}
             name="employeeId"
             label="Employee ID"
             variant="standard"
@@ -557,7 +605,7 @@ const NewEmployee = () => {
           />
           <br />
           <TextField
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="title"
             label="Title"
             variant="standard"
@@ -569,7 +617,7 @@ const NewEmployee = () => {
           />
           <br />
           <TextField
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="designation"
             label="Designation"
             variant="standard"
@@ -583,7 +631,7 @@ const NewEmployee = () => {
           />
           <br />
           <TextField
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="supervisor"
             label="Supervisor"
             variant="standard"
@@ -597,7 +645,7 @@ const NewEmployee = () => {
           />
           <br />
           <TextField
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="date"
             type="date"
             variant="standard"
@@ -613,7 +661,7 @@ const NewEmployee = () => {
           />
           <br />
           <TextField
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="workType"
             select
             value={formData.workType}
@@ -635,7 +683,7 @@ const NewEmployee = () => {
           </TextField>
           <br />
           <TextField
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="role"
             select
             value={formData.role}
@@ -661,7 +709,7 @@ const NewEmployee = () => {
         <Box>
           <Typography variant="h6">Emergency Details</Typography>
           <TextField
-            sx={{ marginTop: "20px", ml: "6px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="emergencyName"
             label="Name"
             variant="standard"
@@ -677,7 +725,7 @@ const NewEmployee = () => {
           />
           <br />
           <TextField
-            sx={{ marginTop: "20px", ml: "6px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="relation"
             label="Relation"
             variant="standard"
@@ -691,7 +739,7 @@ const NewEmployee = () => {
           />
           <br />
           <TextField
-            sx={{ marginTop: "20px", ml: "6px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="emergencyAddress"
             label="Address"
             variant="standard"
@@ -708,10 +756,10 @@ const NewEmployee = () => {
           />
           <br />
           <TextField
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="contact"
             type="tel"
-            label="Contact Number"
+            label="Contact"
             variant="standard"
             value={formData.contact}
             onChange={handleFieldChange}
@@ -722,7 +770,7 @@ const NewEmployee = () => {
           />
           <br />
           <TextField
-            sx={{ marginTop: "20px" }}
+            sx={{ marginTop: "20px", width: "50%" }}
             name="blood"
             select
             value={formData.blood}
@@ -769,7 +817,19 @@ const NewEmployee = () => {
               autoHideDuration={3000}
             >
               <Alert severity="success" sx={{ width: "100%" }}>
-                {message}
+                {message.message}
+              </Alert>
+            </Snackbar>
+          )}
+          {error && (
+            <Snackbar
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              open={openToast}
+              onClose={handleToastClose}
+              autoHideDuration={3000}
+            >
+              <Alert severity="error" sx={{ width: "100%" }}>
+                {error}
               </Alert>
             </Snackbar>
           )}

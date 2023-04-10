@@ -5,10 +5,15 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
-import ListSubheader from "@mui/material/ListSubheader";
+import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import CircleIcon from "@mui/icons-material/Circle";
+import Button from "@mui/material/Button";
 import BasicCard from "../components/common/BasicCard";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
 import LeaveRequestCard from "../components/LeaveRequestCard";
 import BasicCalendar from "../components/BasicCalendar";
 import DashboardGraph from "./../components/DashboardGraph";
@@ -20,6 +25,7 @@ const DashboardScreen = () => {
     <Grid
       item
       xs={12}
+      container
       sx={{
         marginLeft: "256px",
         backgroundColor: "#eaeff1",
@@ -28,7 +34,7 @@ const DashboardScreen = () => {
         position: "relative",
       }}
     >
-      <Grid container columnSpacing={2} rowSpacing={5}>
+      <Grid container rowSpacing={5} columnSpacing={2}>
         <Grid item xs={3}>
           <BasicCard
             text={"Total Employees"}
@@ -62,18 +68,42 @@ const DashboardScreen = () => {
         <Grid item xs={4}>
           <BasicCalendar />
         </Grid>
-        <Grid item xs={5} sx={{ margin: "10px 15px 0 15px" }}>
+        <Grid item xs={4} sx={{ marginTop: "1%" }}>
           <LeaveRequestCard />
         </Grid>
-        <Grid item xs={3} sx={{ margin: "10px 5px 0 25px" }}>
+        <Grid item xs={4} sx={{ marginTop: "1%" }}>
+          <Card sx={{ borderRadius: "8px", marginLeft: "15%" }}>
+            <CardMedia
+              sx={{ height: 140 }}
+              image="/images/birthday.jpg"
+              title="Employee"
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                Happy Birthday!
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Today is your special day, and we wish you all the best on your
+                birthday. We hope you have a wonderful time.
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button size="small">Share</Button>
+              <Button size="small">Learn More</Button>
+            </CardActions>
+          </Card>
+        </Grid>
+        <Grid item xs={3} sx={{ marginTop: "1%" }}>
           <List
-            sx={{ bgcolor: "background.paper" }}
-            subheader={
-              <ListSubheader component="div" id="nested-list-subheader">
-                Quick Actions
-              </ListSubheader>
-            }
+            sx={{
+              bgcolor: "background.paper",
+              borderRadius: "8px",
+              marginLeft: "15%",
+            }}
           >
+            <Typography sx={{ marginLeft: "15px" }} variant="h6">
+              Quick Actions
+            </Typography>
             <Divider />
             <ListItem disablePadding>
               <ListItemButton>

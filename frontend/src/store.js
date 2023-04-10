@@ -5,6 +5,7 @@ import {
   userListReducer,
   userDetailsReducer,
   userAddReducer,
+  userEditReducer,
 } from "./reducers/userReducers";
 import {
   docDeleteReducer,
@@ -17,6 +18,7 @@ const reducer = {
   userList: userListReducer,
   userDetails: userDetailsReducer,
   userAdd: userAddReducer,
+  userEdit: userEditReducer,
   docUpload: docUploadReducer,
   docList: docListReducer,
   docDelete: docDeleteReducer,

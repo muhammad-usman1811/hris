@@ -7,11 +7,18 @@ import InputAdornment from "@mui/material/InputAdornment";
 import { Button } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { Search, Upgrade } from "@mui/icons-material";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 import { listUsers } from "../actions/userActions";
 const XLSX = require("xlsx");
 
 function EmployeeTable() {
   const columns = [
+    {
+      name: <b>Employee ID</b>,
+      selector: (row) => row.employeeId,
+      sortable: true,
+    },
     {
       name: <b>Name</b>,
       selector: (row) => row.name,
@@ -43,11 +50,19 @@ function EmployeeTable() {
   const userList = useSelector((state) => state.userList);
   const { users } = userList;
 
+  const userAdd = useSelector((state) => state.userAdd);
+  const { success: successAdd } = userAdd;
+
+  const userEdit = useSelector((state) => state.userEdit);
+  const { message, success: successEdit } = userEdit;
+
   const [records, setRecords] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [openToast, setOpenToast] = useState(true);
 
   function handleFilter(event) {
     const newData = records.filter((row) => {
@@ -63,14 +78,19 @@ function EmployeeTable() {
     XLSX.writeFile(workbook, "Employees.xlsx");
   }
 
+  const handleToastClose = () => {
+    setOpenToast(false);
+  };
+
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
+    if (userInfo && userInfo.role === "Admin") {
       dispatch(listUsers());
       const userData =
         users &&
         users.map((user) => {
           return {
             id: user._id,
+            employeeId: user.jobDetails.employeeId,
             name: user.name,
             email: user.email,
             designation: user.jobDetails.designation,
@@ -82,7 +102,7 @@ function EmployeeTable() {
     } else {
       navigate("/");
     }
-  }, [dispatch, userInfo, navigate, users]);
+  }, [dispatch, userInfo, navigate, users, successAdd, successEdit]);
 
   return (
     <div className="container">
@@ -134,6 +154,18 @@ function EmployeeTable() {
           navigate(`/home/profile/${row.id}`);
         }}
       ></DataTable>
+      {message && (
+        <Snackbar
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          open={openToast}
+          onClose={handleToastClose}
+          autoHideDuration={3000}
+        >
+          <Alert severity="success" sx={{ width: "100%" }}>
+            {message.message}
+          </Alert>
+        </Snackbar>
+      )}
     </div>
   );
 }

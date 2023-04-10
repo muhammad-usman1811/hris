@@ -1,6 +1,8 @@
 import User from "./../models/userModel.js";
 import asyncHandler from "express-async-handler";
 import generateToken from "./../utils/generateToken.js";
+import uploadPhoto from "../config/imageUpload.js";
+import multer from "multer";
 
 // @desc Authenticate user and get token
 // @route POST/api/users/login
@@ -14,7 +16,7 @@ const authUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      isAdmin: user.isAdmin,
+      role: user.role,
       token: generateToken(user._id),
     });
   } else {
@@ -38,7 +40,7 @@ const getUsers = asyncHandler(async (req, res) => {
 // @route GET /api/users/:id
 // @access Private/Admin
 const getUserById = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id).select("-password");
+  const user = await User.findById(req.params.id);
   if (user) {
     res.json(user);
   } else {
@@ -51,7 +53,94 @@ const getUserById = asyncHandler(async (req, res) => {
 // Route: POST /api/users
 // Access: Private/Admin
 const addUser = asyncHandler(async (req, res) => {
+  // Using multer to upload profile photo
+  uploadPhoto(req, res, async function (err) {
+    if (err instanceof multer.MulterError) {
+      // Multer error occurred while uploading
+      return res.status(500).json({ message: "Error uploading file" });
+    } else if (err) {
+      // Unknown error
+      return res.status(500).json({ message: "Error uploading file" });
+    }
+    const file = req.file;
+    const {
+      address,
+      blood,
+      cnic,
+      contact,
+      date,
+      department,
+      designation,
+      email,
+      emergencyAddress,
+      emergencyName,
+      employeeId,
+      name,
+      passport,
+      password,
+      phone,
+      relation,
+      role,
+      supervisor,
+      title,
+      workType,
+    } = req.body;
+
+    // Creating new document
+    const user = new User({
+      imageUrl: file.path,
+      name,
+      email,
+      password,
+      role,
+      phone,
+      address,
+      cnic,
+      passport,
+      jobDetails: {
+        title,
+        designation,
+        department,
+        employeeId,
+        supervisor,
+        dateOfJoining: date,
+        workType,
+      },
+      emergencyDetails: {
+        name: emergencyName,
+        contact,
+        relation,
+        address: emergencyAddress,
+        blood,
+      },
+    });
+
+    //Check if user already exists
+    const userExists = await User.findOne({ email });
+
+    if (userExists) {
+      res.status(400);
+      throw new Error("User already exists");
+    }
+
+    //Saving in database
+    try {
+      await user.save();
+      return res.status(200).json({ message: "User added successfully" });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Invalid user data" });
+    }
+  });
+});
+
+// Description: Edit user
+// Rotue: PUT /api/users/:id
+// Access: Private/Admin
+const editUser = asyncHandler(async (req, res) => {
+  const id = req.params.id;
   const file = req.file;
+
   const {
     address,
     blood,
@@ -75,14 +164,7 @@ const addUser = asyncHandler(async (req, res) => {
     workType,
   } = req.body;
 
-  const userExists = await User.findOne({ email });
-
-  if (userExists) {
-    res.status(400);
-    throw new Error("User already exists");
-  }
-
-  const user = await User.create({
+  const updatedData = {
     imageUrl: file.path,
     name,
     email,
@@ -108,40 +190,23 @@ const addUser = asyncHandler(async (req, res) => {
       address: emergencyAddress,
       blood,
     },
+  };
+
+  const result = await User.findByIdAndUpdate(id, updatedData, {
+    new: true,
   });
 
-  if (user) {
-    res.status(201).json({ message: "User added successfully" });
-  } else {
-    res.status(400);
-    throw new Error("Invalid user data");
-  }
-});
-
-// @desc Update user
-// @route PUT /api/users/:id
-// @access Private/Admin
-const updateUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
-  if (user) {
-    user.name = req.body.name;
-    user.email = req.body.email;
-
-    const updatedUser = await user.save();
-    res.json({
-      _id: updatedUser._id,
-      name: updatedUser.name,
-      email: updatedUser.email,
-    });
+  if (result) {
+    res.json({ message: "User updated successfully" });
   } else {
     res.status(404);
     throw new Error("User not found");
   }
 });
 
-// @desc Delete a user
-// @route DELETE /api/users/:id
-// @access Private/Admin
+// Description: Delete a user
+// Route: DELETE /api/users/:id
+// Access: Private/Admin
 const deleteUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
   if (user) {
@@ -153,4 +218,4 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
-export { authUser, getUsers, getUserById, addUser, updateUser, deleteUser };
+export { authUser, getUsers, getUserById, addUser, editUser, deleteUser };

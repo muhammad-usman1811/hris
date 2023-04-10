@@ -29,10 +29,12 @@ export const userListReducer = (state = { users: [] }, action) => {
 
 export const userDetailsReducer = (state = { user: {} }, action) => {
   switch (action.type) {
+    case "USER_DETAILS_REQUEST":
+      return { loading: true };
     case "USER_DETAILS_SUCCESS":
-      return { user: action.payload };
+      return { loading: false, user: action.payload };
     case "USER_DETAILS_FAIL":
-      return { error: action.payload };
+      return { loading: false, error: action.payload };
     case "USER_DETAILS_RESET":
       return { user: {} };
     default:
@@ -45,9 +47,24 @@ export const userAddReducer = (state = {}, action) => {
     case "USER_ADD_REQUEST":
       return { loading: true };
     case "USER_ADD_SUCCESS":
-      return { success: true, message: action.payload };
+      return { loading: false, success: true, message: action.payload };
     case "USER_ADD_FAIL":
-      return { error: action.payload };
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const userEditReducer = (state = {}, action) => {
+  switch (action.type) {
+    case "USER_EDIT_REQUEST":
+      return { loading: true };
+    case "USER_EDIT_SUCCESS":
+      return { loading: false, success: true, message: action.payload };
+    case "USER_EDIT_FAIL":
+      return { loading: false, error: action.payload };
+    case "USER_EDIT_RESET":
+      return {};
     default:
       return state;
   }

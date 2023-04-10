@@ -9,7 +9,7 @@ const EmployeeScreen = () => {
       xs={12}
       sx={{
         marginLeft: "256px",
-        padding: "16px 32px 32px 32px",
+        padding: "32px",
         backgroundColor: "#eaeff1",
         minHeight: "calc(100vh - 67px)",
       }}

@@ -124,7 +124,7 @@ const Navbar = () => {
           width: "255px",
           paddingTop: "10px",
           paddingBottom: "10px",
-          marginTop: "52px",
+          marginTop: "auto",
         }}
       >
         <Typography variant="caption" color="red">

@@ -37,6 +37,7 @@ export const logout = () => (dispatch) => {
   localStorage.removeItem("userInfo");
   dispatch({ type: "USER_LOGOUT" });
   dispatch({ type: "USER_LIST_RESET" });
+  dispatch({ type: "USER_DETAILS_RESET" });
   window.location.replace("/");
 };
 
@@ -66,6 +67,7 @@ export const listUsers = () => async (dispatch, getState) => {
 
 export const getUserDetails = (id) => async (dispatch, getState) => {
   try {
+    dispatch({ type: "USER_DETAILS_REQUEST" });
     const {
       userLogin: { userInfo },
     } = getState();
@@ -131,6 +133,61 @@ export const addUser = (userData) => async (dispatch) => {
   } catch (error) {
     dispatch({
       type: "USER_ADD_FAIL",
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const editUser = (userData) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: "USER_EDIT_REQUEST" });
+
+    const formData = new FormData();
+    formData.append("address", userData.address);
+    formData.append("blood", userData.blood);
+    formData.append("cnic", userData.cnic);
+    formData.append("contact", userData.contact);
+    formData.append("date", userData.date);
+    formData.append("department", userData.department);
+    formData.append("designation", userData.designation);
+    formData.append("email", userData.email);
+    formData.append("emergencyAddress", userData.emergencyAddress);
+    formData.append("emergencyName", userData.emergencyName);
+    formData.append("employeeId", userData.employeeId);
+    formData.append("name", userData.name);
+    formData.append("passport", userData.passport);
+    formData.append("password", userData.password);
+    formData.append("phone", userData.phone);
+    formData.append("relation", userData.relation);
+    formData.append("role", userData.role);
+    formData.append("supervisor", userData.supervisor);
+    formData.append("title", userData.title);
+    formData.append("workType", userData.workType);
+    formData.append("photo", userData.file);
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await axios.put(
+      `/api/users/${userData._id}`,
+      formData,
+      config
+    );
+
+    dispatch({ type: "USER_EDIT_SUCCESS", payload: data });
+  } catch (error) {
+    dispatch({
+      type: "USER_EDIT_FAIL",
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
