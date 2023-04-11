@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { useState } from 'react';
 
 
@@ -14,22 +14,50 @@ import { useState } from 'react';
 
  function EmployeeAnalysis() {
 
- const [active, setActive] = useState(false);
- const checkIn = () => {
-  setActive(!active);
+ 
+
+ const [alignment, setAlignment] = React.useState('web');
+
+ const handleChange = (event, newAlignment) => {
+   setAlignment(newAlignment);
  };
 
 
+ const [checkIn, setCheckIn] = useState('')
 
-  const theme = useTheme();
+    
+
+    const handleCheckIn = () =>{
+
+      var hours = new Date().getHours() //current hours
+        var min = new Date().getMinutes() //current minutes
+        var sec = new Date().getSeconds() //current seconds
+        setCheckIn(
+          hours + ':' + min + ':' + sec
+        )
+      console.log({checkIn});
+    }
 
 
-  const current = new Date();    
-  const currentTime = current.toLocaleTimeString("en-US");
+
+    const [checkOut, setCheckOut] = useState('')
+
+    const handleCheckOut = () =>{
+      var hours = new Date().getHours() //current hours
+        var min = new Date().getMinutes() //current minutes
+        var sec = new Date().getSeconds() //current seconds
+        setCheckOut(
+          hours + ':' + min + ':' + sec
+        )
+      console.log({checkOut});
+    }
   
 
-  
-  const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
+
+ 
+
+
+
 
   
   
@@ -37,7 +65,7 @@ import { useState } from 'react';
 
 
   return (
-    <Card sx={{ display: 'flex', backgroundColor: '#f5f5f5', boxShadow:3 }}>
+    <Card sx={{ display: 'flex', backgroundColor: '#f5f5f5', boxShadow:3, justifyContent: 'space-between' }}>
       <Box sx={{ display: 'flex', flexDirection: 'column' }}>
         <CardContent sx={{ flex: '1 0 auto' }}>
           <Typography component="div" variant="h4" color={'error'}>
@@ -46,6 +74,9 @@ import { useState } from 'react';
           <Typography variant="subtitle1" color="text.error" component="div">
             Attendance Analysis
           </Typography>
+
+          <Typography sx={{mt:5}} variant="h6" color="initial">Shift Time</Typography>
+          <Typography color={"initial"}>9:00AM To 5:00PM</Typography>
          
           
         </CardContent>
@@ -53,35 +84,40 @@ import { useState } from 'react';
       </Box>
       <Box>
       <CardContent sx={{ mt:10, ml:12}}>
-        <Typography variant="h5" color="initial">Office Start Time</Typography>
-       <h1>9:00:00 AM</h1>
+        <Typography variant="h5" color="initial">Check-In Time</Typography>
+       <h1 style={{color: 'green'}}>{checkIn?checkIn:"00:00:00"}</h1>
        </CardContent>
        
        </Box>
 
        <Box>
        <CardContent sx={{mt:10, ml:12}}>
-        <Typography variant="h5" color="initial">Check-In Since</Typography>
-       <h1 style={{color: 'green'}}>{currentTime}</h1>
+        <Typography variant="h5" color="initial">Check-Out Time</Typography>
+       <h1>{checkOut?checkOut:"00:00:00"}</h1>
        </CardContent>
        
 
        </Box>
        <Box>
        <CardContent sx={{mt:10, ml:12}}>
-        <Typography variant="h5" color="initial">Checked-In Time</Typography>
-       <h1>{currentTime}</h1>
+        <Typography variant="h5" color="initial">Working Hours</Typography>
+       <h1> </h1>
        </CardContent>
        
 
        </Box>
        <Box >
-        <CardContent sx={{mt:4,ml:12}}>
-       <Button onClick={() =>{
-        checkIn();
-       }} sx={{m:2, mt:6, boxShadow:3,width:200}} style={{backgroundColor: active ? "red" : "green"}} variant="contained" color="error">
-            {active ? "Check-Out" : "Check-In"}
-            </Button>
+        <CardContent sx={{mt:10}}>
+        <ToggleButtonGroup
+      color="primary"
+      value={alignment}
+      exclusive
+      onChange={handleChange}
+      aria-label="check-buttons"
+    >
+      <ToggleButton  onClick={handleCheckIn} color={'success'} value="check-in">Check-In</ToggleButton>
+      <ToggleButton  onClick={handleCheckOut} color={'error'} value="check-out">Check-Out</ToggleButton>
+    </ToggleButtonGroup>
 
             </CardContent>
        </Box>
