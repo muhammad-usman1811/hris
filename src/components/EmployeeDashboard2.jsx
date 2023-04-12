@@ -6,6 +6,9 @@ import Typography from '@mui/material/Typography';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import { useState } from 'react';
+import * as moment from 'moment';
+
+
 
 
 
@@ -23,44 +26,43 @@ import { useState } from 'react';
  };
 
 
- const [checkIn, setCheckIn] = useState('')
+ const [checkIn, setCheckIn] = useState(null)
 
     
 
     const handleCheckIn = () =>{
-
-      var hours = new Date().getHours() //current hours
-        var min = new Date().getMinutes() //current minutes
-        var sec = new Date().getSeconds() //current seconds
-        setCheckIn(
-          hours + ':' + min + ':' + sec
-        )
+      let now = moment()
+     setCheckIn (now.format('hh:mm:ss A'))
       console.log({checkIn});
     }
 
 
 
-    const [checkOut, setCheckOut] = useState('')
+    const [checkOut, setCheckOut] = useState(null)
 
     const handleCheckOut = () =>{
-      var hours = new Date().getHours() //current hours
-        var min = new Date().getMinutes() //current minutes
-        var sec = new Date().getSeconds() //current seconds
-        setCheckOut(
-          hours + ':' + min + ':' + sec
-        )
+      let now = moment()
+      setCheckOut (now.format('hh:mm:ss A'))
       console.log({checkOut});
     }
-  
 
 
- 
+    const workHours = (starttime,endtime) => {
+    if(!endtime){
+      return '';
+    }
+    let startTime=moment(starttime, "HH:mm:ss a");
+    let endTime=moment(endtime, "HH:mm:ss a");
+    let duration = moment.duration(endTime.diff(startTime));
+    let hours = parseInt(duration.asHours());
+    let minutes = parseInt(duration.asMinutes())-hours*60;
+
+    console.log(hours,minutes);
+    return `{${hours}:${minutes}}`
+
+  }
 
 
-
-
-  
-  
 
 
 
@@ -82,10 +84,11 @@ import { useState } from 'react';
         </CardContent>
         
       </Box>
+
       <Box>
       <CardContent sx={{ mt:10, ml:12}}>
         <Typography variant="h5" color="initial">Check-In Time</Typography>
-       <h1 style={{color: 'green'}}>{checkIn?checkIn:"00:00:00"}</h1>
+       <Typography variant="h4" color="green">{checkIn?checkIn:"00:00:00"}</Typography>
        </CardContent>
        
        </Box>
@@ -93,7 +96,7 @@ import { useState } from 'react';
        <Box>
        <CardContent sx={{mt:10, ml:12}}>
         <Typography variant="h5" color="initial">Check-Out Time</Typography>
-       <h1>{checkOut?checkOut:"00:00:00"}</h1>
+       <Typography variant="h4" color="initial">{checkOut?checkOut:"00:00:00"}</Typography>
        </CardContent>
        
 
@@ -101,7 +104,7 @@ import { useState } from 'react';
        <Box>
        <CardContent sx={{mt:10, ml:12}}>
         <Typography variant="h5" color="initial">Working Hours</Typography>
-       <h1> </h1>
+       <h1>{workHours} </h1>
        </CardContent>
        
 

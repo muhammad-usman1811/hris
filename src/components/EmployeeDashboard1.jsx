@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import moment, * as Moment from 'moment';
 
 
 
@@ -14,7 +15,6 @@ import Typography from '@mui/material/Typography';
   const current = new Date();    
   const time = current.toLocaleTimeString("en-US");
 
-  const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
   
 
 
@@ -35,11 +35,11 @@ import Typography from '@mui/material/Typography';
         </Box>
       </Box>
       <Box>
-      <CardContent sx={{mr:2, p:0, mb:0}}>
-       <h1>{time}</h1>
+      <CardContent sx={{mt:3,mr:2, p:0, mb:0}}>
+       <Typography variant="h4">{time}</Typography>
        </CardContent>
-       <CardContent sx={{ml:4, p:0, color:"text.primary" }}>
-       <h3>{date}</h3>
+       <CardContent sx={{mt:2,p:0,mr:2, color:"text.primary" }}>
+       <Typography variant="h5">{moment(current).format("dddd, MMMM Do YYYY")}</Typography>
        </CardContent>
        </Box>
     </Card>
