@@ -18,6 +18,8 @@ function App() {
       parsedTitle.charAt(0).toUpperCase() + parsedTitle.slice(1);
     if (alteredTitle.startsWith("Profile")) {
       setTitle("Edit Profile");
+    } else if (alteredTitle.endsWith("leaves")) {
+      setTitle("Leaves");
     } else {
       setTitle(alteredTitle);
     }

@@ -12,6 +12,13 @@ import {
   docListReducer,
   docUploadReducer,
 } from "./reducers/docReducers";
+import {
+  leaveApproveReducer,
+  leaveCancelReducer,
+  leaveRequestReducer,
+  teamLeavesReducer,
+  userLeavesReducer,
+} from "./reducers/leaveReducers";
 
 const reducer = {
   userLogin: userLoginReducer,
@@ -22,6 +29,11 @@ const reducer = {
   docUpload: docUploadReducer,
   docList: docListReducer,
   docDelete: docDeleteReducer,
+  leaveRequest: leaveRequestReducer,
+  userLeaves: userLeavesReducer,
+  teamLeaves: teamLeavesReducer,
+  leaveApprove: leaveApproveReducer,
+  leaveCancel: leaveCancelReducer,
 };
 const middleware = [thunk];
 

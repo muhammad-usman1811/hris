@@ -12,17 +12,23 @@ import PeopleIcon from "@mui/icons-material/People";
 import PersonIcon from "@mui/icons-material/Person";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import ArticleIcon from "@mui/icons-material/Article";
+import HomeIcon from "@mui/icons-material/Home";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import EventIcon from "@mui/icons-material/Event";
 import Logout from "@mui/icons-material/Logout";
 import { navbarStyles } from "./styles";
 import { useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "./../../actions/userActions";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
@@ -42,72 +48,123 @@ const Navbar = () => {
         />
       </Toolbar>
       <Divider />
-      <List component="nav">
-        <ListItemButton
-          selected={selectedIndex === 0}
-          onClick={(event) => {
-            handleListItemClick(event, 0);
-            navigate("/home/dashboard");
-          }}
-        >
-          <ListItemIcon>
-            <DashboardIcon />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </ListItemButton>
-      </List>
-      <Divider />
-      <List component="nav">
-        <ListItemButton
-          selected={selectedIndex === 1}
-          onClick={(event) => {
-            handleListItemClick(event, 1);
-            navigate("/home/employees");
-          }}
-        >
-          <ListItemIcon>
-            <PeopleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Employees" />
-        </ListItemButton>
-        <ListItemButton
-          selected={selectedIndex === 2}
-          onClick={(event) => {
-            handleListItemClick(event, 2);
-            navigate("/home/attendance");
-          }}
-        >
-          <ListItemIcon>
-            <PersonIcon />
-          </ListItemIcon>
-          <ListItemText primary="Attendance" />
-        </ListItemButton>
-        <ListItemButton
-          selected={selectedIndex === 3}
-          onClick={(event) => {
-            handleListItemClick(event, 3);
-            navigate("/home/leaves");
-          }}
-        >
-          <ListItemIcon>
-            <ManageAccountsIcon />
-          </ListItemIcon>
-          <ListItemText primary="Leave Requests" />
-        </ListItemButton>
-        <ListItemButton
-          selected={selectedIndex === 4}
-          onClick={(event) => {
-            handleListItemClick(event, 4);
-            navigate("/home/docs");
-          }}
-        >
-          <ListItemIcon>
-            <ArticleIcon />
-          </ListItemIcon>
-          <ListItemText primary="Manage Docs" />
-        </ListItemButton>
-      </List>
-      <List component="nav" sx={{ marginTop: "265px" }}>
+      {userInfo.role === "Admin" && (
+        <>
+          <List component="nav">
+            <ListItemButton
+              selected={selectedIndex === 0}
+              onClick={(event) => {
+                handleListItemClick(event, 0);
+                navigate("/home/dashboard");
+              }}
+            >
+              <ListItemIcon>
+                <DashboardIcon />
+              </ListItemIcon>
+              <ListItemText primary="Dashboard" />
+            </ListItemButton>
+          </List>
+          <Divider />
+          <List component="nav">
+            <ListItemButton
+              selected={selectedIndex === 1}
+              onClick={(event) => {
+                handleListItemClick(event, 1);
+                navigate("/home/employees");
+              }}
+            >
+              <ListItemIcon>
+                <PeopleIcon />
+              </ListItemIcon>
+              <ListItemText primary="Employees" />
+            </ListItemButton>
+            <ListItemButton
+              selected={selectedIndex === 2}
+              onClick={(event) => {
+                handleListItemClick(event, 2);
+                navigate("/home/attendance");
+              }}
+            >
+              <ListItemIcon>
+                <PersonIcon />
+              </ListItemIcon>
+              <ListItemText primary="Attendance" />
+            </ListItemButton>
+            <ListItemButton
+              selected={selectedIndex === 3}
+              onClick={(event) => {
+                handleListItemClick(event, 3);
+                navigate("/home/leaves");
+              }}
+            >
+              <ListItemIcon>
+                <ManageAccountsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Leave Requests" />
+            </ListItemButton>
+            <ListItemButton
+              selected={selectedIndex === 4}
+              onClick={(event) => {
+                handleListItemClick(event, 4);
+                navigate("/home/docs");
+              }}
+            >
+              <ListItemIcon>
+                <ArticleIcon />
+              </ListItemIcon>
+              <ListItemText primary="Manage Docs" />
+            </ListItemButton>
+          </List>
+        </>
+      )}
+
+      {(userInfo.role === "Employee" || userInfo.role === "Supervisor") && (
+        <>
+          <List component="nav">
+            <ListItemButton
+              selected={selectedIndex === 0}
+              onClick={(event) => {
+                handleListItemClick(event, 0);
+                navigate("/home/employee");
+              }}
+            >
+              <ListItemIcon>
+                <HomeIcon />
+              </ListItemIcon>
+              <ListItemText primary="Home" />
+            </ListItemButton>
+          </List>
+          <Divider />
+          <List component="nav">
+            {/* <ListItemButton
+              selected={selectedIndex === 1}
+              onClick={(event) => {
+                handleListItemClick(event, 1);
+                navigate("/home/employee/profile");
+              }}
+            >
+              <ListItemIcon>
+                <AccountBoxIcon />
+              </ListItemIcon>
+              <ListItemText primary="Profile" />
+            </ListItemButton> */}
+            <ListItemButton
+              selected={selectedIndex === 2}
+              onClick={(event) => {
+                handleListItemClick(event, 2);
+                navigate("/home/employee/leaves");
+              }}
+            >
+              <ListItemIcon>
+                <EventIcon />
+              </ListItemIcon>
+              <ListItemText primary="Leaves" />
+            </ListItemButton>
+          </List>
+        </>
+      )}
+
+      <List component="nav" sx={{ marginTop: "365px" }}>
         <ListItemButton onClick={logoutHandler}>
           <ListItemIcon>
             <Logout />

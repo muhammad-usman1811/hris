@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import path from "path";
 import fs from "fs";
 import dotenv from "dotenv";
@@ -15,6 +16,8 @@ dotenv.config();
 connectDb();
 
 const app = express();
+
+app.use(cors());
 
 //Middleware to parse the json from request body
 app.use(express.json());

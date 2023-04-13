@@ -91,8 +91,14 @@ const LoginScreen = () => {
   };
 
   useEffect(() => {
-    if (userInfo) {
+    if (userInfo && userInfo.role === "Admin") {
       navigate("/home/dashboard");
+    }
+    if (
+      (userInfo && userInfo.role === "Employee") ||
+      (userInfo && userInfo.role === "Supervisor")
+    ) {
+      navigate("/home/employee");
     }
   }, [userInfo, navigate]);
   return (
