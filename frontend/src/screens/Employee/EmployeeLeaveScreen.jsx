@@ -65,7 +65,7 @@ function a11yProps(index) {
 }
 
 const EmployeeLeaveScreen = () => {
-  const columns = [
+  const columnsForLeaveRequests = [
     {
       name: <b>Name</b>,
       selector: (row) => row.name,
@@ -120,6 +120,37 @@ const EmployeeLeaveScreen = () => {
     },
   ];
 
+  const columnsForLeaves = [
+    {
+      name: <b>Type</b>,
+      selector: (row) => row.type,
+      sortable: true,
+    },
+    {
+      name: <b>Start Date</b>,
+      selector: (row) => row.startDate,
+      sortable: true,
+    },
+    {
+      name: <b>End Date</b>,
+      selector: (row) => row.endDate,
+    },
+    {
+      name: <b>Days</b>,
+      selector: (row) => row.days,
+      sortable: true,
+    },
+    {
+      name: <b>Reason</b>,
+      selector: (row) => row.reason,
+    },
+    {
+      name: <b>Status</b>,
+      selector: (row) => row.status,
+      sortable: true,
+    },
+  ];
+
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
@@ -140,13 +171,34 @@ const EmployeeLeaveScreen = () => {
   const leaveCancel = useSelector((state) => state.leaveCancel);
   const { success: successCancel } = leaveCancel;
 
-  const rowsData = teamLeavesData?.map((leave) => {
+  const calculateDays = (start, end) => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+    return daysDiff;
+  };
+
+  const rowsForLeaveRequests = teamLeavesData?.map((leave) => {
     return {
       id: leave._id,
       name: leave.name,
       department: leave.department,
       startDate: leave.startDate,
       endDate: leave.endDate,
+      days: calculateDays(leave.startDate, leave.endDate),
+      reason: leave.reason,
+      status: leave.status,
+    };
+  });
+
+  const rowsForLeaves = userLeavesData?.map((leave) => {
+    return {
+      id: leave._id,
+      type: leave.type,
+      startDate: leave.startDate,
+      endDate: leave.endDate,
+      days: calculateDays(leave.startDate, leave.endDate),
       reason: leave.reason,
       status: leave.status,
     };
@@ -265,8 +317,8 @@ const EmployeeLeaveScreen = () => {
             <TabPanel value={value} index={1}>
               <Box sx={{ height: "calc(100vh - 215px)" }}>
                 <DataTable
-                  data={rowsData}
-                  columns={columns}
+                  data={rowsForLeaveRequests}
+                  columns={columnsForLeaveRequests}
                   pagination
                   highlightOnHover
                 />
@@ -316,7 +368,13 @@ const EmployeeLeaveScreen = () => {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TableContainer component={Paper}>
+                <DataTable
+                  data={rowsForLeaves}
+                  columns={columnsForLeaves}
+                  pagination
+                  highlightOnHover
+                />
+                {/* <TableContainer component={Paper}>
                   <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                       <TableRow>
@@ -357,6 +415,14 @@ const EmployeeLeaveScreen = () => {
                             sx={{ fontWeight: "bold" }}
                             variant="subtitle1"
                           >
+                            Reason
+                          </Typography>
+                        </TableCell>
+                        <TableCell>
+                          <Typography
+                            sx={{ fontWeight: "bold" }}
+                            variant="subtitle1"
+                          >
                             Status
                           </Typography>
                         </TableCell>
@@ -380,13 +446,16 @@ const EmployeeLeaveScreen = () => {
                           </TableCell>
                           <TableCell>{leave.startDate}</TableCell>
                           <TableCell>{leave.endDate}</TableCell>
-                          <TableCell>2</TableCell>
+                          <TableCell>
+                            {calculateDays(leave.startDate, leave.endDate)}
+                          </TableCell>
+                          <TableCell>{leave.reason}</TableCell>
                           <TableCell>{leave.status}</TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
                   </Table>
-                </TableContainer>
+                </TableContainer> */}
               </Grid>
             </Grid>
           </>

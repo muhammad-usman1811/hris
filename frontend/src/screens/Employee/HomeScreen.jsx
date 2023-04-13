@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -20,46 +20,45 @@ const HomeScreen = () => {
     setAlignment(newAlignment);
   };
 
-  const [checkIn, setCheckIn] = useState(null);
-  const [checkOut, setCheckOut] = useState(null);
-  const [workHours, setWorkHours] = useState(null);
+  const [checkInTime, setCheckInTime] = useState(null);
+  const [checkOutTime, setCheckOutTime] = useState(null);
+  const [isCheckOut, setIsCheckOut] = useState(false);
+  const [workHours, setWorkHours] = useState("0:0");
+
+  const calculateWorkHours = (starttime, endtime) => {
+    if (!endtime) {
+      return "0:0";
+    }
+    let startTime = moment(starttime, "hh:mm:ss A");
+    let endTime = moment(endtime, "hh:mm:ss A");
+    let duration = moment.duration(endTime.diff(startTime));
+    let hours = duration.hours();
+    let minutes = duration.minutes();
+    let totalWorkHours = hours + ":" + minutes;
+    console.log(totalWorkHours);
+    return totalWorkHours;
+  };
 
   const handleCheckIn = () => {
     let now = moment();
-    setCheckIn(now.format("hh:mm:ss A"));
-    console.log({ checkIn });
+    setCheckInTime(now.format("hh:mm:ss A"));
   };
 
   const handleCheckOut = () => {
     let now = moment();
-    setCheckOut(now.format("hh:mm:ss A"));
-    calculateWorkHours(checkIn, checkOut);
+    setCheckOutTime(now.format("hh:mm:ss A"));
+    setIsCheckOut(true);
   };
 
-  // function calculateWorkHours(checkIn, checkOut) {
-  //   const diff = moment.duration(checkOut.diff(checkIn));
-  //   const hours = diff.asHours();
-  //   return hours;
-  // }
-  const calculateWorkHours = (starttime, endtime) => {
-    if (!endtime) {
-      return "";
-    }
-    let startTime = moment(starttime, "HH:mm:ss a");
-    let endTime = moment(endtime, "HH:mm:ss a");
-    let duration = moment.duration(endTime.diff(startTime));
-    let hours = parseInt(duration.asHours());
-    let minutes = parseInt(duration.asMinutes()) - hours * 60;
-
-    console.log(hours, minutes);
-    return setWorkHours(`{${hours}:${minutes}}`);
-  };
+  //Current time & date
   const current = new Date();
   const time = current.toLocaleTimeString("en-US");
 
-  // const date = `${current.getDate()}/${
-  //   current.getMonth() + 1
-  // }/${current.getFullYear()}`;
+  useEffect(() => {
+    if (checkInTime && checkOutTime) {
+      setWorkHours(calculateWorkHours(checkInTime, checkOutTime));
+    }
+  }, [checkInTime, checkOutTime]);
 
   return (
     <Grid
@@ -91,21 +90,12 @@ const HomeScreen = () => {
                 <span style={{ color: "#D32F2F" }}>Greetings,</span>{" "}
                 {userInfo.name}
               </Typography>
-              {/* {userInfo && userInfo.jobDetails && (
-                <Typography
-                  variant="subtitle1"
-                  color="text.secondary"
-                  component="div"
-                >
-                  {userInfo.jobDetails.title}
-                </Typography>
-              )} */}
               <Typography
                 variant="subtitle1"
                 color="text.secondary"
                 component="div"
               >
-                {userInfo.jobDetails && userInfo.jobDetails.title}
+                {userInfo.title}
               </Typography>
             </CardContent>
             <Box
@@ -123,59 +113,19 @@ const HomeScreen = () => {
               </Typography>
             </Box>
           </Box>
-          <Box display="flex">
+          <Box
+            sx={{
+              display: "flex",
+            }}
+          >
             <CardContent>
               <Typography variant="h5">{time}</Typography>
               <Typography variant="subtitle1">
-                {moment(current).format("dddd, MMMM Do YYYY")}
+                {moment(current).format("dddd, LL")}
               </Typography>
             </CardContent>
           </Box>
         </Card>
-        {/* <Card
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            backgroundColor: "#f5f5f5",
-            //bgcolor: "background.paper",
-            boxShadow: 3,
-          }}
-        >
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <CardContent sx={{ flex: "1 0 auto" }}>
-              <Typography component="div" variant="h5">
-                Greetings, Muhammad Usman!
-              </Typography>
-              <Typography
-                variant="subtitle1"
-                color="text.secondary"
-                component="div"
-              >
-                Full-Stack Developer
-              </Typography>
-            </CardContent>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                pl: 1,
-                pb: 1,
-                ml: 1,
-                mt: 3,
-              }}
-            >
-              <Typography variant="h6" color="initial">
-                Activity Monitoring Dashboard
-              </Typography>
-            </Box>
-          </Box>
-          <Box sx={{ display: "flex" }}>
-            <CardContent>
-              <Typography variant="h5">{time}</Typography>
-              <Typography variant="subtitle1">{date}</Typography>
-            </CardContent>
-          </Box>
-        </Card> */}
       </Grid>
       <Grid item xs={12}>
         <Card
@@ -206,37 +156,37 @@ const HomeScreen = () => {
             </CardContent>
           </Box>
 
-          <Box>
-            <CardContent sx={{ mt: 10, ml: 12 }}>
-              <Typography variant="subtitle1" color="initial">
+          <Box sx={{ display: "flex" }}>
+            <CardContent sx={{ mt: 8, ml: 10 }}>
+              <Typography variant="h6" color="initial">
                 Check-In Time
               </Typography>
               <Typography variant="subtitle1" color="green">
-                {checkIn ? checkIn : "00:00:00"}
+                {checkInTime ? checkInTime : "00:00:00"}
               </Typography>
             </CardContent>
           </Box>
 
           <Box>
-            <CardContent sx={{ mt: 10, ml: 12 }}>
-              <Typography variant="subtitle1" color="initial">
+            <CardContent sx={{ mt: 8, ml: 10 }}>
+              <Typography variant="h6" color="initial">
                 Check-Out Time
               </Typography>
               <Typography variant="subtitle1" color="initial">
-                {checkOut ? checkOut : "00:00:00"}
+                {checkOutTime ? checkOutTime : "00:00:00"}
               </Typography>
             </CardContent>
           </Box>
           <Box>
-            <CardContent sx={{ mt: 10, ml: 12 }}>
-              <Typography variant="subtitle1" color="initial">
+            <CardContent sx={{ mt: 8, ml: 10 }}>
+              <Typography variant="h6" color="initial">
                 Working Hours
               </Typography>
               <Typography>{workHours} </Typography>
             </CardContent>
           </Box>
           <Box>
-            <CardContent sx={{ mt: 10 }}>
+            <CardContent sx={{ mt: 8 }}>
               <ToggleButtonGroup
                 color="primary"
                 value={alignment}
@@ -248,10 +198,12 @@ const HomeScreen = () => {
                   onClick={handleCheckIn}
                   color={"success"}
                   value="check-in"
+                  disabled={isCheckOut}
                 >
                   Check-In
                 </ToggleButton>
                 <ToggleButton
+                  disabled={isCheckOut && checkInTime}
                   onClick={handleCheckOut}
                   color={"error"}
                   value="check-out"
