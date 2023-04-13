@@ -129,10 +129,10 @@ const EmployeeLeaveScreen = () => {
   const { success: successRequest } = leaveRequest;
 
   const userLeaves = useSelector((state) => state.userLeaves);
-  const { loading: userLeavesLoading, leaves: userLeavesData } = userLeaves;
+  const { leaves: userLeavesData } = userLeaves;
 
   const teamLeaves = useSelector((state) => state.teamLeaves);
-  const { loading: teamLeavesLoading, leaves: teamLeavesData } = teamLeaves;
+  const { leaves: teamLeavesData } = teamLeaves;
 
   const leaveApprove = useSelector((state) => state.leaveApprove);
   const { success: successApprove } = leaveApprove;

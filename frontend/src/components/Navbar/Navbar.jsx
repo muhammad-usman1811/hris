@@ -13,7 +13,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import ArticleIcon from "@mui/icons-material/Article";
 import HomeIcon from "@mui/icons-material/Home";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
+//import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import EventIcon from "@mui/icons-material/Event";
 import Logout from "@mui/icons-material/Logout";
 import { navbarStyles } from "./styles";
