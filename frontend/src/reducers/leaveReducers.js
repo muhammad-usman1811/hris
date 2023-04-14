@@ -1,3 +1,16 @@
+export const leavesListReducer = (state = { leaves: [] }, action) => {
+  switch (action.type) {
+    case "LEAVE_LIST_REQUEST":
+      return { loading: true };
+    case "LEAVE_LIST_SUCCESS":
+      return { loading: false, leaves: action.payload };
+    case "LEAVE_LIST_FAIL":
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
 export const leaveRequestReducer = (state = {}, action) => {
   switch (action.type) {
     case "LEAVE_REQUEST_SUCCESS":

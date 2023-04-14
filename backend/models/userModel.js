@@ -37,7 +37,6 @@ const userSchema = mongoose.Schema(
     },
     passport: {
       type: String,
-      required: true,
     },
     jobDetails: {
       title: {

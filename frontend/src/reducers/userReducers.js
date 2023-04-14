@@ -48,8 +48,12 @@ export const userAddReducer = (state = {}, action) => {
       return { loading: true };
     case "USER_ADD_SUCCESS":
       return { loading: false, success: true, message: action.payload };
+    case "USER_ADD_MESSAGE_RESET":
+      return { ...state, message: "" };
     case "USER_ADD_FAIL":
       return { loading: false, error: action.payload };
+    case "USER_ADD_ERROR_RESET":
+      return { ...state, error: "" };
     default:
       return state;
   }

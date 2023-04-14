@@ -89,6 +89,14 @@ const addUser = asyncHandler(async (req, res) => {
       workType,
     } = req.body;
 
+    //Check if user already exists
+    const userExists = await User.findOne({ email });
+
+    if (userExists) {
+      res.status(400);
+      return res.json({ message: "Email already exists" });
+    }
+
     // Creating new document
     const user = new User({
       imageUrl: file.path,
@@ -117,14 +125,6 @@ const addUser = asyncHandler(async (req, res) => {
         blood,
       },
     });
-
-    //Check if user already exists
-    const userExists = await User.findOne({ email });
-
-    if (userExists) {
-      res.status(400);
-      throw new Error("User already exists");
-    }
 
     //Saving in database
     try {

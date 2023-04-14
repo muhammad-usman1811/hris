@@ -16,6 +16,7 @@ import {
   leaveApproveReducer,
   leaveCancelReducer,
   leaveRequestReducer,
+  leavesListReducer,
   teamLeavesReducer,
   userLeavesReducer,
 } from "./reducers/leaveReducers";
@@ -29,6 +30,7 @@ const reducer = {
   docUpload: docUploadReducer,
   docList: docListReducer,
   docDelete: docDeleteReducer,
+  leavesList: leavesListReducer,
   leaveRequest: leaveRequestReducer,
   userLeaves: userLeavesReducer,
   teamLeaves: teamLeavesReducer,

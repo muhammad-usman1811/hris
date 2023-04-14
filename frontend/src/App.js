@@ -18,10 +18,10 @@ function App() {
       parsedTitle.charAt(0).toUpperCase() + parsedTitle.slice(1);
     if (alteredTitle.startsWith("Profile")) {
       setTitle("Edit Profile");
-    } else if (alteredTitle.startsWith("Employee")) {
-      setTitle("Home");
     } else if (alteredTitle.endsWith("leaves")) {
       setTitle("Leaves");
+    } else if (alteredTitle.startsWith("EmployeePortal")) {
+      setTitle("Home");
     } else {
       setTitle(alteredTitle);
     }

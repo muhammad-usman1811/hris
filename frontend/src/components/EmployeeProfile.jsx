@@ -191,13 +191,16 @@ const EmployeeProfile = () => {
     isValid = false;
   }
 
-  if (!passport.trim()) {
-    errors.passport = "Please enter passport number";
-    isValid = false;
-  } else if (!/^[A-Za-z0-9]+$/.test(passport) && hasBlurred.passport) {
+  if (passport && !/^[A-Za-z0-9]+$/.test(passport.trim())) {
     errors.passport = "Please enter alphanumeric only";
     isValid = false;
   }
+  // if (passport !== "") {
+  //   if (!/^[A-Za-z0-9]+$/.test(passport) && hasBlurred.passport) {
+  //     errors.passport = "Please enter alphanumeric only";
+  //     isValid = false;
+  //   }
+  // }
 
   if (!cnic.trim()) {
     errors.cnic = "Please enter your CNIC";

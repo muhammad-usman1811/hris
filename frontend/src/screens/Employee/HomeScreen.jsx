@@ -19,46 +19,55 @@ const HomeScreen = () => {
   const handleChange = (event, newAlignment) => {
     setAlignment(newAlignment);
   };
-
-  const [checkInTime, setCheckInTime] = useState(null);
-  const [checkOutTime, setCheckOutTime] = useState(null);
-  const [isCheckOut, setIsCheckOut] = useState(false);
-  const [workHours, setWorkHours] = useState("0:0");
+  const [time, setTime] = useState(new Date().toLocaleTimeString("en-Us"));
+  const [checkIn, setCheckIn] = useState(
+    localStorage.getItem(`checkIn:${userInfo._id}`)
+  );
+  const [checkOut, setCheckOut] = useState(
+    localStorage.getItem(`checkOut:${userInfo._id}`)
+  );
+  const [workHours, setWorkHours] = useState("00:00:00");
 
   const calculateWorkHours = (starttime, endtime) => {
     if (!endtime) {
-      return "0:0";
+      return "";
     }
     let startTime = moment(starttime, "hh:mm:ss A");
     let endTime = moment(endtime, "hh:mm:ss A");
     let duration = moment.duration(endTime.diff(startTime));
     let hours = duration.hours();
     let minutes = duration.minutes();
-    let totalWorkHours = hours + ":" + minutes;
-    console.log(totalWorkHours);
+    let seconds = duration.seconds();
+    let totalWorkHours = hours + ":" + minutes + ":" + seconds;
     return totalWorkHours;
   };
 
   const handleCheckIn = () => {
     let now = moment();
-    setCheckInTime(now.format("hh:mm:ss A"));
+    setCheckIn(now.format("hh:mm:ss A"));
   };
 
   const handleCheckOut = () => {
     let now = moment();
-    setCheckOutTime(now.format("hh:mm:ss A"));
-    setIsCheckOut(true);
+    setCheckOut(now.format("hh:mm:ss A"));
   };
 
-  //Current time & date
-  const current = new Date();
-  const time = current.toLocaleTimeString("en-US");
-
   useEffect(() => {
-    if (checkInTime && checkOutTime) {
-      setWorkHours(calculateWorkHours(checkInTime, checkOutTime));
+    if (checkIn) {
+      localStorage.setItem(`checkIn:${userInfo._id}`, checkIn);
     }
-  }, [checkInTime, checkOutTime]);
+    if (checkOut) {
+      localStorage.setItem(`checkOut:${userInfo._id}`, checkOut);
+    }
+    if (checkIn && checkOut) {
+      setWorkHours(calculateWorkHours(checkIn, checkOut));
+    }
+    const interval = setInterval(() => {
+      setTime(new Date().toLocaleTimeString());
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [checkIn, checkOut, userInfo]);
 
   return (
     <Grid
@@ -121,7 +130,7 @@ const HomeScreen = () => {
             <CardContent>
               <Typography variant="h5">{time}</Typography>
               <Typography variant="subtitle1">
-                {moment(current).format("dddd, LL")}
+                {moment().format("dddd, LL")}
               </Typography>
             </CardContent>
           </Box>
@@ -162,18 +171,17 @@ const HomeScreen = () => {
                 Check-In Time
               </Typography>
               <Typography variant="subtitle1" color="green">
-                {checkInTime ? checkInTime : "00:00:00"}
+                {checkIn ? checkIn : "00:00:00"}
               </Typography>
             </CardContent>
           </Box>
-
           <Box>
             <CardContent sx={{ mt: 8, ml: 10 }}>
               <Typography variant="h6" color="initial">
                 Check-Out Time
               </Typography>
               <Typography variant="subtitle1" color="initial">
-                {checkOutTime ? checkOutTime : "00:00:00"}
+                {checkOut ? checkOut : "00:00:00"}
               </Typography>
             </CardContent>
           </Box>
@@ -198,12 +206,12 @@ const HomeScreen = () => {
                   onClick={handleCheckIn}
                   color={"success"}
                   value="check-in"
-                  disabled={isCheckOut}
+                  disabled={checkIn}
                 >
                   Check-In
                 </ToggleButton>
                 <ToggleButton
-                  disabled={isCheckOut && checkInTime}
+                  disabled={checkOut || !checkIn}
                   onClick={handleCheckOut}
                   color={"error"}
                   value="check-out"
@@ -214,59 +222,6 @@ const HomeScreen = () => {
             </CardContent>
           </Box>
         </Card>
-        {/* <Card
-          sx={{ display: "flex", backgroundColor: "#f5f5f5", boxShadow: 3 }}
-        >
-          <Box sx={{ display: "flex" }}>
-            <CardContent sx={{ flex: "1 0 auto" }}>
-              <Typography component="div" variant="h5">
-                Today's Analysis
-              </Typography>
-              <Typography
-                variant="subtitle1"
-                color="text.secondary"
-                component="div"
-              >
-                Attendance Analysis
-              </Typography>
-              <Box>
-                <Button
-                  sx={{ marginTop: "30px", boxShadow: 3 }}
-                  variant="contained"
-                  color="error"
-                  onClick={handleClick}
-                >
-                  {isCheckedIn ? "Check-In" : "Check-Out"}
-                </Button>
-              </Box>
-            </CardContent>
-          </Box>
-          <Box sx={{ display: "flex" }}>
-            <CardContent sx={{ mt: 10, ml: 12 }}>
-              <Typography variant="h6" color="initial">
-                Office Start Time
-              </Typography>
-              <Typography>{time}</Typography>
-            </CardContent>
-          </Box>
-
-          <Box>
-            <CardContent sx={{ mt: 10, ml: 12 }}>
-              <Typography variant="h6" color="initial">
-                Check-In Time
-              </Typography>
-              <Typography color={"green"}>{time}</Typography>
-            </CardContent>
-          </Box>
-          <Box>
-            <CardContent sx={{ mt: 10, ml: 12 }}>
-              <Typography variant="h6" color="initial">
-                Checked-In Since
-              </Typography>
-              <Typography>{time}</Typography>
-            </CardContent>
-          </Box>
-        </Card> */}
       </Grid>
       <Grid item xs={12}>
         <Card
@@ -280,7 +235,11 @@ const HomeScreen = () => {
         >
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <CardContent sx={{ flex: "1 0 auto" }}>
-              <Typography variant="h5" color="initial">
+              <Typography
+                variant="h5"
+                color="initial"
+                sx={{ color: "#D32F2F" }}
+              >
                 Facts
               </Typography>
               <Typography variant="subtitle1" color="text.secondary">

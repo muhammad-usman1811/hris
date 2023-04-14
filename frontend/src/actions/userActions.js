@@ -12,7 +12,7 @@ export const login = (email, password) => async (dispatch) => {
       },
     };
     const { data } = await axios.post(
-      "http://10.51.100.66:5000/api/users/login",
+      "/api/users/login",
       { email, password },
       config
     );
@@ -33,8 +33,11 @@ export const login = (email, password) => async (dispatch) => {
   }
 };
 
-export const logout = () => (dispatch) => {
+export const logout = (id) => (dispatch) => {
   localStorage.removeItem("userInfo");
+  localStorage.removeItem(`checkIn:${id}`);
+  localStorage.removeItem(`checkOut:${id}`);
+
   dispatch({ type: "USER_LOGOUT" });
   dispatch({ type: "USER_LIST_RESET" });
   dispatch({ type: "USER_DETAILS_RESET" });

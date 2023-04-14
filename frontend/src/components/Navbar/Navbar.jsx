@@ -34,7 +34,7 @@ const Navbar = () => {
     setSelectedIndex(index);
   };
   const logoutHandler = () => {
-    dispatch(logout());
+    dispatch(logout(userInfo._id));
   };
 
   return (
@@ -125,7 +125,7 @@ const Navbar = () => {
               selected={selectedIndex === 0}
               onClick={(event) => {
                 handleListItemClick(event, 0);
-                navigate("/home/employee");
+                navigate("/home/employeePortal");
               }}
             >
               <ListItemIcon>

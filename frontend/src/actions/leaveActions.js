@@ -1,5 +1,33 @@
 import axios from "axios";
 
+export const getLeaves = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: "LEAVE_LIST_REQUEST" });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await axios.get("/api/leaves", config);
+
+    dispatch({ type: "LEAVE_LIST_SUCCESS", payload: data });
+  } catch (error) {
+    dispatch({
+      type: "LEAVE_LIST_FAIL",
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
 export const requestLeave = (data) => async (dispatch, getState) => {
   try {
     const {

@@ -25,7 +25,7 @@ root.render(
         <Route path="/" element={<LoginScreen />} />
         <Route path="/home" element={<App />}>
           <Route path="/home/dashboard" element={<DashboardScreen />} />
-          <Route path="/home/employee" element={<HomeScreen />} />
+          <Route path="/home/employeePortal" element={<HomeScreen />} />
           <Route path="/home/employee/profile" element={<EmployeeProfile />} />
           <Route
             path="/home/employee/leaves"

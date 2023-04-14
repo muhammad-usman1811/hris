@@ -73,12 +73,6 @@ const EmployeeLeaveScreen = () => {
       sortable: true,
     },
     {
-      name: <b>Department</b>,
-      selector: (row) => row.department,
-      width: 130,
-      sortable: true,
-    },
-    {
       name: <b>Start Date</b>,
       selector: (row) => row.startDate,
       width: 130,
@@ -87,6 +81,12 @@ const EmployeeLeaveScreen = () => {
       name: <b>End Date</b>,
       selector: (row) => row.endDate,
       width: 130,
+    },
+    {
+      name: <b>Days</b>,
+      selector: (row) => row.days,
+      width: 90,
+      sortable: true,
     },
     {
       name: <b>Reason</b>,
@@ -105,16 +105,22 @@ const EmployeeLeaveScreen = () => {
       width: 150,
       cell: (row) => (
         <>
-          {row.status === "Pending" && (
-            <Stack direction="row">
-              <IconButton color="primary" onClick={() => handleApprove(row.id)}>
-                <CheckCircleIcon />
-              </IconButton>
-              <IconButton color="error" onClick={() => handleCancel(row.id)}>
-                <CancelIcon />
-              </IconButton>
-            </Stack>
-          )}
+          <Stack direction="row">
+            <IconButton
+              color="primary"
+              onClick={() => handleApprove(row.id)}
+              disabled={row.status !== "Pending"}
+            >
+              <CheckCircleIcon />
+            </IconButton>
+            <IconButton
+              color="error"
+              onClick={() => handleCancel(row.id)}
+              disabled={row.status !== "Pending"}
+            >
+              <CancelIcon />
+            </IconButton>
+          </Stack>
         </>
       ),
     },
@@ -125,29 +131,35 @@ const EmployeeLeaveScreen = () => {
       name: <b>Type</b>,
       selector: (row) => row.type,
       sortable: true,
+      width: 130,
     },
     {
       name: <b>Start Date</b>,
       selector: (row) => row.startDate,
       sortable: true,
+      width: 130,
     },
     {
       name: <b>End Date</b>,
       selector: (row) => row.endDate,
+      width: 130,
     },
     {
       name: <b>Days</b>,
       selector: (row) => row.days,
       sortable: true,
+      width: 90,
     },
     {
       name: <b>Reason</b>,
       selector: (row) => row.reason,
+      width: 150,
     },
     {
       name: <b>Status</b>,
       selector: (row) => row.status,
       sortable: true,
+      width: 130,
     },
   ];
 
@@ -183,7 +195,6 @@ const EmployeeLeaveScreen = () => {
     return {
       id: leave._id,
       name: leave.name,
-      department: leave.department,
       startDate: leave.startDate,
       endDate: leave.endDate,
       days: calculateDays(leave.startDate, leave.endDate),
@@ -272,7 +283,7 @@ const EmployeeLeaveScreen = () => {
                 <Box sx={{ marginLeft: "24px" }}>
                   <Button
                     variant="contained"
-                    color="primary"
+                    color="error"
                     onClick={handleToggle}
                   >
                     Request for Leave
@@ -281,20 +292,48 @@ const EmployeeLeaveScreen = () => {
               </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
-              <TableContainer component={Paper}>
+              <Grid item container xs={12} columnSpacing={3}>
+                <Grid item xs={4}>
+                  <QuotaCard
+                    usedDays={usedSickLeaves}
+                    availableDays={availableSickLeaves}
+                    value={(usedSickLeaves / totalSickLeaves) * 100}
+                    text={"Sick Leave"}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <QuotaCard
+                    usedDays={usedCasualLeaves}
+                    availableDays={availableCasualLeaves}
+                    value={(usedCasualLeaves / totalCasualLeaves) * 100}
+                    text={"Casual Leave"}
+                  />
+                </Grid>
+                <Grid item xs={4}>
+                  <QuotaCard
+                    usedDays={usedAnnualLeaves}
+                    availableDays={availableAnnualLeaves}
+                    value={(usedAnnualLeaves / totalAnnualLeaves) * 100}
+                    text={"Annual Leave"}
+                  />
+                </Grid>
+              </Grid>
+              <TableContainer component={Paper} sx={{ mt: "24px" }}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                   <TableHead>
                     <TableRow>
                       <TableCell>Type</TableCell>
-                      <TableCell align="right">Start Date</TableCell>
-                      <TableCell align="right">End Date</TableCell>
-                      <TableCell align="right">Status</TableCell>
+                      <TableCell>Start Date</TableCell>
+                      <TableCell>End Date</TableCell>
+                      <TableCell>Days</TableCell>
+                      <TableCell>Reason</TableCell>
+                      <TableCell>Status</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {userLeavesData?.map((leave) => (
+                    {rowsForLeaves?.map((leave) => (
                       <TableRow
-                        key={leave._id}
+                        key={leave.id}
                         sx={{
                           "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.04)" },
                           "&.Mui-selected": {
@@ -305,9 +344,11 @@ const EmployeeLeaveScreen = () => {
                         <TableCell component="th" scope="row">
                           {leave.type}
                         </TableCell>
-                        <TableCell align="right">{leave.startDate}</TableCell>
-                        <TableCell align="right">{leave.endDate}</TableCell>
-                        <TableCell align="right">{leave.status}</TableCell>
+                        <TableCell>{leave.startDate}</TableCell>
+                        <TableCell>{leave.endDate}</TableCell>
+                        <TableCell>{leave.days}</TableCell>
+                        <TableCell>{leave.reason}</TableCell>
+                        <TableCell>{leave.status}</TableCell>
                       </TableRow>
                     ))}
                   </TableBody>

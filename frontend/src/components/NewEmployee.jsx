@@ -185,7 +185,7 @@ const NewEmployee = () => {
     event.preventDefault();
     if (isValid) {
       dispatch(addUser(formData));
-      setFormData({});
+      setErrors({});
     } else {
       return;
     }
@@ -275,16 +275,21 @@ const NewEmployee = () => {
       isValid = false;
     }
 
-    if (!formData.passport || !formData.passport.trim()) {
-      errors.passport = "Please enter passport number";
-      isValid = false;
-    } else if (
-      !/^[A-Za-z0-9]+$/.test(formData.passport) &&
-      hasBlurred.passport
-    ) {
+    if (formData.passport && !/^[A-Za-z0-9]+$/.test(formData.passport.trim())) {
       errors.passport = "Please enter alphanumeric only";
       isValid = false;
     }
+
+    // if (!formData.passport || !formData.passport.trim()) {
+    //   errors.passport = "Please enter passport number";
+    //   isValid = false;
+    // } else if (
+    //   !/^[A-Za-z0-9]+$/.test(formData.passport) &&
+    //   hasBlurred.passport
+    // ) {
+    //   errors.passport = "Please enter alphanumeric only";
+    //   isValid = false;
+    // }
 
     if (!formData.cnic || !formData.cnic.trim()) {
       errors.cnic = "Please enter your CNIC";
@@ -556,10 +561,8 @@ const NewEmployee = () => {
             onChange={handleFieldChange}
             onBlur={handleBlur}
             onFocus={handleFocus}
-            error={!!errors.passport && isTouched.passport}
-            helperText={
-              errors.passport && isTouched.passport && errors.passport
-            }
+            error={!!errors.passport}
+            helperText={errors.passport && errors.passport}
           />
         </Box>
       </Grid>

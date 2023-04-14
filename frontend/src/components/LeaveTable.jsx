@@ -1,111 +1,99 @@
-import React from "react";
-import DataTable from "./common/DataTable";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import Box from "@mui/material/Box";
+import DataTable from "react-data-table-component";
+import CircularProgress from "@mui/material/CircularProgress";
+import { getLeaves } from "../actions/leaveActions";
 
 const LeaveTable = () => {
+  const leavesList = useSelector((state) => state.leavesList);
+  const { loading, leaves } = leavesList;
+
+  const dispatch = useDispatch();
+
   const columns = [
-    { field: "id", headerName: "ID", width: 90 },
     {
-      field: "name",
-      headerName: "Name",
+      name: <b>Name</b>,
+      selector: (row) => row.name,
+      width: 150,
+      sortable: true,
+    },
+    {
+      name: <b>Department</b>,
+      selector: (row) => row.department,
+      sortable: true,
       width: 150,
     },
     {
-      field: "department",
-      headerName: "Department",
-      width: 180,
+      name: <b>Start Date</b>,
+      selector: (row) => row.startDate,
+      width: 130,
     },
     {
-      field: "type",
-      headerName: "Type",
-      width: 150,
+      name: <b>End Date</b>,
+      selector: (row) => row.endDate,
+      width: 130,
     },
     {
-      field: "days",
-      headerName: "Days",
-      width: 150,
+      name: <b>Days</b>,
+      selector: (row) => row.days,
+      width: 90,
+      sortable: true,
     },
     {
-      field: "status",
-      headerName: "Status",
-      width: 150,
+      name: <b>Status</b>,
+      selector: (row) => row.status,
+      sortable: true,
+      width: 90,
     },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      name: "Snow",
-      department: "Development",
-      type: "Sick",
-      days: 2,
-      status: "Approved",
-    },
-    {
-      id: 2,
-      name: "Lannister",
-      department: "Project Management",
-      type: "Casual",
-      days: 1,
-      status: "Pending",
-    },
-    {
-      id: 3,
-      name: "Lannister",
-      department: "Data",
-      type: "Urgent",
-      days: 2,
-      status: "Pending",
-    },
-    {
-      id: 4,
-      name: "Stark",
-      department: "Data",
-      type: "Urgent",
-      days: 2,
-      status: "Approved",
-    },
-    {
-      id: 5,
-      name: "Targaryen",
-      department: "Data",
-      type: "Sick",
-      days: 2,
-      status: "Pending",
-    },
-    {
-      id: 6,
-      name: "Melisandre",
-      department: "Development",
-      type: "Casual",
-      days: 1,
-      status: "Approved",
-    },
-    {
-      id: 7,
-      name: "Clifford",
-      department: "Data",
-      type: "Urgent",
-      days: 1,
-      status: "Cancelled",
-    },
-    {
-      id: 8,
-      name: "Frances",
-      department: "Data",
-      type: "Urgent",
-      days: 1,
-      status: "Pending",
-    },
-    {
-      id: 9,
-      name: "Roxie",
-      department: "Data",
-      type: "Sick",
-      days: 2,
-      status: "Cancelled",
-    },
-  ];
-  return <DataTable rows={rows} columns={columns} />;
+  const calculateDays = (start, end) => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+    return daysDiff;
+  };
+
+  const rowsData = leaves?.map((leave) => {
+    return {
+      id: leave._id,
+      name: leave.name,
+      department: leave.department,
+      startDate: leave.startDate,
+      endDate: leave.endDate,
+      days: calculateDays(leave.startDate, leave.endDate),
+      status: leave.status,
+    };
+  });
+
+  useEffect(() => {
+    dispatch(getLeaves());
+  }, [dispatch]);
+
+  return (
+    <>
+      {loading ? (
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : (
+        <DataTable
+          data={rowsData}
+          columns={columns}
+          pagination
+          highlightOnHover
+        />
+      )}
+    </>
+  );
 };
 
 export default LeaveTable;
