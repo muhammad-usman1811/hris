@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import LeaveQuota from "./leaveQuotaModel.js";
 
 const userSchema = mongoose.Schema(
   {
@@ -37,6 +38,11 @@ const userSchema = mongoose.Schema(
     },
     passport: {
       type: String,
+    },
+    leaveQuota: {
+      type: [LeaveQuota.schema],
+      required: true,
+      default: [],
     },
     jobDetails: {
       title: {

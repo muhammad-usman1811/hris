@@ -15,7 +15,10 @@ import { requestLeave } from "../actions/leaveActions";
 const LeaveModal = ({ open, onClose }) => {
   const leaveTypes = [
     {
-      value: "Annual Leave",
+      value: "Earned Leave",
+    },
+    {
+      value: "Casual Leave",
     },
     {
       value: "Sick Leave",
@@ -27,10 +30,13 @@ const LeaveModal = ({ open, onClose }) => {
       value: "Paternity Leave",
     },
     {
-      value: "Bereavement Leave",
+      value: "Leave Without Pay",
     },
     {
-      value: "Casual Leave",
+      value: "Special Sick Leave",
+    },
+    {
+      value: "Bereavement Leave",
     },
   ];
 

@@ -9,6 +9,7 @@ import userRoutes from "./routes/userRoutes.js";
 import attendanceRoutes from "./routes/attendanceRoutes.js";
 import leaveRoutes from "./routes/leaveRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
+import leaveQuotaRoutes from "./routes/leaveQuotaRoutes.js";
 import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
 
 dotenv.config();
@@ -50,6 +51,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/leaves", leaveRoutes);
 app.use("/api/documents", documentRoutes);
+app.use("/api/leaveQuotas", leaveQuotaRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

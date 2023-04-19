@@ -19,6 +19,8 @@ const HomeScreen = () => {
   const handleChange = (event, newAlignment) => {
     setAlignment(newAlignment);
   };
+
+  const [greeting, setGreeting] = useState("");
   const [time, setTime] = useState(new Date().toLocaleTimeString("en-Us"));
   const [checkIn, setCheckIn] = useState(
     localStorage.getItem(`checkIn:${userInfo._id}`)
@@ -35,10 +37,14 @@ const HomeScreen = () => {
     let startTime = moment(starttime, "hh:mm:ss A");
     let endTime = moment(endtime, "hh:mm:ss A");
     let duration = moment.duration(endTime.diff(startTime));
-    let hours = duration.hours();
-    let minutes = duration.minutes();
-    let seconds = duration.seconds();
-    let totalWorkHours = hours + ":" + minutes + ":" + seconds;
+    let hour = duration.hours();
+    let minute = duration.minutes();
+    let second = duration.seconds();
+    let totalWorkHours = moment({
+      hours: hour,
+      minutes: minute,
+      seconds: second,
+    }).format("HH:mm:ss");
     return totalWorkHours;
   };
 
@@ -62,8 +68,18 @@ const HomeScreen = () => {
     if (checkIn && checkOut) {
       setWorkHours(calculateWorkHours(checkIn, checkOut));
     }
+
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 12) {
+      setGreeting("Good Morning");
+    } else if (hour >= 12 && hour < 18) {
+      setGreeting("Good Afternoon");
+    } else {
+      setGreeting("Good Evening");
+    }
+
     const interval = setInterval(() => {
-      setTime(new Date().toLocaleTimeString());
+      setTime(moment().format("hh:mm:ss A"));
     }, 1000);
 
     return () => clearInterval(interval);
@@ -96,7 +112,7 @@ const HomeScreen = () => {
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <CardContent sx={{ flex: "1 0 auto" }}>
               <Typography component="div" variant="h5">
-                <span style={{ color: "#D32F2F" }}>Greetings,</span>{" "}
+                <span style={{ color: "#D32F2F" }}>{greeting},</span>{" "}
                 {userInfo.name}
               </Typography>
               <Typography

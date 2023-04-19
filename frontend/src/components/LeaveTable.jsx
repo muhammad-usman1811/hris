@@ -1,11 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Box from "@mui/material/Box";
 import DataTable from "react-data-table-component";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getLeaves } from "../actions/leaveActions";
+import { Button } from "@mui/material";
+import LeaveQuotaModal from "./LeaveQuotaModal";
 
 const LeaveTable = () => {
+  const [open, setOpen] = useState(false);
   const leavesList = useSelector((state) => state.leavesList);
   const { loading, leaves } = leavesList;
 
@@ -68,6 +71,13 @@ const LeaveTable = () => {
     };
   });
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleClick = () => {
+    setOpen(!open);
+  };
+
   useEffect(() => {
     dispatch(getLeaves());
   }, [dispatch]);
@@ -85,12 +95,20 @@ const LeaveTable = () => {
           <CircularProgress />
         </Box>
       ) : (
-        <DataTable
-          data={rowsData}
-          columns={columns}
-          pagination
-          highlightOnHover
-        />
+        <>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+            <Button variant="contained" color="error" onClick={handleClick}>
+              Set Leave Quota
+            </Button>
+          </Box>
+          <LeaveQuotaModal open={open} handleClose={handleClose} />
+          <DataTable
+            data={rowsData}
+            columns={columns}
+            pagination
+            highlightOnHover
+          />
+        </>
       )}
     </>
   );
