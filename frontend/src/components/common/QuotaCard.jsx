@@ -51,7 +51,7 @@ const QuotaCard = ({ usedDays, availableDays, text, value }) => {
             Used
           </Typography>
           <Typography>
-            <span style={{ color: "black" }}>
+            <span style={{ color: "green" }}>
               <b>{`${availableDays} Days`}</b>
             </span>{" "}
             Available

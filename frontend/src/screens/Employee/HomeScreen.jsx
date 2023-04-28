@@ -177,7 +177,7 @@ const HomeScreen = () => {
               <Typography sx={{ mt: 5 }} variant="h6" color="initial">
                 Shift Time
               </Typography>
-              <Typography color={"initial"}>9:00AM To 5:00PM</Typography>
+              <Typography color={"initial"}>9:00AM To 6:00PM</Typography>
             </CardContent>
           </Box>
 
@@ -219,6 +219,7 @@ const HomeScreen = () => {
                 aria-label="check-buttons"
               >
                 <ToggleButton
+                  sx={{ width: 110 }}
                   onClick={handleCheckIn}
                   color={"success"}
                   value="check-in"
@@ -227,6 +228,7 @@ const HomeScreen = () => {
                   Check-In
                 </ToggleButton>
                 <ToggleButton
+                  sx={{ width: 110 }}
                   disabled={checkOut || !checkIn}
                   onClick={handleCheckOut}
                   color={"error"}

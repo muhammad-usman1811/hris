@@ -9,7 +9,9 @@ import { Add } from "@mui/icons-material";
 import { Search, Upgrade } from "@mui/icons-material";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
-import { listUsers } from "../actions/userActions";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { deleteUser, listUsers } from "../actions/userActions";
 const XLSX = require("xlsx");
 
 function EmployeeTable() {
@@ -42,6 +44,17 @@ function EmployeeTable() {
       selector: (row) => row.dateOfJoining,
       sortable: true,
     },
+    {
+      name: <b>Actions</b>,
+      width: 90,
+      cell: (row) => (
+        <>
+          <IconButton color="error" onClick={() => handleDelete(row.id)}>
+            <DeleteIcon />
+          </IconButton>
+        </>
+      ),
+    },
   ];
 
   const userLogin = useSelector((state) => state.userLogin);
@@ -63,6 +76,12 @@ function EmployeeTable() {
   const dispatch = useDispatch();
 
   const [openToast, setOpenToast] = useState(true);
+
+  const handleDelete = (id) => {
+    if (window.confirm("Are you sure?")) {
+      dispatch(deleteUser(id));
+    }
+  };
 
   function handleFilter(event) {
     const newData = records.filter((row) => {
@@ -99,6 +118,9 @@ function EmployeeTable() {
           };
         });
       setRecords(userData);
+      if (successAdd) {
+        dispatch({ type: "USER_ADD_RESET" });
+      }
     } else {
       navigate("/");
     }
@@ -147,7 +169,7 @@ function EmployeeTable() {
       <DataTable
         columns={columns}
         data={filteredRows.length === 0 ? records : filteredRows}
-        fixedHeader
+        noHeader
         pagination
         highlightOnHover
         onRowClicked={(row) => {

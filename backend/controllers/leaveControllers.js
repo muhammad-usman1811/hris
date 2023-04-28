@@ -1,5 +1,14 @@
+import User from "../models/userModel.js";
 import Leave from "./../models/leaveModel.js";
 import asyncHandler from "express-async-handler";
+
+const calculateDays = (start, end) => {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  const timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
+  const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+  return daysDiff;
+};
 
 // @desc Get leaves list
 // @route GET/api/leaves
@@ -39,10 +48,24 @@ const getTeamLeaves = asyncHandler(async (req, res) => {
 
 const updateLeaveToApprove = asyncHandler(async (req, res) => {
   const leave = await Leave.findById(req.params.id);
+  const user = await User.findById(leave.userId);
+  const leaveType = leave.type.split(" ")[0];
 
   if (leave) {
     leave.status = "Approved";
     await leave.save();
+
+    //Update user's leaveQuota
+    if (user) {
+      const updatedLeaveQuota = user.leaveQuota.map((quota) => {
+        if (quota.leaveType === leaveType) {
+          quota.leaveCount -= calculateDays(leave.startDate, leave.endDate);
+        }
+        return quota;
+      });
+      user.leaveQuota = updatedLeaveQuota;
+      await user.save();
+    }
     res.json({ message: "Leave approved" });
   } else {
     res.status(404);

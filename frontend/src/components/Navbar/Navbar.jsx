@@ -140,7 +140,7 @@ const Navbar = () => {
               selected={selectedIndex === 1}
               onClick={(event) => {
                 handleListItemClick(event, 1);
-                navigate("/home/employee/profile");
+                navigate(`/home/employee/profile/${userInfo._id}`);
               }}
             >
               <ListItemIcon>
@@ -160,11 +160,23 @@ const Navbar = () => {
               </ListItemIcon>
               <ListItemText primary="Leaves" />
             </ListItemButton>
+            <ListItemButton
+              selected={selectedIndex === 3}
+              onClick={(event) => {
+                handleListItemClick(event, 3);
+                navigate("/home/employee/documents");
+              }}
+            >
+              <ListItemIcon>
+                <ArticleIcon />
+              </ListItemIcon>
+              <ListItemText primary="Documents" />
+            </ListItemButton>
           </List>
         </>
       )}
 
-      <List component="nav" sx={{ marginTop: "365px" }}>
+      <List component="nav" sx={{ marginTop: "auto" }}>
         <ListItemButton onClick={logoutHandler}>
           <ListItemIcon>
             <Logout />

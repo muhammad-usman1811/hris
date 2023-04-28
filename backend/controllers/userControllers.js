@@ -3,6 +3,30 @@ import asyncHandler from "express-async-handler";
 import generateToken from "./../utils/generateToken.js";
 import uploadPhoto from "../config/imageUpload.js";
 import multer from "multer";
+import fs from "fs";
+import LeaveQuota from "../models/leaveQuotaModel.js";
+
+//Function to calcualate leave quota
+const calculateLeaveQuota = async (dateOfJoining) => {
+  const joiningDate = new Date(dateOfJoining);
+
+  const currentYear = new Date().getFullYear();
+  const endOfYear = new Date(currentYear, 11, 31);
+  const daysInYear = Math.ceil(
+    (endOfYear - joiningDate) / (1000 * 60 * 60 * 24)
+  );
+
+  const leaveQuotas = await LeaveQuota.find({});
+
+  return leaveQuotas.reduce((acc, quota) => {
+    const adjustedQuota = {
+      leaveType: quota.leaveType,
+      leaveCount: Math.ceil((quota.leaveCount / 365) * daysInYear),
+    };
+    acc.push(adjustedQuota);
+    return acc;
+  }, []);
+};
 
 // @desc Authenticate user and get token
 // @route POST/api/users/login
@@ -20,6 +44,7 @@ const authUser = asyncHandler(async (req, res) => {
       title: user.jobDetails.title,
       department: user.jobDetails.department,
       supervisor: user.jobDetails.supervisor,
+      leaveQuota: user.leaveQuota,
       token: generateToken(user._id),
     });
   } else {
@@ -97,6 +122,9 @@ const addUser = asyncHandler(async (req, res) => {
       return res.json({ message: "Email already exists" });
     }
 
+    //Calculate leave quota based on date of joining
+    const leaveQuota = calculateLeaveQuota(date);
+
     // Creating new document
     const user = new User({
       imageUrl: file.path,
@@ -108,6 +136,7 @@ const addUser = asyncHandler(async (req, res) => {
       address,
       cnic,
       passport,
+      leaveQuota,
       jobDetails: {
         title,
         designation,
@@ -142,69 +171,88 @@ const addUser = asyncHandler(async (req, res) => {
 // Access: Private/Admin
 const editUser = asyncHandler(async (req, res) => {
   const id = req.params.id;
-  const file = req.file;
+  uploadPhoto(req, res, async function (err) {
+    if (err instanceof multer.MulterError) {
+      // Multer error occurred while uploading
+      return res.status(500).json({ message: "Error uploading file" });
+    } else if (err) {
+      // Unknown error
+      console.log(err);
+      return res.status(500).json({ message: "Error uploading file" });
+    }
 
-  const {
-    address,
-    blood,
-    cnic,
-    contact,
-    date,
-    department,
-    designation,
-    email,
-    emergencyAddress,
-    emergencyName,
-    employeeId,
-    name,
-    passport,
-    password,
-    phone,
-    relation,
-    role,
-    supervisor,
-    title,
-    workType,
-  } = req.body;
+    const file = req.file;
 
-  const updatedData = {
-    imageUrl: file.path,
-    name,
-    email,
-    password,
-    role,
-    phone,
-    address,
-    cnic,
-    passport,
-    jobDetails: {
-      title,
-      designation,
-      department,
-      employeeId,
-      supervisor,
-      dateOfJoining: date,
-      workType,
-    },
-    emergencyDetails: {
-      name: emergencyName,
-      contact,
-      relation,
-      address: emergencyAddress,
+    const {
+      address,
       blood,
-    },
-  };
+      cnic,
+      contact,
+      date,
+      department,
+      designation,
+      email,
+      emergencyAddress,
+      emergencyName,
+      employeeId,
+      name,
+      passport,
+      password,
+      phone,
+      relation,
+      role,
+      supervisor,
+      title,
+      workType,
+    } = req.body;
 
-  const result = await User.findByIdAndUpdate(id, updatedData, {
-    new: true,
+    const updatedData = {
+      imageUrl: file.path,
+      name,
+      email,
+      password,
+      role,
+      phone,
+      address,
+      cnic,
+      passport,
+      jobDetails: {
+        title,
+        designation,
+        department,
+        employeeId,
+        supervisor,
+        dateOfJoining: date,
+        workType,
+      },
+      emergencyDetails: {
+        name: emergencyName,
+        contact,
+        relation,
+        address: emergencyAddress,
+        blood,
+      },
+    };
+
+    const user = await User.findById(id);
+    if (user) {
+      const filePath = user.imageUrl;
+      fs.unlink(filePath, (err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+    }
+    const result = await User.findByIdAndUpdate(id, updatedData, {
+      new: true,
+    });
+    if (result) {
+      res.json({ message: "User updated successfully" });
+    } else {
+      res.status(404);
+      throw new Error("User not found");
+    }
   });
-
-  if (result) {
-    res.json({ message: "User updated successfully" });
-  } else {
-    res.status(404);
-    throw new Error("User not found");
-  }
 });
 
 // Description: Delete a user
@@ -213,6 +261,12 @@ const editUser = asyncHandler(async (req, res) => {
 const deleteUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
   if (user) {
+    const filePath = user.imageUrl;
+    fs.unlink(filePath, (err) => {
+      if (err) {
+        console.log(err);
+      }
+    });
     await user.remove();
     res.json({ message: "User removed" });
   } else {

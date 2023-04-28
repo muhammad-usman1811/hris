@@ -1,4 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
@@ -11,8 +13,109 @@ import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import EmailIcon from "@mui/icons-material/Email";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
+import { getUserDetails } from "../../actions/userActions";
+import Box from "@mui/material/Box";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import PropTypes from "prop-types";
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
 
 const EmployeeProfile = () => {
+  const { id } = useParams();
+
+  const dispatch = useDispatch();
+
+  const userDetails = useSelector((state) => state.userDetails);
+  const { user } = userDetails;
+
+  const [value, setValue] = React.useState(0);
+
+  //States to store values
+  //const [imageUrl, setImageUrl] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
+  //const [passport, setPassport] = useState("");
+  const [cnic, setCnic] = useState("");
+  const [department, setDepartment] = useState("");
+  const [employeeId, setEmployeeId] = useState("");
+  const [designation, setDesignation] = useState("");
+  const [title, setTitle] = useState("");
+  const [supervisor, setSupervisor] = useState("");
+  const [date, setDate] = useState("");
+  const [workType, setWorkType] = useState("");
+  //const [role, setRole] = useState("");
+  const [emergencyName, setEmergencyName] = useState("");
+  const [relation, setRelation] = useState("");
+  const [emergencyAddress, setEmergencyAddress] = useState("");
+  const [contact, setContact] = useState("");
+  const [blood, setBlood] = useState("");
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  useEffect(() => {
+    if (!user || !user.name || user._id !== id) {
+      dispatch(getUserDetails(id));
+    } else {
+      //setImageUrl(user.imageUrl);
+      setName(user.name);
+      setEmail(user.email);
+      //setPassword(user.password);
+      setAddress(user.address);
+      setPhone(user.phone);
+      //setPassport(user.passport);
+      setCnic(user.cnic);
+      setDepartment(user.jobDetails.department);
+      setEmployeeId(user.jobDetails.employeeId);
+      setTitle(user.jobDetails.title);
+      setDesignation(user.jobDetails.designation);
+      setSupervisor(user.jobDetails.supervisor);
+      setDate(user.jobDetails.dateOfJoining);
+      setWorkType(user.jobDetails.workType);
+      //setRole(user.role);
+      setEmergencyName(user.emergencyDetails.name);
+      setRelation(user.emergencyDetails.relation);
+      setEmergencyAddress(user.emergencyDetails.address);
+      setContact(user.emergencyDetails.contact);
+      setBlood(user.emergencyDetails.blood);
+    }
+  }, [dispatch, id, user]);
+
   return (
     <Grid
       item
@@ -37,12 +140,16 @@ const EmployeeProfile = () => {
       >
         <Grid item container>
           <Grid item>
-            <Avatar src="/broken-image.jpg" alt="profile" />
+            <Avatar
+              sx={{ mr: 2, width: 50, height: 50 }}
+              src="/broken-image.jpg"
+              alt="profile"
+            />
           </Grid>
           <Grid item xs>
-            <Typography variant="h5">Muhammad Usman</Typography>
+            <Typography variant="h5">{name}</Typography>
             <Typography variant="subtitle1" color="textSecondary">
-              Full-Stack Developer
+              {title}
             </Typography>
           </Grid>
           <Grid item>
@@ -50,33 +157,35 @@ const EmployeeProfile = () => {
               Edit Profile
             </Button>
           </Grid>
-          <Grid item container>
+          <Grid sx={{ borderBottom: 2, borderColor: "red" }} item container>
             <Grid item>
-              <ListItem>
+              <ListItem
+                sx={{ ml: 10, border: 1, borderColor: "grey.500", width: 250 }}
+              >
                 <ListItemIcon>
                   <PhoneAndroidIcon />
                 </ListItemIcon>
-                <ListItemText primary="0347-8605452" />
+                <ListItemText primary={phone} />
               </ListItem>
             </Grid>
             <Grid item>
-              <ListItem>
+              <ListItem sx={{ border: 1, borderColor: "grey.500", width: 300 }}>
                 <ListItemIcon>
                   <EmailIcon />
                 </ListItemIcon>
-                <ListItemText primary="m.usman@digifloat.com" />
+                <ListItemText primary={email} />
               </ListItem>
             </Grid>
             <Grid item>
-              <ListItem>
+              <ListItem sx={{ border: 1, borderColor: "grey.500", width: 250 }}>
                 <ListItemIcon>
                   <LocationOnIcon />
                 </ListItemIcon>
-                <ListItemText primary="Sheikhupura" />
+                <ListItemText sx={{ ml: 2 }} primary={address} />
               </ListItem>
             </Grid>
             <Grid item>
-              <ListItem>
+              <ListItem sx={{ border: 1, borderColor: "grey.500", width: 250 }}>
                 <ListItemIcon>
                   <FiberManualRecordIcon
                     style={{
@@ -84,117 +193,225 @@ const EmployeeProfile = () => {
                     }}
                   />
                 </ListItemIcon>
-                <ListItemText primary="Active" />
+                <ListItemText sx={{ ml: 3 }} primary="Active" />
               </ListItem>
             </Grid>
           </Grid>
         </Grid>
         <Divider light />
-        <Grid item container>
-          <Grid item xs={4}>
-            <Typography variant="h6" sx={{ marginBottom: "20px" }}>
-              General Information
-            </Typography>
-            <Typography variant="subtitle2" color="textSecondary">
-              Joining Date:
-            </Typography>
-            <Typography variant="body1" color="textPrimary">
-              April 12, 2023
-            </Typography>
-            <Typography
-              variant="subtitle2"
-              color="textSecondary"
-              sx={{ marginTop: "20px" }}
+        <Box sx={{ width: "100%" }}>
+          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="basic tabs example"
             >
-              Birth date:
-            </Typography>
-            <Typography variant="body1" color="textPrimary">
-              March 23, 2023
-            </Typography>
-            <Typography
-              variant="subtitle2"
-              color="textSecondary"
-              sx={{ marginTop: "20px" }}
-            >
-              CNIC:
-            </Typography>
-            <Typography variant="body1" color="textPrimary">
-              35403-1234567-1
-            </Typography>
-            <Typography
-              variant="subtitle2"
-              color="textSecondary"
-              sx={{ marginTop: "20px" }}
-            >
-              Marital staus:
-            </Typography>
-            <Typography variant="body1" color="textPrimary">
-              Single
-            </Typography>
-          </Grid>
-          <Grid item xs={4}>
-            <Typography variant="h6" sx={{ marginBottom: "10px" }}>
-              Job Information
-            </Typography>
-            <Typography variant="subtitle2" color="textSecondary">
-              Department:
-            </Typography>
-            <Typography variant="body1" color="textPrimary">
-              App Development
-            </Typography>
-            <Typography
-              variant="subtitle2"
-              color="textSecondary"
-              sx={{ marginTop: "20px" }}
-            >
-              Designation:
-            </Typography>
-            <Typography variant="body1" color="textPrimary">
-              Associate Consultant
-            </Typography>
-            <Typography
-              variant="subtitle2"
-              color="textSecondary"
-              sx={{ marginTop: "20px" }}
-            >
-              Supervisor:
-            </Typography>
-            <Typography variant="body1" color="textPrimary">
-              Osama Saeed
-            </Typography>
-          </Grid>
-          <Grid item xs={4}>
-            <Typography variant="h6" sx={{ marginBottom: "10px" }}>
-              Emergency Contact Information
-            </Typography>
-            <Typography variant="subtitle2" color="textSecondary">
-              Name:
-            </Typography>
-            <Typography variant="body1" color="textPrimary">
-              Mohsin
-            </Typography>
-            <Typography
-              variant="subtitle2"
-              color="textSecondary"
-              sx={{ marginTop: "20px" }}
-            >
-              Address:
-            </Typography>
-            <Typography variant="body1" color="textPrimary">
-              Lahore
-            </Typography>
-            <Typography
-              variant="subtitle2"
-              color="textSecondary"
-              sx={{ marginTop: "20px" }}
-            >
-              Contact number:
-            </Typography>
-            <Typography variant="body1" color="textPrimary">
-              0301-2345678
-            </Typography>
-          </Grid>
-        </Grid>
+              <Tab
+                sx={{ borderRight: 1, borderColor: "grey" }}
+                label="General Information"
+                {...a11yProps(0)}
+              />
+              <Tab
+                sx={{ borderRight: 1, borderColor: "grey" }}
+                label="Job Information"
+                {...a11yProps(1)}
+              />
+              <Tab
+                sx={{ borderRight: 1, borderColor: "grey" }}
+                label="Emergency Contact Information"
+                {...a11yProps(2)}
+              />
+            </Tabs>
+          </Box>
+          <TabPanel value={value} index={0}>
+            <Grid container sx={{ display: "flex", flexDirection: "row" }}>
+              <Grid
+                item
+                xs={3}
+                sx={{ borderRight: 1, borderColor: "grey.500", ml: 5 }}
+              >
+                <Typography variant="h6" sx={{ marginBottom: "20px" }}>
+                  General Information
+                </Typography>
+                <Typography variant="subtitle2" color="textSecondary">
+                  Date of Birth:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  March 23, 2023
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  CNIC:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  {cnic}
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Marital staus:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  Single
+                </Typography>
+              </Grid>
+
+              <Grid item xs={3} sx={{ ml: 5 }}>
+                {/* <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Passpord No:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  {passport}
+                </Typography> */}
+              </Grid>
+            </Grid>
+          </TabPanel>
+
+          <TabPanel value={value} index={1}>
+            <Grid container sx={{ display: "flex", flexDirection: "row" }}>
+              <Grid
+                item
+                xs={4}
+                sx={{ borderRight: 1, borderColor: "grey.500", ml: 5 }}
+              >
+                <Typography variant="h6" sx={{ marginBottom: "10px" }}>
+                  Job Information
+                </Typography>
+                <Typography variant="subtitle2" color="textSecondary">
+                  Employee ID
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  {employeeId}
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Department:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  {department}
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Designation:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  {designation}
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Supervisor:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  {supervisor}
+                </Typography>
+              </Grid>
+
+              <Grid item xs={3} sx={{ ml: 5 }}>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Date of Joining:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  {date}
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Work Type:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  {workType}
+                </Typography>
+              </Grid>
+            </Grid>
+          </TabPanel>
+
+          <TabPanel value={value} index={2}>
+            <Grid container>
+              <Grid
+                item
+                xs={4}
+                sx={{ borderRight: 1, borderColor: "grey.500", ml: 5 }}
+              >
+                <Typography variant="h6" sx={{ marginBottom: "10px" }}>
+                  Emergency Contact Information
+                </Typography>
+                <Typography variant="subtitle2" color="textSecondary">
+                  Name:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  {emergencyName}
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Contact:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  {contact}
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Relation:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  {relation}
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Address:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  {emergencyAddress}
+                </Typography>
+              </Grid>
+
+              <Grid item xs={3} sx={{ ml: 5 }}>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Blood Group:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  {blood}
+                </Typography>
+              </Grid>
+            </Grid>
+          </TabPanel>
+        </Box>
       </Grid>
     </Grid>
   );

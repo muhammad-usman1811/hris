@@ -46,6 +46,9 @@ app.get("/", (req, res) => {
   res.send("API is running...");
 });
 
+// Serve uploaded documents
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 //Middlewares to use routes
 app.use("/api/users", userRoutes);
 app.use("/api/attendance", attendanceRoutes);

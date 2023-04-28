@@ -36,6 +36,27 @@ const NewEmployee = () => {
     },
   ];
 
+  const designations = [
+    {
+      value: "CEO",
+    },
+    {
+      value: "Director",
+    },
+    {
+      value: "Senior Consultant",
+    },
+    {
+      value: "Junior Consultant",
+    },
+    {
+      value: "Consultant",
+    },
+    {
+      value: "Associate Consultant",
+    },
+  ];
+
   const roles = [
     {
       value: "Admin",
@@ -275,21 +296,14 @@ const NewEmployee = () => {
       isValid = false;
     }
 
-    if (formData.passport && !/^[A-Za-z0-9]+$/.test(formData.passport.trim())) {
+    if (
+      formData.passport.trim() &&
+      !/^[A-Za-z0-9]+$/.test(formData.passport) &&
+      hasBlurred.passport
+    ) {
       errors.passport = "Please enter alphanumeric only";
       isValid = false;
     }
-
-    // if (!formData.passport || !formData.passport.trim()) {
-    //   errors.passport = "Please enter passport number";
-    //   isValid = false;
-    // } else if (
-    //   !/^[A-Za-z0-9]+$/.test(formData.passport) &&
-    //   hasBlurred.passport
-    // ) {
-    //   errors.passport = "Please enter alphanumeric only";
-    //   isValid = false;
-    // }
 
     if (!formData.cnic || !formData.cnic.trim()) {
       errors.cnic = "Please enter your CNIC";
@@ -555,13 +569,13 @@ const NewEmployee = () => {
           <TextField
             sx={{ marginTop: "20px", width: "50%" }}
             name="passport"
-            label="Passport"
+            label="Passport (optional)"
             variant="standard"
             value={formData.passport}
             onChange={handleFieldChange}
             onBlur={handleBlur}
             onFocus={handleFocus}
-            error={!!errors.passport}
+            error={errors.passport}
             helperText={errors.passport && errors.passport}
           />
         </Box>
@@ -573,6 +587,20 @@ const NewEmployee = () => {
           </Typography>
           <TextField
             sx={{ width: "50%" }}
+            name="employeeId"
+            label="Employee ID"
+            variant="standard"
+            value={formData.employeeId}
+            onChange={handleFieldChange}
+            onBlur={handleBlur}
+            error={!!errors.employeeId && isTouched.employeeId}
+            helperText={
+              errors.employeeId && isTouched.employeeId && errors.employeeId
+            }
+          />
+          <br />
+          <TextField
+            sx={{ marginTop: "20px", width: "50%" }}
             name="department"
             select
             value={formData.department}
@@ -594,20 +622,6 @@ const NewEmployee = () => {
           </TextField>
           <br />
           <TextField
-            sx={{ marginTop: "15px", width: "50%" }}
-            name="employeeId"
-            label="Employee ID"
-            variant="standard"
-            value={formData.employeeId}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.employeeId && isTouched.employeeId}
-            helperText={
-              errors.employeeId && isTouched.employeeId && errors.employeeId
-            }
-          />
-          <br />
-          <TextField
             sx={{ marginTop: "20px", width: "50%" }}
             name="title"
             label="Title"
@@ -622,16 +636,24 @@ const NewEmployee = () => {
           <TextField
             sx={{ marginTop: "20px", width: "50%" }}
             name="designation"
-            label="Designation"
+            select
             variant="standard"
             value={formData.designation}
             onChange={handleFieldChange}
             onBlur={handleBlur}
             error={!!errors.designation && isTouched.designation}
             helperText={
-              errors.designation && isTouched.designation && errors.designation
+              errors.designation && isTouched.designation
+                ? errors.designation
+                : "Please select designation"
             }
-          />
+          >
+            {designations.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.value}
+              </MenuItem>
+            ))}
+          </TextField>
           <br />
           <TextField
             sx={{ marginTop: "20px", width: "50%" }}

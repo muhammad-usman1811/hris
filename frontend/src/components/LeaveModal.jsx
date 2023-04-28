@@ -9,10 +9,12 @@ import {
   Divider,
   Stack,
 } from "@mui/material";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 import MenuItem from "@mui/material/MenuItem";
 import { requestLeave } from "../actions/leaveActions";
 
-const LeaveModal = ({ open, onClose }) => {
+const LeaveModal = ({ open, onClose, availableLeaves }) => {
   const leaveTypes = [
     {
       value: "Earned Leave",
@@ -40,6 +42,17 @@ const LeaveModal = ({ open, onClose }) => {
     },
   ];
 
+  //Mapping between leave type options and available leave keys
+  const leaveTypeMapping = {
+    "Sick Leave": "availableSick",
+    "Earned Leave": "availableEarned",
+    "Casual Leave": "availableCasual",
+    "Maternity Leave": "availableMaternity",
+    "Paternity Leave": "availablePaternity",
+    "Special Sick Leave": "availableSpecial Sick",
+    "Bereavement Leave": "availableBereavement",
+  };
+
   const reasons = [
     {
       value: "Emergency at home",
@@ -58,12 +71,22 @@ const LeaveModal = ({ open, onClose }) => {
     },
   ];
 
+  const calculateDays = (start, end) => {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+    return daysDiff;
+  };
+
   const dispatch = useDispatch();
 
   const [type, setType] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [reason, setReason] = useState("");
+  const [openToast, setOpenToast] = useState(true);
+  const [message, setMessage] = useState("");
 
   const [isTouched, setIsTouched] = useState({
     type: false,
@@ -103,6 +126,10 @@ const LeaveModal = ({ open, onClose }) => {
     }));
   };
 
+  const handleToastClose = () => {
+    setOpenToast(false);
+  };
+
   const handleClose = () => {
     onClose();
   };
@@ -116,14 +143,30 @@ const LeaveModal = ({ open, onClose }) => {
       reason,
     };
     if (isValid) {
-      dispatch(requestLeave(leaveData));
+      const availableLeaveKey = leaveTypeMapping[leaveData.type];
+      const availableLeaveCount =
+        availableLeaves && availableLeaves[availableLeaveKey];
+      const leaveCount = calculateDays(leaveData.startDate, leaveData.endDate);
+      if (availableLeaveCount < 1) {
+        setMessage("No leaves available for this leave type");
+      } else if (availableLeaveCount < leaveCount) {
+        setMessage(
+          "Number of applied days exceeds your available leaves for this leave type"
+        );
+      } else if (leaveData.type === "Casual Leave" && leaveCount > 2) {
+        setMessage("Only 2 consecutive days are allowed for this leave type");
+      } else {
+        dispatch(requestLeave(leaveData));
+        setMessage("Request has been submitted successfully");
+      }
+      setOpenToast(true);
     }
+
     setType("");
     setStartDate("");
     setEndDate("");
     setReason("");
     setIsTouched(false);
-    onClose();
   };
 
   return (
@@ -133,118 +176,137 @@ const LeaveModal = ({ open, onClose }) => {
       aria-labelledby="modal-title"
       aria-describedby="modal-description"
     >
-      <Box
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          bgcolor: "background.paper",
-          boxShadow: 24,
-          p: 4,
-          minWidth: 400,
-          maxWidth: 600,
-          borderRadius: 4,
-        }}
-        component="form"
-        onSubmit={handleSubmit}
-      >
-        <Typography id="modal-title" variant="h6" component="h2" sx={{ mb: 2 }}>
-          Request for Leave
-        </Typography>
-        <TextField
-          name="type"
-          select
-          label="Leave Type"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          value={type}
-          onChange={(e) => setType(e.target.value)}
-          onBlur={handleBlur}
-          error={!!errors.type && isTouched.type}
-          helperText={errors.type && isTouched.type && errors.type}
+      <>
+        <Box
+          sx={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            bgcolor: "background.paper",
+            boxShadow: 24,
+            p: 4,
+            minWidth: 400,
+            maxWidth: 600,
+            borderRadius: 4,
+          }}
+          component="form"
+          onSubmit={handleSubmit}
         >
-          {leaveTypes.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.value}
-            </MenuItem>
-          ))}
-        </TextField>
-        <Stack direction="row">
-          <TextField
-            InputLabelProps={{ shrink: true }}
-            sx={{ width: "180px" }}
-            name="startDate"
-            type="date"
-            label="Start Date"
-            margin="normal"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            onBlur={handleBlur}
-            error={!!errors.startDate && isTouched.startDate}
-            helperText={
-              errors.startDate && isTouched.startDate && errors.startDate
-            }
-          />
-          <Divider
-            orientation="horizontal"
-            variant="middle"
-            sx={{ mx: 3, bgcolor: "grey.500", width: "1px", my: 3 }}
-          />
-          <TextField
-            InputLabelProps={{ shrink: true }}
-            sx={{ width: "180px" }}
-            name="endDate"
-            label="End Date"
-            type="date"
-            margin="normal"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            onBlur={handleBlur}
-            error={!!errors.endDate && isTouched.endDate}
-            helperText={errors.endDate && isTouched.endDate && errors.endDate}
-          />
-        </Stack>
-        <TextField
-          name="reason"
-          select
-          label="Reason"
-          variant="outlined"
-          fullWidth
-          margin="normal"
-          multiline
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-          onBlur={handleBlur}
-          error={!!errors.reason && isTouched.reason}
-          helperText={errors.reason && isTouched.reason && errors.reason}
-        >
-          {reasons.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.value}
-            </MenuItem>
-          ))}
-        </TextField>
-        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
-          <Button
-            sx={{ mr: 1 }}
-            variant="contained"
-            color="error"
-            onClick={onClose}
+          <Typography
+            id="modal-title"
+            variant="h6"
+            component="h2"
+            sx={{ mb: 2 }}
           >
-            Close
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            type="submit"
-            disabled={!isValid}
+            Request for Leave
+          </Typography>
+          <TextField
+            name="type"
+            select
+            label="Leave Type"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            value={type}
+            onChange={(e) => setType(e.target.value)}
+            onBlur={handleBlur}
+            error={!!errors.type && isTouched.type}
+            helperText={errors.type && isTouched.type && errors.type}
           >
-            Submit
-          </Button>
+            {leaveTypes.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.value}
+              </MenuItem>
+            ))}
+          </TextField>
+          <Stack direction="row">
+            <TextField
+              InputLabelProps={{ shrink: true }}
+              sx={{ width: "180px" }}
+              name="startDate"
+              type="date"
+              label="Start Date"
+              margin="normal"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              onBlur={handleBlur}
+              error={!!errors.startDate && isTouched.startDate}
+              helperText={
+                errors.startDate && isTouched.startDate && errors.startDate
+              }
+            />
+            <Divider
+              orientation="horizontal"
+              variant="middle"
+              sx={{ mx: 3, bgcolor: "grey.500", width: "1px", my: 3 }}
+            />
+            <TextField
+              InputLabelProps={{ shrink: true }}
+              sx={{ width: "180px" }}
+              name="endDate"
+              label="End Date"
+              type="date"
+              margin="normal"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              onBlur={handleBlur}
+              error={!!errors.endDate && isTouched.endDate}
+              helperText={errors.endDate && isTouched.endDate && errors.endDate}
+            />
+          </Stack>
+          <TextField
+            name="reason"
+            select
+            label="Reason"
+            variant="outlined"
+            fullWidth
+            margin="normal"
+            multiline
+            value={reason}
+            onChange={(e) => setReason(e.target.value)}
+            onBlur={handleBlur}
+            error={!!errors.reason && isTouched.reason}
+            helperText={errors.reason && isTouched.reason && errors.reason}
+          >
+            {reasons.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.value}
+              </MenuItem>
+            ))}
+          </TextField>
+          <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}>
+            <Button
+              sx={{ mr: 1 }}
+              variant="contained"
+              color="error"
+              onClick={onClose}
+            >
+              Close
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              disabled={!isValid}
+            >
+              Submit
+            </Button>
+          </Box>
         </Box>
-      </Box>
+        {message && (
+          <Snackbar
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={openToast}
+            onClose={handleToastClose}
+            autoHideDuration={4000}
+          >
+            <Alert severity="info" sx={{ width: "100%" }}>
+              {message}
+            </Alert>
+          </Snackbar>
+        )}
+      </>
     </Modal>
   );
 };

@@ -29,7 +29,7 @@ const updateQuotas = asyncHandler(async (req, res) => {
       return user.save();
     });
     await Promise.all(updatePromises);
-    return res.status(200).json({ message: "Leave Quotas added" });
+    return res.status(200).json({ message: "Leave Quota added" });
   }
 
   //Update existing leave quotas
@@ -52,7 +52,7 @@ const updateQuotas = asyncHandler(async (req, res) => {
     return user.save();
   });
   await Promise.all(updateLeaveQuota);
-  return res.status(200).json({ message: "Leave quotas updated" });
+  return res.status(200).json({ message: "Leave quota updated" });
 });
 
 export { getQuotas, updateQuotas };

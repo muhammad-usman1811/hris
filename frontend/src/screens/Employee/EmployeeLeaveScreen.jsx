@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -165,8 +166,11 @@ const EmployeeLeaveScreen = () => {
 
   const dispatch = useDispatch();
 
+  const [leaveQuotas, setLeaveQuotas] = useState([]);
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+  const { leaveQuota } = userInfo;
 
   const leaveRequest = useSelector((state) => state.leaveRequest);
   const { success: successRequest } = leaveRequest;
@@ -218,17 +222,20 @@ const EmployeeLeaveScreen = () => {
   const [value, setValue] = React.useState(0);
   const [open, setOpen] = useState(false);
 
-  const totalSickLeaves = 10;
-  const totalCasualLeaves = 5;
-  const totalAnnualLeaves = 18;
+  const totalLeaves = {};
+  for (let i = 0; i < leaveQuotas.length; i++) {
+    const { leaveType, leaveCount } = leaveQuotas[i];
+    const name = `total${leaveType}`;
+    totalLeaves[name] = leaveCount;
+  }
 
-  const usedSickLeaves = 5;
-  const usedCasualLeaves = 2;
-  const usedAnnualLeaves = 12;
-
-  const availableSickLeaves = totalSickLeaves - usedSickLeaves;
-  const availableCasualLeaves = totalCasualLeaves - usedCasualLeaves;
-  const availableAnnualLeaves = totalAnnualLeaves - usedAnnualLeaves;
+  const availableLeaves = {};
+  for (let i = 0; i < leaveQuota.length; i++) {
+    const { leaveType, leaveCount } = leaveQuota[i];
+    const name = `available${leaveType}`;
+    availableLeaves[name] = leaveCount;
+  }
+  console.log(availableLeaves);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -252,6 +259,15 @@ const EmployeeLeaveScreen = () => {
   useEffect(() => {
     dispatch(getUserLeaves());
     dispatch(getTeamLeaves());
+    const fetchQuota = async () => {
+      try {
+        const { data } = await axios.get("/api/leaveQuotas");
+        setLeaveQuotas(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchQuota();
   }, [dispatch, successRequest, successApprove, successCancel]);
 
   return (
@@ -295,26 +311,46 @@ const EmployeeLeaveScreen = () => {
               <Grid item container xs={12} columnSpacing={3}>
                 <Grid item xs={4}>
                   <QuotaCard
-                    usedDays={usedSickLeaves}
-                    availableDays={availableSickLeaves}
-                    value={(usedSickLeaves / totalSickLeaves) * 100}
+                    usedDays={
+                      totalLeaves.totalSick - availableLeaves.availableSick
+                    }
+                    availableDays={availableLeaves.availableSick}
+                    value={
+                      ((totalLeaves.totalSick - availableLeaves.availableSick) /
+                        totalLeaves.totalSick) *
+                      100
+                    }
                     text={"Sick Leave"}
                   />
                 </Grid>
                 <Grid item xs={4}>
                   <QuotaCard
-                    usedDays={usedCasualLeaves}
-                    availableDays={availableCasualLeaves}
-                    value={(usedCasualLeaves / totalCasualLeaves) * 100}
+                    usedDays={
+                      totalLeaves.totalCasual - availableLeaves.availableCasual
+                    }
+                    availableDays={availableLeaves.availableCasual}
+                    value={
+                      ((totalLeaves.totalCasual -
+                        availableLeaves.availableCasual) /
+                        totalLeaves.totalCasual) *
+                      100
+                    }
                     text={"Casual Leave"}
                   />
                 </Grid>
                 <Grid item xs={4}>
                   <QuotaCard
-                    usedDays={usedAnnualLeaves}
-                    availableDays={availableAnnualLeaves}
-                    value={(usedAnnualLeaves / totalAnnualLeaves) * 100}
-                    text={"Annual Leave"}
+                    usedDays={
+                      totalLeaves.totalEarned - availableLeaves.availableEarned
+                    }
+                    availableDays={availableLeaves.availableEarned}
+                    value={
+                      ((totalLeaves.totalEarned -
+                        availableLeaves.availableEarned) /
+                        totalLeaves.totalEarned) *
+                      100
+                    }
+                    text={"Earned Leave"}
                   />
                 </Grid>
               </Grid>
@@ -386,26 +422,46 @@ const EmployeeLeaveScreen = () => {
             <Grid item container xs={12} columnSpacing={3}>
               <Grid item xs={4}>
                 <QuotaCard
-                  usedDays={usedSickLeaves}
-                  availableDays={availableSickLeaves}
-                  value={(usedSickLeaves / totalSickLeaves) * 100}
+                  usedDays={
+                    totalLeaves.totalSick - availableLeaves.availableSick
+                  }
+                  availableDays={availableLeaves.availableSick}
+                  value={
+                    ((totalLeaves.totalSick - availableLeaves.availableSick) /
+                      totalLeaves.totalSick) *
+                    100
+                  }
                   text={"Sick Leave"}
                 />
               </Grid>
               <Grid item xs={4}>
                 <QuotaCard
-                  usedDays={usedCasualLeaves}
-                  availableDays={availableCasualLeaves}
-                  value={(usedCasualLeaves / totalCasualLeaves) * 100}
+                  usedDays={
+                    totalLeaves.totalCasual - availableLeaves.availableCasual
+                  }
+                  availableDays={availableLeaves.availableCasual}
+                  value={
+                    ((totalLeaves.totalCasual -
+                      availableLeaves.availableCasual) /
+                      totalLeaves.totalCasual) *
+                    100
+                  }
                   text={"Casual Leave"}
                 />
               </Grid>
               <Grid item xs={4}>
                 <QuotaCard
-                  usedDays={usedAnnualLeaves}
-                  availableDays={availableAnnualLeaves}
-                  value={(usedAnnualLeaves / totalAnnualLeaves) * 100}
-                  text={"Annual Leave"}
+                  usedDays={
+                    totalLeaves.totalEarned - availableLeaves.availableEarned
+                  }
+                  availableDays={availableLeaves.availableEarned}
+                  value={
+                    ((totalLeaves.totalEarned -
+                      availableLeaves.availableEarned) /
+                      totalLeaves.totalEarned) *
+                    100
+                  }
+                  text={"Earned Leave"}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -502,7 +558,11 @@ const EmployeeLeaveScreen = () => {
           </>
         )}
       </>
-      <LeaveModal open={open} onClose={handleClose} />
+      <LeaveModal
+        open={open}
+        onClose={handleClose}
+        availableLeaves={availableLeaves}
+      />
     </Grid>
   );
 };

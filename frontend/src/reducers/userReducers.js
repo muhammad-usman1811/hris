@@ -52,8 +52,8 @@ export const userAddReducer = (state = {}, action) => {
       return { ...state, message: "" };
     case "USER_ADD_FAIL":
       return { loading: false, error: action.payload };
-    case "USER_ADD_ERROR_RESET":
-      return { ...state, error: "" };
+    case "USER_ADD_RESET":
+      return {};
     default:
       return state;
   }
@@ -69,6 +69,19 @@ export const userEditReducer = (state = {}, action) => {
       return { loading: false, error: action.payload };
     case "USER_EDIT_RESET":
       return {};
+    default:
+      return state;
+  }
+};
+
+export const userDeleteReducer = (state = {}, action) => {
+  switch (action.type) {
+    case "USER_DELETE_REQUEST":
+      return { loading: true };
+    case "USER_DELETE_SUCCESS":
+      return { loading: false, success: true };
+    case "USER_DELETE_FAIL":
+      return { loading: false, error: action.payload };
     default:
       return state;
   }

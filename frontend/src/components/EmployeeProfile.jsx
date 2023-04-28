@@ -8,6 +8,8 @@ import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 import { Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
@@ -31,6 +33,27 @@ const EmployeeProfile = () => {
     },
     {
       value: "Project Management",
+    },
+  ];
+
+  const designations = [
+    {
+      value: "CEO",
+    },
+    {
+      value: "Director",
+    },
+    {
+      value: "Senior Consultant",
+    },
+    {
+      value: "Junior Consultant",
+    },
+    {
+      value: "Consultant",
+    },
+    {
+      value: "Associate Consultant",
     },
   ];
 
@@ -94,11 +117,10 @@ const EmployeeProfile = () => {
   const { loading, user } = userDetails;
 
   const userEdit = useSelector((state) => state.userEdit);
-  const { success } = userEdit;
+  const { success, error } = userEdit;
 
   //States to store values
   const [imageUrl, setImageUrl] = useState("");
-  const [file, setFile] = useState(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -121,10 +143,11 @@ const EmployeeProfile = () => {
   const [blood, setBlood] = useState("");
 
   //Other states
+  const [openToast, setOpenToast] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
-  // const [formErrors, setFormErrors] = useState({});
-  // const [formIsValid, setFormIsValid] = useState(false);
+  const [attemptedUpload, setAttemptedUpload] = useState(false);
   const [isTouched, setIsTouched] = useState({
+    imageUrl: false,
     name: false,
     email: false,
     password: false,
@@ -160,6 +183,11 @@ const EmployeeProfile = () => {
   const errors = {};
   let isValid = true;
 
+  if (!imageUrl) {
+    errors.imageUrl = "Please select photo";
+    isValid = false;
+  }
+
   if (!name.trim()) {
     errors.name = "Please enter name";
     isValid = false;
@@ -191,16 +219,14 @@ const EmployeeProfile = () => {
     isValid = false;
   }
 
-  if (passport && !/^[A-Za-z0-9]+$/.test(passport.trim())) {
+  if (
+    passport &&
+    !/^[A-Za-z0-9]+$/.test(passport.trim()) &&
+    hasBlurred.passport
+  ) {
     errors.passport = "Please enter alphanumeric only";
     isValid = false;
   }
-  // if (passport !== "") {
-  //   if (!/^[A-Za-z0-9]+$/.test(passport) && hasBlurred.passport) {
-  //     errors.passport = "Please enter alphanumeric only";
-  //     isValid = false;
-  //   }
-  // }
 
   if (!cnic.trim()) {
     errors.cnic = "Please enter your CNIC";
@@ -277,6 +303,14 @@ const EmployeeProfile = () => {
     isValid = false;
   }
 
+  const handleAttempt = () => {
+    setAttemptedUpload(true);
+    setIsTouched((prev) => ({
+      ...prev,
+      imageUrl: true,
+    }));
+  };
+
   const handleBlur = (e) => {
     const { name } = e.target;
     setIsTouched((prev) => ({
@@ -302,8 +336,8 @@ const EmployeeProfile = () => {
     if (isValid) {
       dispatch(
         editUser({
-          _id: id,
-          file,
+          id,
+          imageUrl,
           name,
           email,
           password,
@@ -339,18 +373,26 @@ const EmployeeProfile = () => {
     event.preventDefault();
   };
 
+  const handleToastClose = () => {
+    setOpenToast(false);
+  };
+
+  const handleClick = () => {
+    setOpenToast(true);
+  };
+
   const onDrop = useCallback((acceptedFiles) => {
     if (acceptedFiles?.length) {
       const selectedFile = Object.assign(acceptedFiles[0], {
         preview: URL.createObjectURL(acceptedFiles[0]),
       });
-      setFile(selectedFile);
+      setImageUrl(selectedFile);
     }
   }, []);
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   const handleClear = () => {
-    setFile(null);
+    setImageUrl(null);
   };
 
   useEffect(() => {
@@ -427,12 +469,10 @@ const EmployeeProfile = () => {
               }}
               {...getRootProps()}
             >
-              {file || imageUrl ? (
+              {imageUrl ? (
                 <>
                   <img
-                    src={
-                      file ? file.preview : `./${imageUrl.replace(/\\/g, "/")}`
-                    }
+                    src={imageUrl.preview}
                     alt="Profile"
                     loading="lazy"
                     style={{
@@ -460,9 +500,14 @@ const EmployeeProfile = () => {
                 </>
               ) : (
                 <Box sx={{ display: "flex", flexDirection: "column" }}>
-                  <IconButton color="primary">
+                  <IconButton color="primary" onClick={handleAttempt}>
                     <PhotoCamera />
                   </IconButton>
+                  {(errors.imageUrl || attemptedUpload) && (
+                    <Typography color="error" variant="body2">
+                      {errors.imageUrl}
+                    </Typography>
+                  )}
                 </Box>
               )}
               <input {...getInputProps()} accept="image/*" />
@@ -581,7 +626,7 @@ const EmployeeProfile = () => {
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="passport"
-                label="Passport"
+                label="Passport (optional)"
                 variant="standard"
                 value={passport}
                 onChange={(e) => setPassport(e.target.value)}
@@ -600,7 +645,22 @@ const EmployeeProfile = () => {
                 Job Details
               </Typography>
               <TextField
+                InputLabelProps={{ shrink: true }}
                 sx={{ width: "50%" }}
+                name="employeeId"
+                label="Employee ID"
+                variant="standard"
+                value={employeeId}
+                onChange={(e) => setEmployeeId(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.employeeId && isTouched.employeeId}
+                helperText={
+                  errors.employeeId && isTouched.employeeId && errors.employeeId
+                }
+              />
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
                 name="department"
                 select
                 value={department}
@@ -623,21 +683,6 @@ const EmployeeProfile = () => {
               <br />
               <TextField
                 InputLabelProps={{ shrink: true }}
-                sx={{ marginTop: "15px", width: "50%" }}
-                name="employeeId"
-                label="Employee ID"
-                variant="standard"
-                value={employeeId}
-                onChange={(e) => setEmployeeId(e.target.value)}
-                onBlur={handleBlur}
-                error={!!errors.employeeId && isTouched.employeeId}
-                helperText={
-                  errors.employeeId && isTouched.employeeId && errors.employeeId
-                }
-              />
-              <br />
-              <TextField
-                InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="title"
                 label="Title"
@@ -653,18 +698,24 @@ const EmployeeProfile = () => {
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="designation"
-                label="Designation"
+                select
                 variant="standard"
                 value={designation}
                 onChange={(e) => setDesignation(e.target.value)}
                 onBlur={handleBlur}
                 error={!!errors.designation && isTouched.designation}
                 helperText={
-                  errors.designation &&
-                  isTouched.designation &&
-                  errors.designation
+                  errors.designation && isTouched.designation
+                    ? errors.designation
+                    : "Please select designation"
                 }
-              />
+              >
+                {designations.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
               <br />
               <TextField
                 InputLabelProps={{ shrink: true }}
@@ -839,6 +890,7 @@ const EmployeeProfile = () => {
                   variant="contained"
                   type="submit"
                   disabled={!isValid || !isDisabled}
+                  onClick={handleClick}
                 >
                   Save Changes
                 </Button>
@@ -850,6 +902,18 @@ const EmployeeProfile = () => {
                   Cancel
                 </Button>
               </Stack>
+              {error && (
+                <Snackbar
+                  anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                  open={openToast}
+                  onClose={handleToastClose}
+                  autoHideDuration={3000}
+                >
+                  <Alert severity="error" sx={{ width: "100%" }}>
+                    {error}
+                  </Alert>
+                </Snackbar>
+              )}
             </Box>
           </Grid>
         </Grid>

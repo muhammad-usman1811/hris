@@ -41,7 +41,6 @@ const userSchema = mongoose.Schema(
     },
     leaveQuota: {
       type: [LeaveQuota.schema],
-      required: true,
       default: [],
     },
     jobDetails: {

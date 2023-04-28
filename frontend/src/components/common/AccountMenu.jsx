@@ -10,18 +10,17 @@ import Tooltip from "@mui/material/Tooltip";
 import Logout from "@mui/icons-material/Logout";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "./../../actions/userActions";
-//import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const AccountMenu = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-  //const navigate = useNavigate();
-
-  // const userLogin = useSelector((state) => state.userLogin);
-  // const { userInfo } = userLogin;
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -31,7 +30,11 @@ const AccountMenu = () => {
   };
 
   const handleProfile = () => {
-    // navigate(`/home/profile/${userInfo._id}`);
+    if (userInfo.role === "Admin") {
+      navigate(`/home/profile/${userInfo._id}`);
+    } else {
+      navigate(`/home/employee/profile/${userInfo._id}`);
+    }
   };
   const handleLogout = () => {
     dispatch(logout(userInfo._id));

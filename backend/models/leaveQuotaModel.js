@@ -3,11 +3,9 @@ import mongoose from "mongoose";
 const leaveQuotaSchema = mongoose.Schema({
   leaveType: {
     type: String,
-    required: true,
   },
   leaveCount: {
     type: Number,
-    required: true,
   },
 });
 

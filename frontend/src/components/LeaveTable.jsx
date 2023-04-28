@@ -6,13 +6,24 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { getLeaves } from "../actions/leaveActions";
 import { Button } from "@mui/material";
 import LeaveQuotaModal from "./LeaveQuotaModal";
+import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import { Search } from "@mui/icons-material";
 
 const LeaveTable = () => {
   const [open, setOpen] = useState(false);
+  const [filteredRows, setFilteredRows] = useState([]);
   const leavesList = useSelector((state) => state.leavesList);
   const { loading, leaves } = leavesList;
 
   const dispatch = useDispatch();
+
+  function handleFilter(event) {
+    const newData = rowsData.filter((row) => {
+      return row.name.toLowerCase().includes(event.target.value.toLowerCase());
+    });
+    setFilteredRows(newData);
+  }
 
   const columns = [
     {
@@ -97,13 +108,29 @@ const LeaveTable = () => {
       ) : (
         <>
           <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+            <TextField
+              sx={{ width: "20ch", mr: "auto" }}
+              color="error"
+              id="input-with-icon-textfield"
+              placeholder="Search"
+              onChange={handleFilter}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+              variant="standard"
+            />
             <Button variant="contained" color="error" onClick={handleClick}>
               Set Leave Quota
             </Button>
           </Box>
           <LeaveQuotaModal open={open} handleClose={handleClose} />
           <DataTable
-            data={rowsData}
+            //data={rowsData}
+            data={filteredRows.length === 0 ? rowsData : filteredRows}
             columns={columns}
             pagination
             highlightOnHover

@@ -20,8 +20,14 @@ function App() {
       setTitle("Edit Profile");
     } else if (alteredTitle.endsWith("leaves")) {
       setTitle("Leaves");
+    } else if (alteredTitle.endsWith("documents")) {
+      setTitle("Documents");
     } else if (alteredTitle.startsWith("EmployeePortal")) {
       setTitle("Home");
+    } else if (alteredTitle.startsWith("Employees")) {
+      setTitle("Employees");
+    } else if (alteredTitle.startsWith("Employee")) {
+      setTitle("Profile");
     } else {
       setTitle(alteredTitle);
     }
