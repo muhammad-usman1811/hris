@@ -47,7 +47,8 @@ app.get("/", (req, res) => {
 });
 
 // Serve uploaded documents
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/documents", express.static(uploadDir));
+app.use("/photos", express.static(photoDir));
 
 //Middlewares to use routes
 app.use("/api/users", userRoutes);

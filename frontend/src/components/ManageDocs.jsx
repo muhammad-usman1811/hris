@@ -60,6 +60,15 @@ const ManageDocs = () => {
     }
   };
 
+  const handlePreview = (path) => {
+    const newWindow = window.open(
+      `http://localhost:5000/documents/${path}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+    if (newWindow) newWindow.opener = null;
+  };
+
   useEffect(() => {
     if (userInfo && userInfo.role === "Admin") {
       dispatch(getDocs());
@@ -121,6 +130,7 @@ const ManageDocs = () => {
                             color="error"
                             edge="end"
                             aria-label="view"
+                            onClick={() => handlePreview(doc.url)}
                           >
                             <Visibility />
                           </IconButton>

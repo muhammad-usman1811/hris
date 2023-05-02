@@ -15,7 +15,7 @@ const router = express.Router();
 router.route("/").post(addUser).get(protect, getUsers);
 router
   .route("/:id")
-  .put(protect, uploadPhoto, editUser)
+  .put(protect, editUser)
   .get(protect, getUserById)
   .delete(protect, deleteUser);
 router.post("/login", authUser);

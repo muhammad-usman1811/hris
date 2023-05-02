@@ -63,7 +63,7 @@ const EmployeeProfile = () => {
   const [value, setValue] = React.useState(0);
 
   //States to store values
-  //const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
@@ -92,7 +92,7 @@ const EmployeeProfile = () => {
     if (!user || !user.name || user._id !== id) {
       dispatch(getUserDetails(id));
     } else {
-      //setImageUrl(user.imageUrl);
+      setImageUrl(user.imageUrl);
       setName(user.name);
       setEmail(user.email);
       //setPassword(user.password);
@@ -141,8 +141,9 @@ const EmployeeProfile = () => {
         <Grid item container>
           <Grid item>
             <Avatar
-              sx={{ mr: 2, width: 50, height: 50 }}
-              src="/broken-image.jpg"
+              sx={{ mr: 2, width: 60, height: 60 }}
+              //src="/broken-image.jpg"
+              src={`http://localhost:5000/photos/${imageUrl}`}
               alt="profile"
             />
           </Grid>
@@ -159,9 +160,7 @@ const EmployeeProfile = () => {
           </Grid>
           <Grid sx={{ borderBottom: 2, borderColor: "red" }} item container>
             <Grid item>
-              <ListItem
-                sx={{ ml: 10, border: 1, borderColor: "grey.500", width: 250 }}
-              >
+              <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
                 <ListItemIcon>
                   <PhoneAndroidIcon />
                 </ListItemIcon>
@@ -169,7 +168,7 @@ const EmployeeProfile = () => {
               </ListItem>
             </Grid>
             <Grid item>
-              <ListItem sx={{ border: 1, borderColor: "grey.500", width: 300 }}>
+              <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
                 <ListItemIcon>
                   <EmailIcon />
                 </ListItemIcon>
@@ -177,7 +176,7 @@ const EmployeeProfile = () => {
               </ListItem>
             </Grid>
             <Grid item>
-              <ListItem sx={{ border: 1, borderColor: "grey.500", width: 250 }}>
+              <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
                 <ListItemIcon>
                   <LocationOnIcon />
                 </ListItemIcon>
@@ -185,7 +184,7 @@ const EmployeeProfile = () => {
               </ListItem>
             </Grid>
             <Grid item>
-              <ListItem sx={{ border: 1, borderColor: "grey.500", width: 250 }}>
+              <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
                 <ListItemIcon>
                   <FiberManualRecordIcon
                     style={{
@@ -220,6 +219,11 @@ const EmployeeProfile = () => {
                 sx={{ borderRight: 1, borderColor: "grey" }}
                 label="Emergency Contact Information"
                 {...a11yProps(2)}
+              />
+              <Tab
+                sx={{ borderRight: 1, borderColor: "grey" }}
+                label="Educational Information"
+                {...a11yProps(3)}
               />
             </Tabs>
           </Box>
@@ -258,6 +262,16 @@ const EmployeeProfile = () => {
                 </Typography>
                 <Typography variant="body1" color="textPrimary">
                   Single
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Shift Time:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  9:00AM-6:00PM
                 </Typography>
               </Grid>
 
@@ -324,6 +338,42 @@ const EmployeeProfile = () => {
                 </Typography>
               </Grid>
 
+              <Grid
+                item
+                xs={3}
+                sx={{ borderRight: 1, borderColor: "grey.500", ml: 5 }}
+              >
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Overall Experience of Years
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  5
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Current Salary
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  0000
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Experience with DigiFloat
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  2 Years
+                </Typography>
+              </Grid>
               <Grid item xs={3} sx={{ ml: 5 }}>
                 <Typography
                   variant="subtitle2"
@@ -407,6 +457,58 @@ const EmployeeProfile = () => {
                 </Typography>
                 <Typography variant="body1" color="textPrimary">
                   {blood}
+                </Typography>
+              </Grid>
+            </Grid>
+          </TabPanel>
+          <TabPanel value={value} index={3}>
+            <Grid container>
+              <Grid
+                item
+                xs={4}
+                sx={{ borderRight: 1, borderColor: "grey.500", ml: 5 }}
+              >
+                <Typography variant="h6" sx={{ marginBottom: "10px" }}>
+                  Educational Information
+                </Typography>
+                <Typography variant="subtitle2" color="textSecondary">
+                  University of Education
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  BZU Multan
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Certifications
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  Web Development
+                </Typography>
+              </Grid>
+
+              <Grid item xs={3} sx={{ ml: 5 }}>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Qualification
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  Bachelors
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Latest Degree
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  BSCS
                 </Typography>
               </Grid>
             </Grid>

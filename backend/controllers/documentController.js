@@ -26,12 +26,12 @@ const uploadDocument = asyncHandler(async (req, res) => {
       return res.status(500).json({ message: "Error uploading file" });
     }
     const { filename } = req.file;
-    const { filename: name } = req.body;
+    const { name } = req.body;
 
     // Saving in database
     const document = new Document({
       name: name,
-      url: `/uploads/${filename}`,
+      url: filename,
     });
 
     try {

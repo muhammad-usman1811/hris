@@ -182,7 +182,7 @@ const HomeScreen = () => {
           </Box>
 
           <Box sx={{ display: "flex" }}>
-            <CardContent sx={{ mt: 8, ml: 10 }}>
+            <CardContent sx={{ mt: 8, ml: 8 }}>
               <Typography variant="h6" color="initial">
                 Check-In Time
               </Typography>
@@ -192,7 +192,7 @@ const HomeScreen = () => {
             </CardContent>
           </Box>
           <Box>
-            <CardContent sx={{ mt: 8, ml: 10 }}>
+            <CardContent sx={{ mt: 8, ml: 8 }}>
               <Typography variant="h6" color="initial">
                 Check-Out Time
               </Typography>
@@ -202,7 +202,7 @@ const HomeScreen = () => {
             </CardContent>
           </Box>
           <Box>
-            <CardContent sx={{ mt: 8, ml: 10 }}>
+            <CardContent sx={{ mt: 8, ml: 8 }}>
               <Typography variant="h6" color="initial">
                 Working Hours
               </Typography>
@@ -219,7 +219,7 @@ const HomeScreen = () => {
                 aria-label="check-buttons"
               >
                 <ToggleButton
-                  sx={{ width: 110 }}
+                  sx={{ width: 120 }}
                   onClick={handleCheckIn}
                   color={"success"}
                   value="check-in"
@@ -228,7 +228,7 @@ const HomeScreen = () => {
                   Check-In
                 </ToggleButton>
                 <ToggleButton
-                  sx={{ width: 110 }}
+                  sx={{ width: 120 }}
                   disabled={checkOut || !checkIn}
                   onClick={handleCheckOut}
                   color={"error"}

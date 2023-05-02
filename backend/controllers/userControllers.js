@@ -207,7 +207,7 @@ const editUser = asyncHandler(async (req, res) => {
     } = req.body;
 
     const updatedData = {
-      imageUrl: file.path,
+      imageUrl: file.filename,
       name,
       email,
       password,

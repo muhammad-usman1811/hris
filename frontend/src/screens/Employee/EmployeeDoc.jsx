@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-//import pdfjsLib from "pdfjs-dist/webpack";
-//import { Document, Page } from "react-pdf";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import List from "@mui/material/List";
@@ -12,7 +10,6 @@ import Avatar from "@mui/material/Avatar";
 import IconButton from "@mui/material/IconButton";
 import Grid from "@mui/material/Grid";
 import { Visibility } from "@mui/icons-material";
-import DownloadIcon from "@mui/icons-material/Download";
 import ArticleIcon from "@mui/icons-material/Article";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getDocs } from "../../actions/docActions";
@@ -27,22 +24,11 @@ export default function EmployeeDoc() {
   const docList = useSelector((state) => state.docList);
   const { loading, documents } = docList;
 
-  const handleDownload = async (name, url) => {
-    let fileUrl = "";
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      fileUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = fileUrl;
-      link.download = name;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      // deleteDocument(url); // optionally delete the document after download
-    } catch (error) {
-      console.error(error);
-    }
+  const handlePreview = (path) => {
+    window.open(
+      `http://localhost:5000/documents/${path}?viewonly=true`,
+      "_blank"
+    );
   };
 
   useEffect(() => {
@@ -93,6 +79,7 @@ export default function EmployeeDoc() {
                               display: "flex",
                               alignItems: "center",
                               pl: 1,
+                              pr: 1,
                               pb: 1,
                             }}
                           >
@@ -101,17 +88,9 @@ export default function EmployeeDoc() {
                               color="error"
                               edge="end"
                               aria-label="view"
+                              onClick={() => handlePreview(doc.url)}
                             >
                               <Visibility />
-                            </IconButton>
-                            <IconButton
-                              sx={{ ml: 3, mr: 2 }}
-                              color="error"
-                              edge="end"
-                              aria-label="delete"
-                              onClick={() => handleDownload(doc.url, doc.name)}
-                            >
-                              <DownloadIcon />
                             </IconButton>
                           </Box>
                         }

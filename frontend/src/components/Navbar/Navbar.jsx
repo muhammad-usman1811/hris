@@ -176,14 +176,26 @@ const Navbar = () => {
         </>
       )}
 
-      <List component="nav" sx={{ marginTop: "auto" }}>
-        <ListItemButton onClick={logoutHandler}>
-          <ListItemIcon>
-            <Logout />
-          </ListItemIcon>
-          <ListItemText primary="Logout" />
-        </ListItemButton>
-      </List>
+      <Box
+        sx={{
+          display: "flex",
+          alignContent: "center",
+          justifyContent: "center",
+          width: "255px",
+          paddingTop: "10px",
+          paddingBottom: "10px",
+          marginTop: "auto",
+        }}
+      >
+        <List component="nav" sx={{ width: "100%", marginTop: "auto" }}>
+          <ListItemButton onClick={logoutHandler}>
+            <ListItemIcon>
+              <Logout />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItemButton>
+        </List>
+      </Box>
       <Box
         sx={{
           display: "flex",
@@ -193,7 +205,6 @@ const Navbar = () => {
           width: "255px",
           paddingTop: "10px",
           paddingBottom: "10px",
-          marginTop: "auto",
         }}
       >
         <Typography variant="caption" color="red">

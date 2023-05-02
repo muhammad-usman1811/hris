@@ -7,7 +7,7 @@ export const uploadDoc = (name, file) => async (dispatch) => {
     });
 
     const formData = new FormData();
-    formData.append("filename", name);
+    formData.append("name", name);
     formData.append("document", file);
 
     const config = {
