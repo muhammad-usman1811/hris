@@ -472,7 +472,7 @@ const EmployeeProfile = () => {
               {imageUrl ? (
                 <>
                   <img
-                    src={`http://localhost:5000/photos/${imageUrl}`}
+                    src={`/photos/${imageUrl}`}
                     //src={imageUrl.preview}
                     alt="Profile"
                     loading="lazy"

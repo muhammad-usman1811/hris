@@ -143,7 +143,7 @@ const EmployeeProfile = () => {
             <Avatar
               sx={{ mr: 2, width: 60, height: 60 }}
               //src="/broken-image.jpg"
-              src={`http://localhost:5000/photos/${imageUrl}`}
+              src={`/photos/${imageUrl}`}
               alt="profile"
             />
           </Grid>
