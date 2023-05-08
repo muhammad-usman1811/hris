@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Grid from "@mui/material/Grid";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -18,9 +19,16 @@ import LeaveRequestCard from "../components/LeaveRequestCard";
 import BasicCalendar from "../components/BasicCalendar";
 import DashboardGraph from "./../components/DashboardGraph";
 import { useNavigate } from "react-router-dom";
+import { listUsers } from "../actions/userActions";
 
 const DashboardScreen = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const userList = useSelector((state) => state.userList);
+  const { users } = userList;
+  useEffect(() => {
+    dispatch(listUsers());
+  }, [dispatch]);
   return (
     <Grid
       item
@@ -38,7 +46,7 @@ const DashboardScreen = () => {
         <Grid item xs={3}>
           <BasicCard
             text={"Total Employees"}
-            content={1409}
+            content={users?.length}
             colorCode="#EFEAFA"
             onClick={() => navigate("/home/employees")}
           />
