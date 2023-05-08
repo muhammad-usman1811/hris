@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
+//import Button from "@mui/material/Button";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
@@ -153,11 +153,11 @@ const EmployeeProfile = () => {
               {title}
             </Typography>
           </Grid>
-          <Grid item>
+          {/* <Grid item>
             <Button variant="contained" color="error">
               Edit Profile
             </Button>
-          </Grid>
+          </Grid> */}
           <Grid sx={{ borderBottom: 2, borderColor: "red" }} item container>
             <Grid item>
               <ListItem sx={{ border: 1, borderColor: "grey.500" }}>

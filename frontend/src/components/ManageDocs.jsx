@@ -12,7 +12,7 @@ import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import { Add, Delete, Visibility } from "@mui/icons-material";
-import EditIcon from "@mui/icons-material/Edit";
+//import EditIcon from "@mui/icons-material/Edit";
 import Button from "@mui/material/Button";
 import ArticleIcon from "@mui/icons-material/Article";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -134,14 +134,14 @@ const ManageDocs = () => {
                           >
                             <Visibility />
                           </IconButton>
-                          <IconButton
+                          {/* <IconButton
                             color="error"
                             edge="end"
                             aria-label="edit"
                             sx={{ ml: 3 }}
                           >
                             <EditIcon />
-                          </IconButton>
+                          </IconButton> */}
                           <IconButton
                             sx={{ ml: 3, mr: 2 }}
                             color="error"

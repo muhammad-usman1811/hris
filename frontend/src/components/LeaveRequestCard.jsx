@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 const LeaveRequestCard = () => {
   const navigate = useNavigate();
+
   return (
     <Card
       sx={{

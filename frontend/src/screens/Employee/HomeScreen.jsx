@@ -104,11 +104,6 @@ const HomeScreen = () => {
       setWorkHours(calculateWorkHours(checkIn, checkOut));
     }
 
-    const removeCheckInAndCheckOut = () => {
-      localStorage.removeItem(`checkIn:${userInfo._id}`);
-      localStorage.removeItem(`checkOut:${userInfo._id}`);
-    };
-
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) {
       setGreeting("Good Morning");
@@ -129,18 +124,17 @@ const HomeScreen = () => {
       now.getDate(),
       23,
       59,
-      59
+      59,
+      999
     );
 
-    const timeToClearLocalStorage = endOfDay.getTime() - now.getTime();
-    const timeoutId = setTimeout(
-      removeCheckInAndCheckOut,
-      timeToClearLocalStorage
-    );
+    if (now > endOfDay) {
+      localStorage.removeItem(`checkIn:${userInfo._id}`);
+      localStorage.removeItem(`checkOut:${userInfo._id}`);
+    }
 
     return () => {
       clearInterval(interval);
-      clearTimeout(timeoutId);
     };
   }, [checkIn, checkOut, userInfo]);
 
