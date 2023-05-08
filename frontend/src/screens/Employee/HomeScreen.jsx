@@ -9,6 +9,7 @@ import CardContent from "@mui/material/CardContent";
 import moment from "moment";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import axios from "axios";
 
 const HomeScreen = () => {
   const [alignment, setAlignment] = React.useState("web");
@@ -48,14 +49,48 @@ const HomeScreen = () => {
     return totalWorkHours;
   };
 
-  const handleCheckIn = () => {
+  const handleCheckIn = async () => {
     let now = moment();
-    setCheckIn(now.format("hh:mm:ss A"));
+    const checkInTime = now.format("hh:mm:ss A");
+    setCheckIn(checkInTime);
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    try {
+      await axios.post(
+        "/api/attendance/checkIn",
+        { checkIn: checkInTime },
+        config
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleCheckOut = () => {
+  const handleCheckOut = async () => {
     let now = moment();
-    setCheckOut(now.format("hh:mm:ss A"));
+    const checkOutTime = now.format("hh:mm:ss A");
+    setCheckOut(checkOutTime);
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    try {
+      await axios.put(
+        `/api/attendance/checkOut/${userInfo._id}`,
+        {
+          checkOut: checkOutTime,
+        },
+        config
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -68,6 +103,11 @@ const HomeScreen = () => {
     if (checkIn && checkOut) {
       setWorkHours(calculateWorkHours(checkIn, checkOut));
     }
+
+    const removeCheckInAndCheckOut = () => {
+      localStorage.removeItem(`checkIn:${userInfo._id}`);
+      localStorage.removeItem(`checkOut:${userInfo._id}`);
+    };
 
     const hour = new Date().getHours();
     if (hour >= 5 && hour < 12) {
@@ -82,7 +122,26 @@ const HomeScreen = () => {
       setTime(moment().format("hh:mm:ss A"));
     }, 1000);
 
-    return () => clearInterval(interval);
+    const now = new Date();
+    const endOfDay = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate(),
+      23,
+      59,
+      59
+    );
+
+    const timeToClearLocalStorage = endOfDay.getTime() - now.getTime();
+    const timeoutId = setTimeout(
+      removeCheckInAndCheckOut,
+      timeToClearLocalStorage
+    );
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeoutId);
+    };
   }, [checkIn, checkOut, userInfo]);
 
   return (

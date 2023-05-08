@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import DataTable from "./common/DataTable";
+import moment from "moment";
+import axios from "axios";
 
 const AttendanceList = () => {
   const columns = [
-    { field: "id", headerName: "ID", width: 90 },
     {
       field: "name",
       headerName: "Name",
@@ -36,90 +38,57 @@ const AttendanceList = () => {
     },
   ];
 
-  const rows = [
-    {
-      id: 1,
-      name: "Snow",
-      department: "Development",
+  const [attendance, setAttendance] = useState([]);
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  const calculateWorkHours = (starttime, endtime) => {
+    if (!endtime) {
+      return "";
+    }
+    let startTime = moment(starttime, "hh:mm:ss A");
+    let endTime = moment(endtime, "hh:mm:ss A");
+    let duration = moment.duration(endTime.diff(startTime));
+    let hour = duration.hours();
+    let minute = duration.minutes();
+    let second = duration.seconds();
+    let totalWorkHours = moment({
+      hours: hour,
+      minutes: minute,
+      seconds: second,
+    }).format("HH:mm:ss");
+    return totalWorkHours;
+  };
+
+  const rowsData = attendance.map((row) => {
+    return {
+      id: row._id,
+      name: row.name,
+      department: row.department,
       status: "Present",
-      checkedIn: "09:00 am",
-      checkedOut: "05:00 pm",
-      workHours: "8",
-    },
-    {
-      id: 2,
-      name: "Lannister",
-      department: "Project Management",
-      status: "Absent",
-      checkedIn: "09:00 am",
-      checkedOut: "05:00 pm",
-      workHours: "8",
-    },
-    {
-      id: 3,
-      name: "Lannister",
-      department: "Data",
-      status: "Present",
-      checkedIn: "09:00 am",
-      checkedOut: "05:00 pm",
-      workHours: "8",
-    },
-    {
-      id: 4,
-      name: "Stark",
-      department: "Data",
-      status: "WFH",
-      checkedIn: "09:00 am",
-      checkedOut: "05:00 pm",
-      workHours: "8",
-    },
-    {
-      id: 5,
-      name: "Targaryen",
-      department: "Data",
-      status: "Present",
-      checkedIn: "09:00 am",
-      checkedOut: "05:00 pm",
-      workHours: "8",
-    },
-    {
-      id: 6,
-      name: "Melisandre",
-      department: "Development",
-      status: "WFH",
-      checkedIn: "09:00 am",
-      checkedOut: "05:00 pm",
-      workHours: "8",
-    },
-    {
-      id: 7,
-      name: "Clifford",
-      department: "Data",
-      status: "Absent",
-      checkedIn: "09:00 am",
-      checkedOut: "05:00 pm",
-      workHours: "8",
-    },
-    {
-      id: 8,
-      name: "Frances",
-      department: "Data",
-      status: "Present",
-      checkedIn: "09:00 am",
-      checkedOut: "05:00 pm",
-      workHours: "8",
-    },
-    {
-      id: 9,
-      name: "Roxie",
-      department: "Data",
-      status: "Absent",
-      checkedIn: "09:00 am",
-      checkedOut: "05:00 pm",
-      workHours: "8",
-    },
-  ];
-  return <DataTable rows={rows} columns={columns} />;
+      checkedIn: row.checkIn,
+      checkedOut: row.checkOut,
+      workHours: calculateWorkHours(row.checkIn, row.checkOut),
+    };
+  });
+  useEffect(() => {
+    const fetchAttendance = async () => {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      try {
+        const { data } = await axios.get("/api/attendance", config);
+        setAttendance(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchAttendance();
+  }, [userInfo]);
+  return <DataTable rows={rowsData} columns={columns} />;
 };
 
 export default AttendanceList;

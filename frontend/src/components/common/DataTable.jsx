@@ -12,6 +12,7 @@ const DataTable = ({ rows, columns }) => {
       }}
     >
       <DataGrid
+        headerClassName={"MuiTypography-root MuiTypography-weightBold"}
         rows={rows}
         columns={columns}
         initialState={{

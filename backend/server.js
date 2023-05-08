@@ -31,6 +31,9 @@ const uploadDir = path.join(__dirname, "/uploads");
 const __dirname2 = path.resolve();
 const photoDir = path.join(__dirname2, "/profilePhotos");
 
+//Define directory for catch all route
+const __dirname3 = path.resolve();
+
 //Create directory for documents
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);

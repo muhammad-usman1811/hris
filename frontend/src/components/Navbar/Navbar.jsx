@@ -34,7 +34,7 @@ const Navbar = () => {
     setSelectedIndex(index);
   };
   const logoutHandler = () => {
-    dispatch(logout(userInfo._id));
+    dispatch(logout());
   };
 
   return (

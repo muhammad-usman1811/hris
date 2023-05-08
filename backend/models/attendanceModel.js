@@ -17,10 +17,15 @@ const attendanceSchema = mongoose.Schema(
       required: true,
       ref: "User",
     },
-    status: {
+    checkIn: {
       type: String,
-      required: true,
     },
+    checkOut: {
+      type: String,
+    },
+    // workHours: {
+    //   type: String,
+    // },
   },
   {
     timestamps: true,
