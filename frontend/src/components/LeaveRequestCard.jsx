@@ -51,91 +51,95 @@ const LeaveRequestCard = () => {
         >
           <CardContent>
             <Typography variant="h6">Leave Requests</Typography>
-            <List
-              sx={{
-                width: "100%",
-                maxWidth: 400,
-              }}
-            >
-              <Box
+            {recentLeaves?.length > 0 ? (
+              <List
                 sx={{
-                  bgcolor: "#E7EBEE",
-                  marginBottom: "10px",
-                  borderRadius: "8px",
+                  width: "100%",
+                  maxWidth: 400,
                 }}
               >
-                <ListItem alignItems="flex-start">
-                  <ListItemAvatar>
-                    <Avatar
-                      alt="Michael"
-                      src="/images/userPhoto.jpg"
-                      //src="https://mui.com/static/images/avatar/3.jpg"
+                <Box
+                  sx={{
+                    bgcolor: "#E7EBEE",
+                    marginBottom: "10px",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <ListItem alignItems="flex-start">
+                    <ListItemAvatar>
+                      <Avatar
+                        alt="Michael"
+                        src="/images/userPhoto.jpg"
+                        //src="https://mui.com/static/images/avatar/3.jpg"
+                      />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={firstLeave && firstLeave.name}
+                      secondary={
+                        <React.Fragment>
+                          <Typography
+                            sx={{ display: "inline" }}
+                            component="span"
+                            variant="body2"
+                            color="text.primary"
+                          >
+                            {firstLeave && firstLeave.type}
+                          </Typography>
+                          {` — ${firstLeave && firstLeave.reason}`}
+                        </React.Fragment>
+                      }
                     />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={firstLeave && firstLeave.name}
-                    secondary={
-                      <React.Fragment>
-                        <Typography
-                          sx={{ display: "inline" }}
-                          component="span"
-                          variant="body2"
-                          color="text.primary"
-                        >
-                          {firstLeave && firstLeave.type}
-                        </Typography>
-                        {` — ${firstLeave && firstLeave.reason}`}
-                      </React.Fragment>
-                    }
-                  />
-                  <Chip
-                    label={firstLeave && firstLeave.status}
-                    color={
-                      firstLeave && firstLeave.status === "Approved"
-                        ? "success"
-                        : "error"
-                    }
-                    variant="outlined"
-                  />
-                </ListItem>
-              </Box>
-              <Box sx={{ bgcolor: "#E7EBEE", borderRadius: "8px" }}>
-                <ListItem alignItems="flex-start">
-                  <ListItemAvatar>
-                    <Avatar
-                      alt="Mark Taylor"
-                      src="/images/userPhoto.jpg"
-                      //src="https://mui.com/static/images/avatar/2.jpg"
+                    <Chip
+                      label={firstLeave && firstLeave.status}
+                      color={
+                        firstLeave && firstLeave.status === "Approved"
+                          ? "success"
+                          : "error"
+                      }
+                      variant="outlined"
                     />
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={secondLeave && secondLeave.name}
-                    secondary={
-                      <React.Fragment>
-                        <Typography
-                          sx={{ display: "inline" }}
-                          component="span"
-                          variant="body2"
-                          color="text.primary"
-                        >
-                          {secondLeave && secondLeave.type}
-                        </Typography>
-                        {` — ${secondLeave && secondLeave.reason}`}
-                      </React.Fragment>
-                    }
-                  />
-                  <Chip
-                    label={secondLeave && secondLeave.status}
-                    color={
-                      secondLeave && secondLeave.status === "Approved"
-                        ? "success"
-                        : "error"
-                    }
-                    variant="outlined"
-                  />
-                </ListItem>
-              </Box>
-            </List>
+                  </ListItem>
+                </Box>
+                <Box sx={{ bgcolor: "#E7EBEE", borderRadius: "8px" }}>
+                  <ListItem alignItems="flex-start">
+                    <ListItemAvatar>
+                      <Avatar
+                        alt="Mark Taylor"
+                        src="/images/userPhoto.jpg"
+                        //src="https://mui.com/static/images/avatar/2.jpg"
+                      />
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={secondLeave && secondLeave.name}
+                      secondary={
+                        <React.Fragment>
+                          <Typography
+                            sx={{ display: "inline" }}
+                            component="span"
+                            variant="body2"
+                            color="text.primary"
+                          >
+                            {secondLeave && secondLeave.type}
+                          </Typography>
+                          {` — ${secondLeave && secondLeave.reason}`}
+                        </React.Fragment>
+                      }
+                    />
+                    <Chip
+                      label={secondLeave && secondLeave.status}
+                      color={
+                        secondLeave && secondLeave.status === "Approved"
+                          ? "success"
+                          : "error"
+                      }
+                      variant="outlined"
+                    />
+                  </ListItem>
+                </Box>
+              </List>
+            ) : (
+              <Typography>No leaves to display.</Typography>
+            )}
           </CardContent>
           <CardActions>
             <Button size="small" onClick={() => navigate("/home/leaves")}>

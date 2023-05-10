@@ -52,7 +52,10 @@ const AccountMenu = () => {
             aria-haspopup="true"
             aria-expanded={open ? "true" : undefined}
           >
-            <Avatar src="https://mui.com/static/images/avatar/2.jpg" />
+            <Avatar
+              src={`/photos/${userInfo.imageUrl}`}
+              //src="https://mui.com/static/images/avatar/2.jpg"
+            />
           </IconButton>
         </Tooltip>
       </Box>

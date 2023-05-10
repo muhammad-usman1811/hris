@@ -18,6 +18,9 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
+// import FormHelperText from "@mui/material/FormHelperText";
+// import FormControl from "@mui/material/FormControl";
+// import Input from "@mui/material/Input";
 import { addUser } from "../actions/userActions";
 
 const NewEmployee = () => {
@@ -108,6 +111,26 @@ const NewEmployee = () => {
     },
   ];
 
+  const employmentStatus = [
+    {
+      value: "Intern",
+    },
+    {
+      value: "On Probation",
+    },
+    {
+      value: "Permanent",
+    },
+  ];
+  const maritalStatus = [
+    {
+      value: "Single",
+    },
+    {
+      value: "Married",
+    },
+  ];
+
   //State to store form field values
   const [formData, setFormData] = useState({
     file: null,
@@ -117,6 +140,8 @@ const NewEmployee = () => {
     address: "",
     phone: "",
     passport: "",
+    dob: "",
+    maritalStatus: "",
     cnic: "",
     department: "",
     employeeId: "",
@@ -126,6 +151,8 @@ const NewEmployee = () => {
     date: "",
     workType: "",
     role: "",
+    employmentStatus: "",
+    salary: "",
     emergencyName: "",
     relation: "",
     emergencyAddress: "",
@@ -151,6 +178,8 @@ const NewEmployee = () => {
     address: false,
     phone: false,
     passport: false,
+    dob: false,
+    maritalStatus: false,
     cnic: false,
     department: false,
     employeeId: false,
@@ -160,6 +189,8 @@ const NewEmployee = () => {
     date: false,
     workType: false,
     role: false,
+    salary: false,
+    employmentStatus: false,
     emergencyName: false,
     relation: false,
     emergencyAddress: false,
@@ -305,6 +336,16 @@ const NewEmployee = () => {
       isValid = false;
     }
 
+    if (!formData.dob) {
+      errors.dob = "Please enter date of birth";
+      isValid = false;
+    }
+
+    if (!formData.maritalStatus) {
+      errors.maritalStatus = "Please enter marital status";
+      isValid = false;
+    }
+
     if (!formData.cnic || !formData.cnic.trim()) {
       errors.cnic = "Please enter your CNIC";
       isValid = false;
@@ -353,6 +394,16 @@ const NewEmployee = () => {
 
     if (!formData.role) {
       errors.role = "Please specify a role";
+    }
+
+    if (!formData.salary || !formData.salary.trim()) {
+      errors.salary = "Please enter salary";
+      isValid = false;
+    }
+
+    if (!formData.employmentStatus) {
+      errors.employmentStatus = "Please enter employment status";
+      isValid = false;
     }
 
     if (!formData.emergencyName || !formData.emergencyName.trim()) {
@@ -568,6 +619,44 @@ const NewEmployee = () => {
           <br />
           <TextField
             sx={{ marginTop: "20px", width: "50%" }}
+            name="dob"
+            variant="standard"
+            type="date"
+            value={formData.dob}
+            onChange={handleFieldChange}
+            onBlur={handleBlur}
+            error={!!errors.dob && isTouched.dob}
+            helperText={
+              errors.dob && isTouched.dob
+                ? errors.dob
+                : "Please select date of birth"
+            }
+          />
+          <br />
+          <TextField
+            sx={{ marginTop: "20px", width: "50%" }}
+            name="maritalStatus"
+            select
+            value={formData.maritalStatus}
+            onChange={handleFieldChange}
+            onBlur={handleBlur}
+            error={!!errors.maritalStatus && isTouched.maritalStatus}
+            helperText={
+              errors.maritalStatus && isTouched.maritalStatus
+                ? errors.maritalStatus
+                : "Please select marital status"
+            }
+            variant="standard"
+          >
+            {maritalStatus.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.value}
+              </MenuItem>
+            ))}
+          </TextField>
+          <br />
+          <TextField
+            sx={{ marginTop: "20px", width: "50%" }}
             name="passport"
             label="Passport (optional)"
             variant="standard"
@@ -728,6 +817,43 @@ const NewEmployee = () => {
               </MenuItem>
             ))}
           </TextField>
+          <br />
+          <TextField
+            sx={{ marginTop: "20px", width: "50%" }}
+            name="employmentStatus"
+            select
+            value={formData.employmentStatus}
+            onChange={handleFieldChange}
+            onBlur={handleBlur}
+            error={!!errors.employmentStatus && isTouched.employmentStatus}
+            helperText={
+              errors.employmentStatus && isTouched.employmentStatus
+                ? errors.employmentStatus
+                : "Please select employment status"
+            }
+            variant="standard"
+          >
+            {employmentStatus.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.value}
+              </MenuItem>
+            ))}
+          </TextField>
+          <br />
+          <TextField
+            sx={{ marginTop: "20px", width: "50%" }}
+            name="salary"
+            label="Salary"
+            variant="standard"
+            InputProps={{
+              endAdornment: <InputAdornment position="end">PKR</InputAdornment>,
+            }}
+            value={formData.salary}
+            onChange={handleFieldChange}
+            onBlur={handleBlur}
+            error={!!errors.salary && isTouched.salary}
+            helperText={errors.salary && isTouched.salary && errors.salary}
+          />
         </Box>
       </Grid>
       <Grid item xs={4}>
@@ -815,7 +941,7 @@ const NewEmployee = () => {
               </MenuItem>
             ))}
           </TextField>
-          <Stack spacing={2} direction="row" marginTop={25}>
+          <Stack spacing={2} direction="row" marginTop={45}>
             <LoadingButton
               loading={loading}
               color="error"

@@ -105,6 +105,8 @@ export const addUser = (userData) => async (dispatch) => {
     formData.append("address", userData.address);
     formData.append("blood", userData.blood);
     formData.append("cnic", userData.cnic);
+    formData.append("dob", userData.dob);
+    formData.append("maritalStatus", userData.maritalStatus);
     formData.append("contact", userData.contact);
     formData.append("date", userData.date);
     formData.append("department", userData.department);
@@ -119,6 +121,8 @@ export const addUser = (userData) => async (dispatch) => {
     formData.append("phone", userData.phone);
     formData.append("relation", userData.relation);
     formData.append("role", userData.role);
+    formData.append("employmentStatus", userData.employmentStatus);
+    formData.append("salary", userData.salary);
     formData.append("supervisor", userData.supervisor);
     formData.append("title", userData.title);
     formData.append("workType", userData.workType);
@@ -152,6 +156,8 @@ export const editUser = (userData) => async (dispatch, getState) => {
     formData.append("address", userData.address);
     formData.append("blood", userData.blood);
     formData.append("cnic", userData.cnic);
+    formData.append("dob", userData.dob);
+    formData.append("maritalStatus", userData.maritalStatus);
     formData.append("contact", userData.contact);
     formData.append("date", userData.date);
     formData.append("department", userData.department);
@@ -166,6 +172,8 @@ export const editUser = (userData) => async (dispatch, getState) => {
     formData.append("phone", userData.phone);
     formData.append("relation", userData.relation);
     formData.append("role", userData.role);
+    formData.append("employmentStatus", userData.employmentStatus);
+    formData.append("salary", userData.salary);
     formData.append("supervisor", userData.supervisor);
     formData.append("title", userData.title);
     formData.append("workType", userData.workType);

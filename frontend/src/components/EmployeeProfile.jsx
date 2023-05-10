@@ -108,6 +108,26 @@ const EmployeeProfile = () => {
     },
   ];
 
+  const employmentStatusOptions = [
+    {
+      value: "Intern",
+    },
+    {
+      value: "On Probation",
+    },
+    {
+      value: "Permanent",
+    },
+  ];
+  const maritalStatusOptions = [
+    {
+      value: "Single",
+    },
+    {
+      value: "Married",
+    },
+  ];
+
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -128,6 +148,8 @@ const EmployeeProfile = () => {
   const [phone, setPhone] = useState("");
   const [passport, setPassport] = useState("");
   const [cnic, setCnic] = useState("");
+  const [dob, setDob] = useState("");
+  const [maritalStatus, setMaritalStatus] = useState("");
   const [department, setDepartment] = useState("");
   const [employeeId, setEmployeeId] = useState("");
   const [designation, setDesignation] = useState("");
@@ -136,6 +158,8 @@ const EmployeeProfile = () => {
   const [date, setDate] = useState("");
   const [workType, setWorkType] = useState("");
   const [role, setRole] = useState("");
+  const [employmentStatus, setEmploymentStatus] = useState("");
+  const [salary, setSalary] = useState("");
   const [emergencyName, setEmergencyName] = useState("");
   const [relation, setRelation] = useState("");
   const [emergencyAddress, setEmergencyAddress] = useState("");
@@ -146,6 +170,7 @@ const EmployeeProfile = () => {
   const [openToast, setOpenToast] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [attemptedUpload, setAttemptedUpload] = useState(false);
+  const [imageIsChanged, setImageIsChanged] = useState(false);
   const [isTouched, setIsTouched] = useState({
     imageUrl: false,
     name: false,
@@ -155,6 +180,8 @@ const EmployeeProfile = () => {
     phone: false,
     passport: false,
     cnic: false,
+    dob: false,
+    maritalStatus: false,
     department: false,
     employeeId: false,
     designation: false,
@@ -163,6 +190,8 @@ const EmployeeProfile = () => {
     date: false,
     workType: false,
     role: false,
+    employmentStatus: false,
+    salary: false,
     emergencyName: false,
     relation: false,
     emergencyAddress: false,
@@ -236,6 +265,16 @@ const EmployeeProfile = () => {
     isValid = false;
   }
 
+  if (!dob) {
+    errors.dob = "Please enter date of birth";
+    isValid = false;
+  }
+
+  if (!maritalStatus) {
+    errors.maritalStatus = "Please enter marital status";
+    isValid = false;
+  }
+
   if (!department) {
     errors.department = "Please enter department";
     isValid = false;
@@ -273,6 +312,16 @@ const EmployeeProfile = () => {
 
   if (!role) {
     errors.role = "Please specify a role";
+  }
+
+  if (!salary || !salary.trim()) {
+    errors.salary = "Please enter salary";
+    isValid = false;
+  }
+
+  if (!employmentStatus) {
+    errors.employmentStatus = "Please enter employment status";
+    isValid = false;
   }
 
   if (!emergencyName.trim()) {
@@ -338,11 +387,14 @@ const EmployeeProfile = () => {
         editUser({
           id,
           imageUrl,
+          imageIsChanged,
           name,
           email,
           password,
           address,
           passport,
+          dob,
+          maritalStatus,
           phone,
           cnic,
           department,
@@ -353,6 +405,8 @@ const EmployeeProfile = () => {
           date,
           workType,
           role,
+          employmentStatus,
+          salary,
           emergencyAddress,
           emergencyName,
           relation,
@@ -387,6 +441,7 @@ const EmployeeProfile = () => {
         preview: URL.createObjectURL(acceptedFiles[0]),
       });
       setImageUrl(selectedFile);
+      setImageIsChanged(true);
     }
   }, []);
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
@@ -412,6 +467,8 @@ const EmployeeProfile = () => {
         setPhone(user.phone);
         setPassport(user.passport);
         setCnic(user.cnic);
+        setDob(user.dob);
+        setMaritalStatus(user.maritalStatus);
         setDepartment(user.jobDetails.department);
         setEmployeeId(user.jobDetails.employeeId);
         setTitle(user.jobDetails.title);
@@ -420,6 +477,8 @@ const EmployeeProfile = () => {
         setDate(user.jobDetails.dateOfJoining);
         setWorkType(user.jobDetails.workType);
         setRole(user.role);
+        setEmploymentStatus(user.jobDetails.employmentStatus);
+        setSalary(user.jobDetails.salary);
         setEmergencyName(user.emergencyDetails.name);
         setRelation(user.emergencyDetails.relation);
         setEmergencyAddress(user.emergencyDetails.address);
@@ -472,8 +531,8 @@ const EmployeeProfile = () => {
               {imageUrl ? (
                 <>
                   <img
-                    src={`/photos/${imageUrl}`}
-                    //src={imageUrl.preview}
+                    //src={`/photos/${imageUrl}`}
+                    src={imageUrl.preview || `/photos/${imageUrl}`}
                     alt="Profile"
                     loading="lazy"
                     style={{
@@ -622,6 +681,44 @@ const EmployeeProfile = () => {
                 error={!!errors.cnic && isTouched.cnic}
                 helperText={errors.cnic && isTouched.cnic && errors.cnic}
               />
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="dob"
+                variant="standard"
+                type="date"
+                value={dob}
+                onChange={(e) => setDob(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.dob && isTouched.dob}
+                helperText={
+                  errors.dob && isTouched.dob
+                    ? errors.dob
+                    : "Please select date of birth"
+                }
+              />
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="maritalStatus"
+                select
+                value={maritalStatus}
+                onChange={(e) => setMaritalStatus(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.maritalStatus && isTouched.maritalStatus}
+                helperText={
+                  errors.maritalStatus && isTouched.maritalStatus
+                    ? errors.maritalStatus
+                    : "Please select marital status"
+                }
+                variant="standard"
+              >
+                {maritalStatusOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
               <br />
               <TextField
                 InputLabelProps={{ shrink: true }}
@@ -792,6 +889,46 @@ const EmployeeProfile = () => {
                   </MenuItem>
                 ))}
               </TextField>
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="employmentStatus"
+                select
+                value={employmentStatus}
+                onChange={(e) => setEmploymentStatus(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.employmentStatus && isTouched.employmentStatus}
+                helperText={
+                  errors.employmentStatus && isTouched.employmentStatus
+                    ? errors.employmentStatus
+                    : "Please select employment status"
+                }
+                variant="standard"
+              >
+                {employmentStatusOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                InputLabelProps={{ shrink: true }}
+                name="salary"
+                label="Salary"
+                variant="standard"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">PKR</InputAdornment>
+                  ),
+                }}
+                value={salary}
+                onChange={(e) => setSalary(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.salary && isTouched.salary}
+                helperText={errors.salary && isTouched.salary && errors.salary}
+              />
             </Box>
           </Grid>
           <Grid item xs={4}>
@@ -885,7 +1022,7 @@ const EmployeeProfile = () => {
                   </MenuItem>
                 ))}
               </TextField>
-              <Stack spacing={2} direction="row" marginTop={25}>
+              <Stack spacing={2} direction="row" marginTop={45}>
                 <Button
                   color="error"
                   variant="contained"

@@ -4,7 +4,12 @@ import { Provider } from "react-redux";
 import store from "./store";
 import "./index.css";
 import App from "./App";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import DashboardScreen from "./screens/DashboardScreen";
 import EmployeeScreen from "./screens/EmployeeScreen";
 import AttendanceScreen from "./screens/AttendanceScreen";
@@ -42,7 +47,9 @@ root.render(
           <Route path="/home/attendance" element={<AttendanceScreen />} />
           <Route path="/home/leaves" element={<LeaveScreen />} />
           <Route path="/home/docs" element={<DocScreen />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Route>
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
   </Provider>

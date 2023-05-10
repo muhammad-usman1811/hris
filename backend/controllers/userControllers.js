@@ -40,6 +40,7 @@ const authUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
+      imageUrl: user.imageUrl,
       role: user.role,
       title: user.jobDetails.title,
       department: user.jobDetails.department,
@@ -95,6 +96,8 @@ const addUser = asyncHandler(async (req, res) => {
       address,
       blood,
       cnic,
+      dob,
+      maritalStatus,
       contact,
       date,
       department,
@@ -109,6 +112,8 @@ const addUser = asyncHandler(async (req, res) => {
       phone,
       relation,
       role,
+      employmentStatus,
+      salary,
       supervisor,
       title,
       workType,
@@ -127,7 +132,7 @@ const addUser = asyncHandler(async (req, res) => {
 
     // Creating new document
     const user = new User({
-      imageUrl: file.path,
+      imageUrl: file.filename,
       name,
       email,
       password,
@@ -136,6 +141,8 @@ const addUser = asyncHandler(async (req, res) => {
       address,
       cnic,
       passport,
+      dob,
+      maritalStatus,
       leaveQuota,
       jobDetails: {
         title,
@@ -145,6 +152,8 @@ const addUser = asyncHandler(async (req, res) => {
         supervisor,
         dateOfJoining: date,
         workType,
+        employmentStatus,
+        salary,
       },
       emergencyDetails: {
         name: emergencyName,
@@ -184,9 +193,12 @@ const editUser = asyncHandler(async (req, res) => {
     const file = req.file;
 
     const {
+      imageUrl,
       address,
       blood,
       cnic,
+      dob,
+      maritalStatus,
       contact,
       date,
       department,
@@ -201,13 +213,15 @@ const editUser = asyncHandler(async (req, res) => {
       phone,
       relation,
       role,
+      employmentStatus,
+      salary,
       supervisor,
       title,
       workType,
     } = req.body;
 
     const updatedData = {
-      imageUrl: file.filename,
+      imageUrl: file ? file.filename : imageUrl,
       name,
       email,
       password,
@@ -215,6 +229,8 @@ const editUser = asyncHandler(async (req, res) => {
       phone,
       address,
       cnic,
+      dob,
+      maritalStatus,
       passport,
       jobDetails: {
         title,
@@ -224,6 +240,8 @@ const editUser = asyncHandler(async (req, res) => {
         supervisor,
         dateOfJoining: date,
         workType,
+        employmentStatus,
+        salary,
       },
       emergencyDetails: {
         name: emergencyName,
@@ -234,15 +252,15 @@ const editUser = asyncHandler(async (req, res) => {
       },
     };
 
-    const user = await User.findById(id);
-    if (user) {
-      const filePath = user.imageUrl;
-      fs.unlink(filePath, (err) => {
-        if (err) {
-          console.log(err);
-        }
-      });
-    }
+    // const user = await User.findById(id);
+    // if (user) {
+    //   const filePath = `/profilePhotos/${user.imageUrl}`;
+    //   fs.unlink(filePath, (err) => {
+    //     if (err) {
+    //       console.log(err);
+    //     }
+    //   });
+    // }
     const result = await User.findByIdAndUpdate(id, updatedData, {
       new: true,
     });

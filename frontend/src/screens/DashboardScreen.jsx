@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Grid from "@mui/material/Grid";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import ListItemButton from "@mui/material/ListItemButton";
+// import List from "@mui/material/List";
+// import ListItem from "@mui/material/ListItem";
+// import ListItemIcon from "@mui/material/ListItemIcon";
+// import ListItemText from "@mui/material/ListItemText";
+// import ListItemButton from "@mui/material/ListItemButton";
 import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import CircleIcon from "@mui/icons-material/Circle";
+//import Divider from "@mui/material/Divider";
+//import CircleIcon from "@mui/icons-material/Circle";
 import Button from "@mui/material/Button";
 import BasicCard from "../components/common/BasicCard";
 import Card from "@mui/material/Card";
@@ -96,12 +96,16 @@ const DashboardScreen = () => {
               </Typography>
             </CardContent>
             <CardActions>
-              <Button size="small">Share</Button>
-              <Button size="small">Learn More</Button>
+              <Button size="small" disabled>
+                Share
+              </Button>
+              <Button size="small" disabled>
+                Learn More
+              </Button>
             </CardActions>
           </Card>
         </Grid>
-        <Grid item xs={3} sx={{ marginTop: "1%" }}>
+        {/* <Grid item xs={3} sx={{ marginTop: "1%" }}>
           <List
             sx={{
               bgcolor: "background.paper",
@@ -138,7 +142,7 @@ const DashboardScreen = () => {
               </ListItemButton>
             </ListItem>
           </List>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Grid>
   );

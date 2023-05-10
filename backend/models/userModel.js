@@ -36,6 +36,14 @@ const userSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    dob: {
+      type: String,
+      required: true,
+    },
+    maritalStatus: {
+      type: String,
+      required: true,
+    },
     passport: {
       type: String,
     },
@@ -69,6 +77,13 @@ const userSchema = mongoose.Schema(
         required: true,
       },
       workType: {
+        type: String,
+        required: true,
+      },
+      employmentStatus: {
+        type: String,
+      },
+      salary: {
         type: String,
         required: true,
       },
