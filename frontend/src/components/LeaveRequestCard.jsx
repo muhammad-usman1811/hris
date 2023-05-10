@@ -19,7 +19,8 @@ const LeaveRequestCard = () => {
     <Card
       sx={{
         borderRadius: "8px",
-        width: "400px",
+        width: "100%",
+        height:300
       }}
     >
       <CardContent>
@@ -35,9 +36,10 @@ const LeaveRequestCard = () => {
               bgcolor: "#E7EBEE",
               marginBottom: "10px",
               borderRadius: "8px",
+              width: "120%"
             }}
           >
-            <ListItem alignItems="flex-start">
+            <ListItem  alignItems="flex-start">
               <ListItemAvatar>
                 <Avatar
                   alt="Michael"

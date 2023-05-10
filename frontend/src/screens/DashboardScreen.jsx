@@ -69,10 +69,10 @@ const DashboardScreen = () => {
           <BasicCalendar />
         </Grid>
         <Grid item xs={4} sx={{ marginTop: "1%" }}>
-          <LeaveRequestCard />
+          <LeaveRequestCard/>
         </Grid>
         <Grid item xs={4} sx={{ marginTop: "1%" }}>
-          <Card sx={{ borderRadius: "8px", marginLeft: "15%" }}>
+          <Card sx={{ width:"105%",borderRadius: "8px", marginLeft:1 }}>
             <CardMedia
               sx={{ height: 140 }}
               image="/images/birthday.jpg"

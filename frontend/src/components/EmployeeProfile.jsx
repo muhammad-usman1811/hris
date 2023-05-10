@@ -19,6 +19,9 @@ import Visibility from "@mui/icons-material/Visibility";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import CircularProgress from "@mui/material/CircularProgress";
 import { editUser, getUserDetails } from "../actions/userActions";
+import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
+import Input from '@mui/material/Input';
 
 const EmployeeProfile = () => {
   const departments = [
@@ -107,6 +110,25 @@ const EmployeeProfile = () => {
       value: "O-",
     },
   ];
+  const status = [
+    {
+      value: "Intern",
+    },
+    {
+      value: "On Probation",
+    },
+    {
+      value: "Permanent",
+    },
+  ];
+  const maritalStaus = [
+    {
+      value: "Married"
+    },
+    {
+      value: "Un-Married"
+    }
+  ]
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -127,6 +149,8 @@ const EmployeeProfile = () => {
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [passport, setPassport] = useState("");
+  const [dateOfbirth, setDateOfBirth] = useState("");
+  const [marital, setMaritalStatus] = useState("");
   const [cnic, setCnic] = useState("");
   const [department, setDepartment] = useState("");
   const [employeeId, setEmployeeId] = useState("");
@@ -136,6 +160,9 @@ const EmployeeProfile = () => {
   const [date, setDate] = useState("");
   const [workType, setWorkType] = useState("");
   const [role, setRole] = useState("");
+  const [permanentDate, setpermanentDate] = useState("");
+  const [employeeStatus,setemployeeStatus] = useState("");
+  const [salary,setSalary] = useState("");
   const [emergencyName, setEmergencyName] = useState("");
   const [relation, setRelation] = useState("");
   const [emergencyAddress, setEmergencyAddress] = useState("");
@@ -154,6 +181,8 @@ const EmployeeProfile = () => {
     address: false,
     phone: false,
     passport: false,
+    dateOfbirth: false,
+    marital: false,
     cnic: false,
     department: false,
     employeeId: false,
@@ -163,11 +192,15 @@ const EmployeeProfile = () => {
     date: false,
     workType: false,
     role: false,
+    permanentDate: false,
+    employeeStatus: false,
+    salary: false,
     emergencyName: false,
     relation: false,
     emergencyAddress: false,
     contact: false,
     blood: false,
+    
   });
 
   const isDisabled = Object.values(isTouched).some((value) => value === true);
@@ -227,6 +260,14 @@ const EmployeeProfile = () => {
     errors.passport = "Please enter alphanumeric only";
     isValid = false;
   }
+  //if (!formData.dateOfbirth || !formData.dateOfbirth.trim()){
+  //  errors.dateOfbirth = "Please Enter Date of Birth";
+  //  isValid = false;
+  //}
+  //if (!formData.marital || !formData.dateOfbirth.trim()){
+  //  errors.marital = "Please Select Marital Status"
+  //  isValid = false;
+  //}
 
   if (!cnic.trim()) {
     errors.cnic = "Please enter your CNIC";
@@ -273,6 +314,20 @@ const EmployeeProfile = () => {
 
   if (!role) {
     errors.role = "Please specify a role";
+  }
+  if (!permanentDate) {
+    errors.permanentDate = "Please enter Permanent Date";
+    isValid = false;
+  }
+
+  if(!employeeStatus){
+    errors.employeeStatus = "Please select Employee Status"
+    isValid = false;
+  }
+
+  if(!salary){
+    errors.salary = "Please Enter Salary"
+    isValid = false;
   }
 
   if (!emergencyName.trim()) {
@@ -353,6 +408,9 @@ const EmployeeProfile = () => {
           date,
           workType,
           role,
+          permanentDate,
+          employeeStatus,
+          salary,
           emergencyAddress,
           emergencyName,
           relation,
@@ -411,6 +469,8 @@ const EmployeeProfile = () => {
         setAddress(user.address);
         setPhone(user.phone);
         setPassport(user.passport);
+        setDateOfBirth(user.dateOfbirth);
+        setMaritalStatus(user.marital);
         setCnic(user.cnic);
         setDepartment(user.jobDetails.department);
         setEmployeeId(user.jobDetails.employeeId);
@@ -420,6 +480,9 @@ const EmployeeProfile = () => {
         setDate(user.jobDetails.dateOfJoining);
         setWorkType(user.jobDetails.workType);
         setRole(user.role);
+        setpermanentDate(user.jobDetails.permanenetDate);
+        setemployeeStatus(user.jobDetails.employeeStatus);
+        setSalary(user.jobDetails.salary);
         setEmergencyName(user.emergencyDetails.name);
         setRelation(user.emergencyDetails.relation);
         setEmergencyAddress(user.emergencyDetails.address);
@@ -638,6 +701,42 @@ const EmployeeProfile = () => {
                   errors.passport && isTouched.passport && errors.passport
                 }
               />
+              <br />
+              <TextField
+            sx={{ marginTop: "20px", width: "50%" }}
+            name="Date of Birth"
+            label=""
+            variant="standard"
+            type="date"
+            helperText="Please Enter Date of Birth"
+            
+          //  onChange={handleFieldChange}
+            onBlur={handleBlur}
+            onFocus={handleFocus}
+            
+          />
+          <br />
+          <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="marital status"
+                select
+                //value={role}
+                //onChange={(e) => setRole(e.target.value)}
+                //onBlur={handleBlur}
+                //error={!!errors.role && isTouched.role}
+                helperText={
+                  errors.marital && isTouched.marital
+                    ? errors.role
+                    : "Marital Status"
+                }
+                variant="standard"
+              >
+                {marital.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
             </Box>
           </Grid>
           <Grid item xs={4}>
@@ -792,6 +891,62 @@ const EmployeeProfile = () => {
                   </MenuItem>
                 ))}
               </TextField>
+              <br/>
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="permament date"
+                type="date"
+                variant="standard"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.date && isTouched.date}
+                helperText={
+                  errors.date && isTouched.date
+                    ? errors.date
+                    : "Permanent Date"
+                }
+              />
+              <br/>
+
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="employment status"
+                select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.role && isTouched.role}
+                helperText={
+                  errors.role && isTouched.role
+                    ? errors.role
+                    : "Employment Status"
+                }
+                variant="standard"
+              >
+                {status.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+             
+
+              <br />
+              <FormControl sx={{ marginTop: "20px", width: "50%"}} variant="standard">
+          <Input 
+            id="salary"
+            endAdornment={<InputAdornment position="end">PKR</InputAdornment>}
+            aria-describedby="salary"
+            inputProps={{
+              'aria-label': 'salary',
+            }}
+          />
+          <FormHelperText id="salaryunit">Salary</FormHelperText>
+        </FormControl>
+              
+              
+              
             </Box>
           </Grid>
           <Grid item xs={4}>
@@ -885,7 +1040,7 @@ const EmployeeProfile = () => {
                   </MenuItem>
                 ))}
               </TextField>
-              <Stack spacing={2} direction="row" marginTop={25}>
+              <Stack spacing={2} direction="row" marginTop={45}>
                 <Button
                   color="error"
                   variant="contained"

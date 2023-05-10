@@ -9,6 +9,10 @@ import CardContent from "@mui/material/CardContent";
 import moment from "moment";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Chip from '@mui/material/Chip';
+import Stack from '@mui/material/Stack';
+import Badge from '@mui/material/Badge';
+
 
 const HomeScreen = () => {
   const [alignment, setAlignment] = React.useState("web");
@@ -252,7 +256,7 @@ const HomeScreen = () => {
           }}
         >
           <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <CardContent sx={{ flex: "1 0 auto" }}>
+            <CardContent sx={{  }}>
               <Typography
                 variant="h5"
                 color="initial"
@@ -263,6 +267,29 @@ const HomeScreen = () => {
               <Typography variant="subtitle1" color="text.secondary">
                 Overall Attendance Analysis
               </Typography>
+            </CardContent>
+
+            <CardContent>
+            <Stack spacing={1} alignItems="center">
+      <Stack direction="row" spacing={3}>
+      <Badge badgeContent={0} color="error">
+        <Chip sx={{width:200,height:50}} label="Early Days" color="primary" />
+        </Badge>
+        <Badge badgeContent={2} color="error">
+        <Chip sx={{width:200,height:50}} label="Late Days" color="error" />
+        </Badge>
+        <Badge badgeContent={1} color="error">
+        <Chip sx={{width:200,height:50}} label="Half Days" color="secondary" />
+        </Badge>
+        <Badge badgeContent={7} color="error">
+        <Chip sx={{width:200,height:50}} label="On Time" color="success" />
+        </Badge>
+        <Badge badgeContent={5} color="error">
+        <Chip sx={{width:200,height:50, backgroundColor:'#009688',color:'white'}} label="Non-Working Days" />
+        </Badge>
+
+      </Stack>
+      </Stack>
             </CardContent>
           </Box>
         </Card>

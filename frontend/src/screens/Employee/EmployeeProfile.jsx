@@ -19,6 +19,8 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import PropTypes from "prop-types";
 
+
+
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -117,16 +119,21 @@ const EmployeeProfile = () => {
   }, [dispatch, id, user]);
 
   return (
+    <Box sx={{backgroundColor: "#eaeff1",
+    boxShadow: 3,
+    width:"100%"}} >
     <Grid
       item
       xs={12}
       container
       sx={{
-        marginLeft: "256px",
-        backgroundColor: "#eaeff1",
+        marginTop:5,
+        backgroundColor: "#FFFFFF",
         padding: "32px",
         minHeight: "calc(100vh - 67px)",
         position: "relative",
+        width:"80%",
+        ml:40
       }}
     >
       <Grid
@@ -158,70 +165,45 @@ const EmployeeProfile = () => {
               Edit Profile
             </Button>
           </Grid>
-          <Grid sx={{ borderBottom: 2, borderColor: "red" }} item container>
+          <Grid sx={{ borderBottom: 2, borderColor: "#C62828",mt:5,ml:2 }} item container>
             <Grid item>
-              <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
-                <ListItemIcon>
-                  <PhoneAndroidIcon />
-                </ListItemIcon>
-                <ListItemText primary={phone} />
-              </ListItem>
-            </Grid>
-            <Grid item>
-              <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
-                <ListItemIcon>
-                  <EmailIcon />
-                </ListItemIcon>
-                <ListItemText primary={email} />
-              </ListItem>
-            </Grid>
-            <Grid item>
-              <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
-                <ListItemIcon>
-                  <LocationOnIcon />
-                </ListItemIcon>
-                <ListItemText sx={{ ml: 2 }} primary={address} />
-              </ListItem>
-            </Grid>
-            <Grid item>
-              <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
-                <ListItemIcon>
-                  <FiberManualRecordIcon
-                    style={{
-                      color: "green",
-                    }}
-                  />
-                </ListItemIcon>
-                <ListItemText sx={{ ml: 3 }} primary="Active" />
-              </ListItem>
-            </Grid>
+
+              <Typography variant="h5" color="error">About Me</Typography>
+              <Typography sx={{mb:4}} variant="body1" color="grey">My name is Anas. I'm working as a Full Stack Developer.</Typography>
+              </Grid>
           </Grid>
         </Grid>
         <Divider light />
-        <Box sx={{ width: "100%" }}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <Tabs
+        <Box sx={{ width: "100%",mt:4,ml:2,border:2,borderColor:'#C62828' }}>
+          <Box >
+            <Tabs sx={{}}
               value={value}
               onChange={handleChange}
-              aria-label="basic tabs example"
+              aria-label="information tabs"
+              textColor= 'blue'
+              TabIndicatorProps={{
+                style: {
+                  backgroundColor: "#C62828",
+                }
+              }}
             >
               <Tab
-                sx={{ borderRight: 1, borderColor: "grey" }}
+                sx={{ borderRight: 1, borderColor: "grey.500", width:'30%' }}
                 label="General Information"
                 {...a11yProps(0)}
               />
               <Tab
-                sx={{ borderRight: 1, borderColor: "grey" }}
+                sx={{ borderRight: 1, borderColor: "grey.500",width:'30%' }}
                 label="Job Information"
                 {...a11yProps(1)}
               />
               <Tab
-                sx={{ borderRight: 1, borderColor: "grey" }}
+                sx={{ borderRight: 1, borderColor: "grey.500",width:'30%' }}
                 label="Emergency Contact Information"
                 {...a11yProps(2)}
               />
               <Tab
-                sx={{ borderRight: 1, borderColor: "grey" }}
+                sx={{ borderRight: 1, borderColor: "grey.500",width:'30%' }}
                 label="Educational Information"
                 {...a11yProps(3)}
               />
@@ -238,6 +220,12 @@ const EmployeeProfile = () => {
                   General Information
                 </Typography>
                 <Typography variant="subtitle2" color="textSecondary">
+                  Contact Number:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  {contact}
+                </Typography>
+                <Typography sx={{ marginTop: "20px" }} variant="subtitle2" color="textSecondary">
                   Date of Birth:
                 </Typography>
                 <Typography variant="body1" color="textPrimary">
@@ -263,29 +251,26 @@ const EmployeeProfile = () => {
                 <Typography variant="body1" color="textPrimary">
                   Single
                 </Typography>
+                
+              </Grid>
+
+              <Grid item xs={3} sx={{ ml: 5 }}>
+              <Typography variant="subtitle2" color="textSecondary">
+                  E-mail Address:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  anas.safder@digifloat.com
+                </Typography>
                 <Typography
                   variant="subtitle2"
                   color="textSecondary"
                   sx={{ marginTop: "20px" }}
                 >
-                  Shift Time:
+                  Address
                 </Typography>
                 <Typography variant="body1" color="textPrimary">
-                  9:00AM-6:00PM
+                  House#2, Abcd, XYZ
                 </Typography>
-              </Grid>
-
-              <Grid item xs={3} sx={{ ml: 5 }}>
-                {/* <Typography
-                  variant="subtitle2"
-                  color="textSecondary"
-                  sx={{ marginTop: "20px" }}
-                >
-                  Passpord No:
-                </Typography>
-                <Typography variant="body1" color="textPrimary">
-                  {passport}
-                </Typography> */}
               </Grid>
             </Grid>
           </TabPanel>
@@ -373,6 +358,16 @@ const EmployeeProfile = () => {
                 <Typography variant="body1" color="textPrimary">
                   2 Years
                 </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Permanent Date
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  13-05-2023
+                </Typography>
               </Grid>
               <Grid item xs={3} sx={{ ml: 5 }}>
                 <Typography
@@ -395,6 +390,27 @@ const EmployeeProfile = () => {
                 <Typography variant="body1" color="textPrimary">
                   {workType}
                 </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Shift Time:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  9:00AM-6:00PM
+                </Typography>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Employement Status
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  On Probation
+                </Typography>
+                
               </Grid>
             </Grid>
           </TabPanel>
@@ -516,6 +532,7 @@ const EmployeeProfile = () => {
         </Box>
       </Grid>
     </Grid>
+    </Box>
   );
 };
 
