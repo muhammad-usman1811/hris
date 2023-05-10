@@ -37,7 +37,7 @@ const AccountMenu = () => {
     }
   };
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logout(userInfo._id));
   };
 
   return (

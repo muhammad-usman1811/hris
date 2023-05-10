@@ -9,6 +9,9 @@ import CardContent from "@mui/material/CardContent";
 import moment from "moment";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
+import Badge from "@mui/material/Badge";
 import axios from "axios";
 
 const HomeScreen = () => {
@@ -117,22 +120,6 @@ const HomeScreen = () => {
       setTime(moment().format("hh:mm:ss A"));
     }, 1000);
 
-    const now = new Date();
-    const endOfDay = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate(),
-      23,
-      59,
-      59,
-      999
-    );
-
-    if (now > endOfDay) {
-      localStorage.removeItem(`checkIn:${userInfo._id}`);
-      localStorage.removeItem(`checkOut:${userInfo._id}`);
-    }
-
     return () => {
       clearInterval(interval);
     };
@@ -221,7 +208,7 @@ const HomeScreen = () => {
               </Typography>
               <Typography
                 variant="subtitle1"
-                color="text.error"
+                color="text.secondary"
                 component="div"
               >
                 Attendance Analysis
@@ -316,6 +303,51 @@ const HomeScreen = () => {
               <Typography variant="subtitle1" color="text.secondary">
                 Overall Attendance Analysis
               </Typography>
+              <CardContent>
+                <Stack spacing={1} alignItems="center">
+                  <Stack direction="row" spacing={3}>
+                    <Badge badgeContent={0} color="error">
+                      <Chip
+                        sx={{ width: 200, height: 50 }}
+                        label="Early Days"
+                        color="primary"
+                      />
+                    </Badge>
+                    <Badge badgeContent={2} color="error">
+                      <Chip
+                        sx={{ width: 200, height: 50 }}
+                        label="Late Days"
+                        color="error"
+                      />
+                    </Badge>
+                    <Badge badgeContent={1} color="error">
+                      <Chip
+                        sx={{ width: 200, height: 50 }}
+                        label="Half Days"
+                        color="secondary"
+                      />
+                    </Badge>
+                    <Badge badgeContent={7} color="error">
+                      <Chip
+                        sx={{ width: 200, height: 50 }}
+                        label="On Time"
+                        color="success"
+                      />
+                    </Badge>
+                    <Badge badgeContent={5} color="error">
+                      <Chip
+                        sx={{
+                          width: 200,
+                          height: 50,
+                          backgroundColor: "#009688",
+                          color: "white",
+                        }}
+                        label="Non-Working Days"
+                      />
+                    </Badge>
+                  </Stack>
+                </Stack>
+              </CardContent>
             </CardContent>
           </Box>
         </Card>

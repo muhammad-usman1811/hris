@@ -33,10 +33,10 @@ export const login = (email, password) => async (dispatch) => {
   }
 };
 
-export const logout = () => (dispatch) => {
+export const logout = (id) => (dispatch) => {
   localStorage.removeItem("userInfo");
-  // localStorage.removeItem(`checkIn:${id}`);
-  // localStorage.removeItem(`checkOut:${id}`);
+  localStorage.removeItem(`checkIn:${id}`);
+  localStorage.removeItem(`checkOut:${id}`);
 
   dispatch({ type: "USER_LOGOUT" });
   dispatch({ type: "USER_LIST_RESET" });

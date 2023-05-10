@@ -69,6 +69,8 @@ const EmployeeProfile = () => {
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   //const [passport, setPassport] = useState("");
+  const [dob, setDob] = useState("");
+  const [maritalStatus, setMaritalStatus] = useState("");
   const [cnic, setCnic] = useState("");
   const [department, setDepartment] = useState("");
   const [employeeId, setEmployeeId] = useState("");
@@ -77,6 +79,8 @@ const EmployeeProfile = () => {
   const [supervisor, setSupervisor] = useState("");
   const [date, setDate] = useState("");
   const [workType, setWorkType] = useState("");
+  const [employmentStatus, setEmploymentStatus] = useState("");
+  const [salary, setSalary] = useState("");
   //const [role, setRole] = useState("");
   const [emergencyName, setEmergencyName] = useState("");
   const [relation, setRelation] = useState("");
@@ -100,6 +104,8 @@ const EmployeeProfile = () => {
       setPhone(user.phone);
       //setPassport(user.passport);
       setCnic(user.cnic);
+      setDob(user.dob);
+      setMaritalStatus(user.maritalStatus);
       setDepartment(user.jobDetails.department);
       setEmployeeId(user.jobDetails.employeeId);
       setTitle(user.jobDetails.title);
@@ -107,6 +113,8 @@ const EmployeeProfile = () => {
       setSupervisor(user.jobDetails.supervisor);
       setDate(user.jobDetails.dateOfJoining);
       setWorkType(user.jobDetails.workType);
+      setEmploymentStatus(user.jobDetails.employmentStatus);
+      setSalary(user.jobDetails.salary);
       //setRole(user.role);
       setEmergencyName(user.emergencyDetails.name);
       setRelation(user.emergencyDetails.relation);
@@ -135,6 +143,7 @@ const EmployeeProfile = () => {
         sx={{
           width: "100%",
           height: "100%",
+          backgroundColor: "paper.white",
           boxSizing: "border-box",
         }}
       >
@@ -241,7 +250,7 @@ const EmployeeProfile = () => {
                   Date of Birth:
                 </Typography>
                 <Typography variant="body1" color="textPrimary">
-                  March 23, 2023
+                  {dob}
                 </Typography>
                 <Typography
                   variant="subtitle2"
@@ -258,10 +267,10 @@ const EmployeeProfile = () => {
                   color="textSecondary"
                   sx={{ marginTop: "20px" }}
                 >
-                  Marital staus:
+                  Marital Status:
                 </Typography>
                 <Typography variant="body1" color="textPrimary">
-                  Single
+                  {maritalStatus}
                 </Typography>
                 <Typography
                   variant="subtitle2"
@@ -281,7 +290,7 @@ const EmployeeProfile = () => {
                   color="textSecondary"
                   sx={{ marginTop: "20px" }}
                 >
-                  Passpord No:
+                  Passport No:
                 </Typography>
                 <Typography variant="body1" color="textPrimary">
                   {passport}
@@ -348,10 +357,10 @@ const EmployeeProfile = () => {
                   color="textSecondary"
                   sx={{ marginTop: "20px" }}
                 >
-                  Overall Experience of Years
+                  Employment Status
                 </Typography>
                 <Typography variant="body1" color="textPrimary">
-                  5
+                  {employmentStatus}
                 </Typography>
                 <Typography
                   variant="subtitle2"
@@ -361,9 +370,9 @@ const EmployeeProfile = () => {
                   Current Salary
                 </Typography>
                 <Typography variant="body1" color="textPrimary">
-                  0000
+                  {`${salary} PKR`}
                 </Typography>
-                <Typography
+                {/* <Typography
                   variant="subtitle2"
                   color="textSecondary"
                   sx={{ marginTop: "20px" }}
@@ -372,7 +381,7 @@ const EmployeeProfile = () => {
                 </Typography>
                 <Typography variant="body1" color="textPrimary">
                   2 Years
-                </Typography>
+                </Typography> */}
               </Grid>
               <Grid item xs={3} sx={{ ml: 5 }}>
                 <Typography
