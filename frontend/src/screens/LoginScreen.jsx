@@ -124,7 +124,7 @@ const LoginScreen = () => {
         >
           <img src="images/logo.png" alt="company logo" width={250} />
           <Typography variant="subtitle1" padding={1} textAlign="center">
-            Bringing the Power of{" "}
+            Welcome to the Land of Data{" "}
             <span style={{ color: "#E60E0F" }}>Big Data</span> to Businesses
           </Typography>
           <Typography variant="h4" padding={2} marginTop={5} textAlign="center">
