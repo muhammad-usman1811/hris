@@ -1,0 +1,554 @@
+-- public.dmx_db_delivery_mode definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_delivery_mode;
+
+CREATE TABLE public.dmx_db_delivery_mode (
+	id int4 NOT NULL,
+	uuid uuid NULL,
+	"name" varchar(255) NULL,
+	short_code varchar(255) NULL,
+	CONSTRAINT dmx_db_delivery_mode_pkey PRIMARY KEY (id)
+);
+
+
+-- public.dmx_db_frequency definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_frequency;
+
+CREATE TABLE public.dmx_db_frequency (
+	id int4 NOT NULL,
+	uuid uuid NULL,
+	frequency varchar(255) NOT NULL,
+	frequency_cron text NULL,
+	CONSTRAINT dmx_db_frequency_pkey PRIMARY KEY (id)
+);
+
+
+-- public.dmx_db_ingestion_mode definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_ingestion_mode;
+
+CREATE TABLE public.dmx_db_ingestion_mode (
+	id int4 NOT NULL,
+	uuid uuid NULL,
+	"name" varchar(255) NULL,
+	file_ingestion bool NULL,
+	CONSTRAINT dmx_db_ingestion_mode_pkey PRIMARY KEY (id)
+);
+
+
+-- public.dmx_db_source_compare_log definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_source_compare_log;
+
+CREATE TABLE public.dmx_db_source_compare_log (
+	id int4 NOT NULL,
+	uuid uuid NULL,
+	type_ varchar(255) NOT NULL,
+	status varchar(255) NOT NULL,
+	"name" varchar(255) NOT NULL,
+	message varchar(2000) NULL,
+	CONSTRAINT dmx_db_source_compare_log_pkey PRIMARY KEY (id)
+);
+
+
+-- public.dmx_db_source_connection_type definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_source_connection_type;
+
+CREATE TABLE public.dmx_db_source_connection_type (
+	id int4 NOT NULL,
+	"name" varchar(255) NULL,
+	CONSTRAINT source_connection_type_pkey PRIMARY KEY (id)
+);
+
+
+-- public.dmx_db_source_type definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_source_type;
+
+CREATE TABLE public.dmx_db_source_type (
+	id int4 NOT NULL,
+	uuid uuid NULL,
+	"name" varchar(255) NOT NULL,
+	CONSTRAINT dmx_db_source_type_pkey PRIMARY KEY (id)
+);
+
+
+-- public.dmx_file_encoding_type definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_file_encoding_type;
+
+CREATE TABLE public.dmx_file_encoding_type (
+	id uuid NOT NULL,
+	"version" int4 NOT NULL,
+	create_ts timestamp NULL,
+	created_by varchar(50) NULL,
+	update_ts timestamp NULL,
+	updated_by varchar(50) NULL,
+	delete_ts timestamp NULL,
+	deleted_by varchar(50) NULL,
+	"name" varchar(20) NOT NULL,
+	CONSTRAINT dmx_file_encoding_type_pkey PRIMARY KEY (id)
+);
+
+
+-- public.dmx_file_extension_type definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_file_extension_type;
+
+CREATE TABLE public.dmx_file_extension_type (
+	id uuid NOT NULL,
+	"version" int4 NOT NULL,
+	create_ts timestamp NULL,
+	created_by varchar(50) NULL,
+	update_ts timestamp NULL,
+	updated_by varchar(50) NULL,
+	delete_ts timestamp NULL,
+	deleted_by varchar(50) NULL,
+	"name" varchar(50) NOT NULL,
+	CONSTRAINT dmx_file_extension_type_pkey PRIMARY KEY (id)
+);
+
+
+-- public.dmx_file_source_type definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_file_source_type;
+
+CREATE TABLE public.dmx_file_source_type (
+	id uuid NOT NULL,
+	"version" int4 NOT NULL,
+	create_ts timestamp NULL,
+	created_by varchar(50) NULL,
+	update_ts timestamp NULL,
+	updated_by varchar(50) NULL,
+	delete_ts timestamp NULL,
+	deleted_by varchar(50) NULL,
+	"name" varchar(100) NOT NULL,
+	CONSTRAINT dmx_file_source_type_pkey PRIMARY KEY (id)
+);
+
+
+-- public.dmx_landing_reader_type definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_landing_reader_type;
+
+CREATE TABLE public.dmx_landing_reader_type (
+	id uuid NOT NULL,
+	"version" int4 NOT NULL,
+	create_ts timestamp NULL,
+	created_by varchar(50) NULL,
+	update_ts timestamp NULL,
+	updated_by varchar(50) NULL,
+	delete_ts timestamp NULL,
+	deleted_by varchar(50) NULL,
+	"name" varchar(50) NOT NULL,
+	CONSTRAINT dmx_landing_reader_type_pkey PRIMARY KEY (id)
+);
+
+
+-- public.dmx_data_type definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_data_type;
+
+CREATE TABLE public.dmx_data_type (
+	id int4 NOT NULL,
+	uuid uuid NULL,
+	"name" varchar(255) NOT NULL,
+	source_type_id int4 NOT NULL,
+	CONSTRAINT dmx_data_type_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_dmx_data_type_on_source_type FOREIGN KEY (source_type_id) REFERENCES dmx_db_source_type(id)
+);
+CREATE INDEX idx_dmx_data_type_on_source_type ON public.dmx_data_type USING btree (source_type_id);
+
+
+-- public.dmx_db_connection_property definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_connection_property;
+
+CREATE TABLE public.dmx_db_connection_property (
+	id int4 NOT NULL,
+	uuid uuid NULL,
+	"name" varchar(255) NOT NULL,
+	source_type_id int4 NOT NULL,
+	CONSTRAINT dmx_db_connection_property_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_dmx_db_connection_property_on_source_type FOREIGN KEY (source_type_id) REFERENCES dmx_db_source_type(id)
+);
+CREATE INDEX idx_dmx_db_connection_property_on_source_type ON public.dmx_db_connection_property USING btree (source_type_id);
+
+
+-- public.dmx_db_source_db definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_source_db;
+
+CREATE TABLE public.dmx_db_source_db (
+	id int4 NOT NULL,
+	uuid uuid NULL,
+	ingestion_mode_id int4 NULL,
+	"name" varchar(50) NOT NULL,
+	source_db_type_id int4 NOT NULL,
+	target bool NULL,
+	"source" bool NULL,
+	src_conn_type_id int4 NULL DEFAULT '-1'::integer,
+	CONSTRAINT dmx_db_source_db_pkey PRIMARY KEY (id),
+	CONSTRAINT dmx_db_source_db_src_conn_type_id_fkey FOREIGN KEY (src_conn_type_id) REFERENCES dmx_db_source_connection_type(id),
+	CONSTRAINT fk_dmx_db_source_db_on_ingestion_mode FOREIGN KEY (ingestion_mode_id) REFERENCES dmx_db_ingestion_mode(id),
+	CONSTRAINT fk_dmx_db_source_db_on_source_db_type FOREIGN KEY (source_db_type_id) REFERENCES dmx_db_source_type(id)
+);
+CREATE INDEX idx_dmx_db_source_db_on_ingestion_mode ON public.dmx_db_source_db USING btree (ingestion_mode_id);
+CREATE INDEX idx_dmx_db_source_db_on_source_db_type ON public.dmx_db_source_db USING btree (source_db_type_id);
+
+
+-- public.dmx_db_source_db_connection_property definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_source_db_connection_property;
+
+CREATE TABLE public.dmx_db_source_db_connection_property (
+	id int4 NOT NULL,
+	uuid uuid NULL,
+	key_ varchar(50) NOT NULL,
+	value_ varchar(255) NOT NULL,
+	source_db_id int4 NOT NULL,
+	CONSTRAINT dmx_db_source_db_connection_property_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_dmx_db_source_db_connection_property_on_source_db FOREIGN KEY (source_db_id) REFERENCES dmx_db_source_db(id)
+);
+CREATE INDEX idx_dmx_db_source_db_connection_property_on_source_db ON public.dmx_db_source_db_connection_property USING btree (source_db_id);
+
+
+-- public.dmx_db_type_mapping definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_type_mapping;
+
+CREATE TABLE public.dmx_db_type_mapping (
+	id int4 NOT NULL,
+	uuid uuid NULL,
+	source_data_type_id int4 NOT NULL,
+	target_data_type_id int4 NOT NULL,
+	CONSTRAINT dmx_db_type_mapping_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_dmx_db_type_mapping_on_source_data_type FOREIGN KEY (source_data_type_id) REFERENCES dmx_data_type(id),
+	CONSTRAINT fk_dmx_db_type_mapping_on_target_data_type FOREIGN KEY (target_data_type_id) REFERENCES dmx_data_type(id)
+);
+CREATE INDEX idx_dmx_db_type_mapping_on_source_data_type ON public.dmx_db_type_mapping USING btree (source_data_type_id);
+CREATE INDEX idx_dmx_db_type_mapping_on_target_data_type ON public.dmx_db_type_mapping USING btree (target_data_type_id);
+
+
+-- public.dmx_file_format definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_file_format;
+
+CREATE TABLE public.dmx_file_format (
+	id uuid NOT NULL,
+	"version" int4 NOT NULL,
+	create_ts timestamp NULL,
+	created_by varchar(50) NULL,
+	update_ts timestamp NULL,
+	updated_by varchar(50) NULL,
+	delete_ts timestamp NULL,
+	deleted_by varchar(50) NULL,
+	file_extension_id uuid NOT NULL,
+	"name" varchar(255) NOT NULL,
+	column_delimiter varchar(10) NULL,
+	text_delimiter varchar(10) NULL,
+	"header" bool NOT NULL,
+	landing_reader_id uuid NOT NULL,
+	encoding_id uuid NOT NULL,
+	persistent_landing bool NOT NULL,
+	multi_line bool NOT NULL,
+	CONSTRAINT dmx_file_format_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_dmx_file_format_on_encoding FOREIGN KEY (encoding_id) REFERENCES dmx_file_encoding_type(id),
+	CONSTRAINT fk_dmx_file_format_on_file_extension FOREIGN KEY (file_extension_id) REFERENCES dmx_file_extension_type(id),
+	CONSTRAINT fk_dmx_file_format_on_landing_reader FOREIGN KEY (landing_reader_id) REFERENCES dmx_landing_reader_type(id)
+);
+CREATE INDEX idx_dmx_file_format_on_encoding ON public.dmx_file_format USING btree (encoding_id);
+CREATE INDEX idx_dmx_file_format_on_file_extension ON public.dmx_file_format USING btree (file_extension_id);
+CREATE INDEX idx_dmx_file_format_on_landing_reader ON public.dmx_file_format USING btree (landing_reader_id);
+
+
+-- public.dmx_file_source_type_property definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_file_source_type_property;
+
+CREATE TABLE public.dmx_file_source_type_property (
+	id uuid NOT NULL,
+	"version" int4 NOT NULL,
+	create_ts timestamp NULL,
+	created_by varchar(50) NULL,
+	update_ts timestamp NULL,
+	updated_by varchar(50) NULL,
+	delete_ts timestamp NULL,
+	deleted_by varchar(50) NULL,
+	file_source_type_id uuid NOT NULL,
+	"name" varchar(255) NOT NULL,
+	CONSTRAINT dmx_file_source_type_property_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_dmx_file_source_type_property_on_file_source_type FOREIGN KEY (file_source_type_id) REFERENCES dmx_file_source_type(id)
+);
+CREATE INDEX idx_dmx_file_source_type_property_on_file_source_type ON public.dmx_file_source_type_property USING btree (file_source_type_id);
+
+
+-- public.dmx_crawler_info definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_crawler_info;
+
+CREATE TABLE public.dmx_crawler_info (
+	id int4 NOT NULL,
+	uuid uuid NULL,
+	start_time timestamp NOT NULL,
+	status varchar(2000) NOT NULL,
+	source_db_id int4 NOT NULL,
+	CONSTRAINT dmx_crawler_info_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_dmx_crawler_info_on_source_db FOREIGN KEY (source_db_id) REFERENCES dmx_db_source_db(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_dmx_crawler_info_on_source_db ON public.dmx_crawler_info USING btree (source_db_id);
+
+
+-- public.dmx_db_schema definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_schema;
+
+CREATE TABLE public.dmx_db_schema (
+	id int4 NOT NULL,
+	uuid uuid NULL,
+	"name" varchar(255) NOT NULL,
+	source_db_id int4 NOT NULL,
+	CONSTRAINT dmx_db_schema_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_dmx_db_schema_on_source_db FOREIGN KEY (source_db_id) REFERENCES dmx_db_source_db(id)
+);
+CREATE INDEX idx_dmx_db_schema_on_source_db ON public.dmx_db_schema USING btree (source_db_id);
+
+
+-- public.dmx_db_schema_table definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_schema_table;
+
+CREATE TABLE public.dmx_db_schema_table (
+	id int4 NOT NULL,
+	uuid uuid NULL,
+	"name" varchar(255) NOT NULL,
+	schema_id int4 NOT NULL,
+	CONSTRAINT dmx_db_schema_table_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_dmx_db_schema_table_on_schema FOREIGN KEY (schema_id) REFERENCES dmx_db_schema(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_dmx_db_schema_table_on_schema ON public.dmx_db_schema_table USING btree (schema_id);
+
+
+-- public.dmx_db_table_column definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_table_column;
+
+CREATE TABLE public.dmx_db_table_column (
+	id int4 NOT NULL,
+	uuid uuid NULL,
+	"name" varchar(255) NOT NULL,
+	table_id int4 NOT NULL,
+	data_type_id int4 NOT NULL,
+	primary_key bool NOT NULL,
+	column_position int4 NULL DEFAULT 0,
+	CONSTRAINT dmx_db_table_column_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_dmx_db_table_column_on_data_type FOREIGN KEY (data_type_id) REFERENCES dmx_data_type(id),
+	CONSTRAINT fk_dmx_db_table_column_on_table FOREIGN KEY (table_id) REFERENCES dmx_db_schema_table(id) ON DELETE CASCADE
+);
+CREATE INDEX idx_dmx_db_table_column_on_data_type ON public.dmx_db_table_column USING btree (data_type_id);
+CREATE INDEX idx_dmx_db_table_column_on_table ON public.dmx_db_table_column USING btree (table_id);
+
+
+-- public.dmx_db_file_properties definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_file_properties;
+
+CREATE TABLE public.dmx_db_file_properties (
+	id int4 NOT NULL,
+	source_table_id int4 NOT NULL,
+	file_type varchar(255) NULL,
+	file_reader varchar(255) NULL,
+	header_row int4 NULL,
+	delimeter varchar(255) NULL,
+	multi_line bool NULL,
+	database_name varchar(255) NULL,
+	schema_name varchar(255) NULL,
+	table_name varchar(255) NULL,
+	schema_file_path varchar(255) NULL,
+	CONSTRAINT dmx_db_file_properties_pkey PRIMARY KEY (id),
+	CONSTRAINT dmx_db_file_properties_source_table_id_fkey FOREIGN KEY (source_table_id) REFERENCES dmx_db_schema_table(id)
+);
+
+
+-- public.dmx_db_ingestion definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_ingestion;
+
+CREATE TABLE public.dmx_db_ingestion (
+	id int4 NOT NULL,
+	uuid uuid NULL,
+	column_id int4 NULL,
+	history_column_id int4 NULL,
+	frequency_id int4 NOT NULL,
+	last_ingestion_time timestamp NULL,
+	table_id int4 NOT NULL,
+	history_table_id int4 NULL,
+	ingestion_mode_id int4 NULL,
+	CONSTRAINT dmx_db_ingestion_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_dmx_db_ingestion_on_column FOREIGN KEY (column_id) REFERENCES dmx_db_table_column(id),
+	CONSTRAINT fk_dmx_db_ingestion_on_frequency FOREIGN KEY (frequency_id) REFERENCES dmx_db_frequency(id),
+	CONSTRAINT fk_dmx_db_ingestion_on_history_column FOREIGN KEY (history_column_id) REFERENCES dmx_db_table_column(id),
+	CONSTRAINT fk_dmx_db_ingestion_on_history_table FOREIGN KEY (history_table_id) REFERENCES dmx_db_schema_table(id),
+	CONSTRAINT fk_dmx_db_ingestion_on_ingestion_mode FOREIGN KEY (ingestion_mode_id) REFERENCES dmx_db_ingestion_mode(id) ON DELETE CASCADE,
+	CONSTRAINT fk_dmx_db_ingestion_on_table FOREIGN KEY (table_id) REFERENCES dmx_db_schema_table(id)
+);
+CREATE INDEX idx_dmx_db_ingestion_on_column ON public.dmx_db_ingestion USING btree (column_id);
+CREATE INDEX idx_dmx_db_ingestion_on_frequency ON public.dmx_db_ingestion USING btree (frequency_id);
+CREATE INDEX idx_dmx_db_ingestion_on_history_column ON public.dmx_db_ingestion USING btree (history_column_id);
+CREATE INDEX idx_dmx_db_ingestion_on_history_table ON public.dmx_db_ingestion USING btree (history_table_id);
+CREATE INDEX idx_dmx_db_ingestion_on_ingestion_mode ON public.dmx_db_ingestion USING btree (ingestion_mode_id);
+CREATE INDEX idx_dmx_db_ingestion_on_table ON public.dmx_db_ingestion USING btree (table_id);
+
+
+-- public.dmx_db_ingestion_target definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_db_ingestion_target;
+
+CREATE TABLE public.dmx_db_ingestion_target (
+	id uuid NOT NULL,
+	"version" int4 NOT NULL,
+	create_ts timestamp NULL,
+	created_by varchar(50) NULL,
+	update_ts timestamp NULL,
+	updated_by varchar(50) NULL,
+	delete_ts timestamp NULL,
+	deleted_by varchar(50) NULL,
+	ingestion_id int4 NULL,
+	target_id int4 NULL,
+	delivery_mode_id int4 NULL DEFAULT '-1'::integer,
+	CONSTRAINT dmx_db_ingestion_target_pkey PRIMARY KEY (id),
+	CONSTRAINT dmx_db_ingestion_target_delivery_mode_id_fkey FOREIGN KEY (delivery_mode_id) REFERENCES dmx_db_delivery_mode(id),
+	CONSTRAINT fk_dmx_db_ingestion_target_on_ingestion FOREIGN KEY (ingestion_id) REFERENCES dmx_db_ingestion(id),
+	CONSTRAINT fk_dmx_db_ingestion_target_on_target FOREIGN KEY (target_id) REFERENCES dmx_db_source_db(id)
+);
+CREATE INDEX idx_dmx_db_ingestion_target_on_ingestion ON public.dmx_db_ingestion_target USING btree (ingestion_id);
+CREATE INDEX idx_dmx_db_ingestion_target_on_target ON public.dmx_db_ingestion_target USING btree (target_id);
+
+
+-- public.incremental_load_logs definition
+
+-- Drop table
+
+-- DROP TABLE public.incremental_load_logs;
+
+CREATE TABLE public.incremental_load_logs (
+	id bigserial NOT NULL,
+	ingestion_id int4 NOT NULL,
+	message varchar(255) NULL,
+	rows_processed int4 NULL,
+	status varchar(100) NULL,
+	start_time timestamp NULL,
+	end_time timestamp NULL,
+	job_id varchar(50) NULL,
+	ingestion_count int8 NULL,
+	run_type varchar(50) NULL,
+	data_layer varchar NULL,
+	CONSTRAINT incremental_load_logs_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_incremental_load_logs_on_ingestion FOREIGN KEY (ingestion_id) REFERENCES dmx_db_ingestion(id)
+);
+CREATE INDEX idx_incremental_load_logs_on_ingestion ON public.incremental_load_logs USING btree (ingestion_id);
+
+
+-- public.audit_tracker definition
+
+-- Drop table
+
+-- DROP TABLE public.audit_tracker;
+
+CREATE TABLE public.audit_tracker (
+	id bigserial NOT NULL,
+	ingestion_id int4 NOT NULL,
+	audit_int int8 NULL,
+	audit_long int8 NULL,
+	audit_timestamp timestamp NULL,
+	audit_date date NULL,
+	inst_timestamp timestamp NULL,
+	CONSTRAINT audit_tracker_pkey PRIMARY KEY (id),
+	CONSTRAINT fk_audit_tracker_on_ingestion FOREIGN KEY (ingestion_id) REFERENCES dmx_db_ingestion(id)
+);
+CREATE INDEX idx_audit_tracker_on_ingestion ON public.audit_tracker USING btree (ingestion_id);
+
+
+-- public.dmx_file_ingestion definition
+
+-- Drop table
+
+-- DROP TABLE public.dmx_file_ingestion;
+
+CREATE TABLE public.dmx_file_ingestion (
+	id uuid NOT NULL,
+	"version" int4 NOT NULL,
+	create_ts timestamp NULL,
+	created_by varchar(50) NULL,
+	update_ts timestamp NULL,
+	updated_by varchar(50) NULL,
+	delete_ts timestamp NULL,
+	deleted_by varchar(50) NULL,
+	source_file_pattern varchar(255) NOT NULL,
+	file_format_id uuid NOT NULL,
+	container_id uuid NOT NULL,
+	frequency_id int4 NOT NULL,
+	ingestion_mode_id int4 NULL,
+	CONSTRAINT dmx_file_ingestion_pkey PRIMARY KEY (id)
+);
+CREATE INDEX idx_dmx_file_ingestion_on_container ON public.dmx_file_ingestion USING btree (container_id);
+CREATE INDEX idx_dmx_file_ingestion_on_file_format ON public.dmx_file_ingestion USING btree (file_format_id);
+CREATE INDEX idx_dmx_file_ingestion_on_frequency ON public.dmx_file_ingestion USING btree (frequency_id);
+CREATE INDEX idx_dmx_file_ingestion_on_ingestion_mode ON public.dmx_file_ingestion USING btree (ingestion_mode_id);
+
+
+-- public.dmx_file_ingestion foreign keys
+
+ALTER TABLE public.dmx_file_ingestion ADD CONSTRAINT fk_dmx_file_ingestion_on_file_format FOREIGN KEY (file_format_id) REFERENCES dmx_file_format(id);
+ALTER TABLE public.dmx_file_ingestion ADD CONSTRAINT fk_dmx_file_ingestion_on_frequency FOREIGN KEY (frequency_id) REFERENCES dmx_db_frequency(id);
+ALTER TABLE public.dmx_file_ingestion ADD CONSTRAINT fk_dmx_file_ingestion_on_ingestion_mode FOREIGN KEY (ingestion_mode_id) REFERENCES dmx_db_ingestion_mode(id);

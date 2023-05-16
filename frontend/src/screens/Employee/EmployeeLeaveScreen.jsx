@@ -31,6 +31,8 @@ import {
   getTeamLeaves,
   getUserLeaves,
 } from "../../actions/leaveActions";
+import Snackbar from '@mui/material/Snackbar';
+import { Alert } from "@mui/material";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -114,6 +116,16 @@ const EmployeeLeaveScreen = () => {
             >
               <CheckCircleIcon />
             </IconButton>
+            <Snackbar
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              open={openToast}
+              autoHideDuration={3000}
+              onClose={handleAlert}
+            >
+              <Alert>
+                Approved
+              </Alert>
+            </Snackbar>
             <IconButton
               color="error"
               onClick={() => handleCancel(row.id)}
@@ -121,6 +133,16 @@ const EmployeeLeaveScreen = () => {
             >
               <CancelIcon />
             </IconButton>
+            <Snackbar
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              open={openToast1}
+              autoHideDuration={3000}
+              onClose={handleAlert1}
+            >
+              <Alert color="error">
+                Disapproved
+              </Alert>
+            </Snackbar>
           </Stack>
         </>
       ),
@@ -249,11 +271,23 @@ const EmployeeLeaveScreen = () => {
     setOpen(false);
   };
 
+  const [openToast, setOpenToast] = useState(false);
+  const [openToast1, setOpenToast1] = useState(false);
+
   const handleApprove = (id) => {
     dispatch(approveLeave(id));
+    setOpenToast(true);
   };
+  const handleAlert = () => {
+    setOpenToast(false);
+  };
+
   const handleCancel = (id) => {
     dispatch(cancelLeave(id));
+    setOpenToast1(true);
+  };
+  const handleAlert1 = () => {
+    setOpenToast1(false);
   };
 
   useEffect(() => {

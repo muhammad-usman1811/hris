@@ -18,6 +18,11 @@ import Box from "@mui/material/Box";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import PropTypes from "prop-types";
+import Alert from '@mui/material/Alert';
+import Stack from '@mui/material/Stack';
+import { IconButton } from "@mui/material";
+import EditIcon from '@mui/icons-material/Edit';
+import AlertTitle from '@mui/material/AlertTitle';
 
 
 
@@ -122,6 +127,7 @@ const EmployeeProfile = () => {
     <Box sx={{backgroundColor: "#eaeff1",
     boxShadow: 3,
     width:"100%"}} >
+    
     <Grid
       item
       xs={12}
@@ -479,11 +485,14 @@ const EmployeeProfile = () => {
           </TabPanel>
           <TabPanel value={value} index={3}>
             <Grid container>
+              
+                
               <Grid
                 item
                 xs={4}
                 sx={{ borderRight: 1, borderColor: "grey.500", ml: 5 }}
               >
+        
                 <Typography variant="h6" sx={{ marginBottom: "10px" }}>
                   Educational Information
                 </Typography>
@@ -506,6 +515,14 @@ const EmployeeProfile = () => {
               </Grid>
 
               <Grid item xs={3} sx={{ ml: 5 }}>
+                
+              <Grid>
+                <Stack  alignItems="flex-end">
+              <IconButton>
+                <EditIcon/>
+              </IconButton>
+            </Stack>
+            </Grid>
                 <Typography
                   variant="subtitle2"
                   color="textSecondary"
@@ -532,7 +549,9 @@ const EmployeeProfile = () => {
         </Box>
       </Grid>
     </Grid>
+    
     </Box>
+
   );
 };
 

@@ -12,6 +12,9 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Badge from '@mui/material/Badge';
+import Snackbar from '@mui/material/Snackbar';
+import { Alert } from "@mui/material";
+
 
 
 const HomeScreen = () => {
@@ -23,6 +26,12 @@ const HomeScreen = () => {
   const handleChange = (event, newAlignment) => {
     setAlignment(newAlignment);
   };
+
+
+  const [openToast, setOpenToast] = useState(false);
+  const [openToast1, setOpenToast1] = useState(false);
+
+  
 
   const [greeting, setGreeting] = useState("");
   const [time, setTime] = useState(new Date().toLocaleTimeString("en-Us"));
@@ -55,12 +64,21 @@ const HomeScreen = () => {
   const handleCheckIn = () => {
     let now = moment();
     setCheckIn(now.format("hh:mm:ss A"));
+    setOpenToast(true);
+  };
+  const handleClose = () => {
+    setOpenToast(false);
   };
 
   const handleCheckOut = () => {
     let now = moment();
     setCheckOut(now.format("hh:mm:ss A"));
+    setOpenToast1(true);
   };
+  const handleClose1 = () => {
+    setOpenToast1(false);
+  };
+  
 
   useEffect(() => {
     if (checkIn) {
@@ -222,6 +240,16 @@ const HomeScreen = () => {
                 onChange={handleChange}
                 aria-label="check-buttons"
               >
+                <Snackbar
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              open={openToast}
+              autoHideDuration={3000}
+              onClose={handleClose}
+            >
+              <Alert>
+                Check-In Successful
+              </Alert>
+            </Snackbar>
                 <ToggleButton
                   sx={{ width: 120 }}
                   onClick={handleCheckIn}
@@ -231,6 +259,17 @@ const HomeScreen = () => {
                 >
                   Check-In
                 </ToggleButton>
+                <Snackbar
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              open={openToast1}
+              autoHideDuration={3000}
+              onClose={handleClose1}
+            >
+              <Alert color="error">
+                Check-Out Successful
+              </Alert>
+            </Snackbar>
+                
                 <ToggleButton
                   sx={{ width: 120 }}
                   disabled={checkOut || !checkIn}
