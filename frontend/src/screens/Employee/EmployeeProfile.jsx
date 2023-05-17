@@ -8,7 +8,7 @@ import Avatar from "@mui/material/Avatar";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import Divider from "@mui/material/Divider";
+//import Divider from "@mui/material/Divider";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import EmailIcon from "@mui/icons-material/Email";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -132,7 +132,7 @@ const EmployeeProfile = () => {
       sx={{
         marginLeft: "256px",
         backgroundColor: "#eaeff1",
-        padding: "32px",
+        padding: "20px",
         minHeight: "calc(100vh - 67px)",
         position: "relative",
       }}
@@ -141,13 +141,15 @@ const EmployeeProfile = () => {
         item
         container
         sx={{
+          backgroundColor: "white",
+          padding: "2px",
           width: "100%",
           height: "100%",
-          backgroundColor: "paper.white",
           boxSizing: "border-box",
+          borderRadius: "4px",
         }}
       >
-        <Grid item container>
+        <Grid item container alignItems="center" px={4} py={2}>
           <Grid item>
             <Avatar
               sx={{ mr: 2, width: 60, height: 60 }}
@@ -162,78 +164,60 @@ const EmployeeProfile = () => {
               {title}
             </Typography>
           </Grid>
-          {/* <Grid item>
+        </Grid>
+        {/* <Grid item>
             <Button variant="contained" color="error">
               Edit Profile
             </Button>
           </Grid> */}
-          <Grid sx={{ borderBottom: 2, borderColor: "red" }} item container>
-            <Grid item>
-              <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
-                <ListItemIcon>
-                  <PhoneAndroidIcon />
-                </ListItemIcon>
-                <ListItemText primary={phone} />
-              </ListItem>
-            </Grid>
-            <Grid item>
-              <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
-                <ListItemIcon>
-                  <EmailIcon />
-                </ListItemIcon>
-                <ListItemText primary={email} />
-              </ListItem>
-            </Grid>
-            <Grid item>
-              <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
-                <ListItemIcon>
-                  <LocationOnIcon />
-                </ListItemIcon>
-                <ListItemText sx={{ ml: 2 }} primary={address} />
-              </ListItem>
-            </Grid>
-            <Grid item>
-              <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
-                <ListItemIcon>
-                  <FiberManualRecordIcon
-                    style={{
-                      color: "green",
-                    }}
-                  />
-                </ListItemIcon>
-                <ListItemText sx={{ ml: 3 }} primary="Active" />
-              </ListItem>
-            </Grid>
+        <Grid container alignItems="center" py={2} px={4}>
+          <Grid item>
+            <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
+              <ListItemIcon>
+                <PhoneAndroidIcon />
+              </ListItemIcon>
+              <ListItemText primary={phone} />
+            </ListItem>
+          </Grid>
+          <Grid item>
+            <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
+              <ListItemIcon>
+                <EmailIcon />
+              </ListItemIcon>
+              <ListItemText primary={email} />
+            </ListItem>
+          </Grid>
+          <Grid item>
+            <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
+              <ListItemIcon>
+                <LocationOnIcon />
+              </ListItemIcon>
+              <ListItemText sx={{ ml: 2 }} primary={address} />
+            </ListItem>
+          </Grid>
+          <Grid item>
+            <ListItem sx={{ border: 1, borderColor: "grey.500" }}>
+              <ListItemIcon>
+                <FiberManualRecordIcon
+                  style={{
+                    color: "green",
+                  }}
+                />
+              </ListItemIcon>
+              <ListItemText sx={{ ml: 3 }} primary="Active" />
+            </ListItem>
           </Grid>
         </Grid>
-        <Divider light />
         <Box sx={{ width: "100%" }}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+          <Box sx={{ borderBottom: 1, borderColor: "grey" }}>
             <Tabs
               value={value}
               onChange={handleChange}
               aria-label="basic tabs example"
             >
-              <Tab
-                sx={{ borderRight: 1, borderColor: "grey" }}
-                label="General Information"
-                {...a11yProps(0)}
-              />
-              <Tab
-                sx={{ borderRight: 1, borderColor: "grey" }}
-                label="Job Information"
-                {...a11yProps(1)}
-              />
-              <Tab
-                sx={{ borderRight: 1, borderColor: "grey" }}
-                label="Emergency Contact Information"
-                {...a11yProps(2)}
-              />
-              <Tab
-                sx={{ borderRight: 1, borderColor: "grey" }}
-                label="Educational Information"
-                {...a11yProps(3)}
-              />
+              <Tab label="General Information" {...a11yProps(0)} />
+              <Tab label="Job Information" {...a11yProps(1)} />
+              <Tab label="Emergency Contact Information" {...a11yProps(2)} />
             </Tabs>
           </Box>
           <TabPanel value={value} index={0}>
@@ -285,6 +269,16 @@ const EmployeeProfile = () => {
               </Grid>
 
               <Grid item xs={3} sx={{ ml: 5 }}>
+                <Typography
+                  variant="subtitle2"
+                  color="textSecondary"
+                  sx={{ marginTop: "20px" }}
+                >
+                  Blood Group:
+                </Typography>
+                <Typography variant="body1" color="textPrimary">
+                  {blood}
+                </Typography>
                 {/* <Typography
                   variant="subtitle2"
                   color="textSecondary"
@@ -298,7 +292,6 @@ const EmployeeProfile = () => {
               </Grid>
             </Grid>
           </TabPanel>
-
           <TabPanel value={value} index={1}>
             <Grid container sx={{ display: "flex", flexDirection: "row" }}>
               <Grid
@@ -407,7 +400,6 @@ const EmployeeProfile = () => {
               </Grid>
             </Grid>
           </TabPanel>
-
           <TabPanel value={value} index={2}>
             <Grid container>
               <Grid
@@ -456,21 +448,10 @@ const EmployeeProfile = () => {
                 </Typography>
               </Grid>
 
-              <Grid item xs={3} sx={{ ml: 5 }}>
-                <Typography
-                  variant="subtitle2"
-                  color="textSecondary"
-                  sx={{ marginTop: "20px" }}
-                >
-                  Blood Group:
-                </Typography>
-                <Typography variant="body1" color="textPrimary">
-                  {blood}
-                </Typography>
-              </Grid>
+              <Grid item xs={3} sx={{ ml: 5 }}></Grid>
             </Grid>
           </TabPanel>
-          <TabPanel value={value} index={3}>
+          {/* <TabPanel value={value} index={3}>
             <Grid container>
               <Grid
                 item
@@ -521,7 +502,7 @@ const EmployeeProfile = () => {
                 </Typography>
               </Grid>
             </Grid>
-          </TabPanel>
+          </TabPanel> */}
         </Box>
       </Grid>
     </Grid>

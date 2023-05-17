@@ -12,6 +12,9 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Badge from "@mui/material/Badge";
+import Tooltip from "@mui/material/Tooltip";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 import axios from "axios";
 
 const HomeScreen = () => {
@@ -32,7 +35,11 @@ const HomeScreen = () => {
   const [checkOut, setCheckOut] = useState(
     localStorage.getItem(`checkOut:${userInfo._id}`)
   );
+  const [isOneHourPassed, setIsOneHourPassed] = useState(false);
   const [workHours, setWorkHours] = useState("00:00:00");
+
+  const [openCheckInToast, setOpenCheckInToast] = useState(false);
+  const [openCheckOutToast, setOpenCheckOutToast] = useState(false);
 
   const calculateWorkHours = (starttime, endtime) => {
     if (!endtime) {
@@ -56,6 +63,7 @@ const HomeScreen = () => {
     let now = moment();
     const checkInTime = now.format("hh:mm:ss A");
     setCheckIn(checkInTime);
+    setOpenCheckInToast(true);
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -77,6 +85,7 @@ const HomeScreen = () => {
     let now = moment();
     const checkOutTime = now.format("hh:mm:ss A");
     setCheckOut(checkOutTime);
+    setOpenCheckOutToast(true);
     const config = {
       headers: {
         "Content-Type": "application/json",
@@ -96,9 +105,20 @@ const HomeScreen = () => {
     }
   };
 
+  const handleCloseCheckInToast = () => {
+    setOpenCheckInToast(false);
+  };
+
+  const handleCloseCheckOutToast = () => {
+    setOpenCheckOutToast(false);
+  };
+
   useEffect(() => {
     if (checkIn) {
       localStorage.setItem(`checkIn:${userInfo._id}`, checkIn);
+      const oneHourAgo = moment().subtract(1, "hour");
+      const isPassed = moment(checkIn, "hh:mm:ss A").isBefore(oneHourAgo);
+      setIsOneHourPassed(isPassed);
     }
     if (checkOut) {
       localStorage.setItem(`checkOut:${userInfo._id}`, checkOut);
@@ -116,14 +136,26 @@ const HomeScreen = () => {
       setGreeting("Good Evening");
     }
 
+    const clearLocalStorageAtMidnight = () => {
+      localStorage.removeItem(`checkIn:${userInfo._id}`);
+      localStorage.removeItem(`checkOut:${userInfo._id}`);
+    };
+
+    const now = moment();
+    const midnight = moment().endOf("day");
+    const timeUntilMidnight = midnight.diff(now);
+
+    const timeOut = setTimeout(clearLocalStorageAtMidnight, timeUntilMidnight);
+
     const interval = setInterval(() => {
       setTime(moment().format("hh:mm:ss A"));
     }, 1000);
 
     return () => {
       clearInterval(interval);
+      clearTimeout(timeOut);
     };
-  }, [checkIn, checkOut, userInfo]);
+  }, [checkIn, checkOut, userInfo, isOneHourPassed]);
 
   return (
     <Grid
@@ -258,24 +290,28 @@ const HomeScreen = () => {
                 onChange={handleChange}
                 aria-label="check-buttons"
               >
-                <ToggleButton
-                  sx={{ width: 120 }}
-                  onClick={handleCheckIn}
-                  color={"success"}
-                  value="check-in"
-                  disabled={checkIn}
-                >
-                  Check-In
-                </ToggleButton>
-                <ToggleButton
-                  sx={{ width: 120 }}
-                  disabled={checkOut || !checkIn}
-                  onClick={handleCheckOut}
-                  color={"error"}
-                  value="check-out"
-                >
-                  Check-Out
-                </ToggleButton>
+                <Tooltip title="Check-In" arrow>
+                  <ToggleButton
+                    sx={{ width: 120 }}
+                    onClick={handleCheckIn}
+                    color={"success"}
+                    value="check-in"
+                    disabled={checkIn}
+                  >
+                    Check-In
+                  </ToggleButton>
+                </Tooltip>
+                <Tooltip title="Check-Out" arrow>
+                  <ToggleButton
+                    sx={{ width: 120 }}
+                    disabled={checkOut || !checkIn || !isOneHourPassed}
+                    onClick={handleCheckOut}
+                    color={"error"}
+                    value="check-out"
+                  >
+                    Check-Out
+                  </ToggleButton>
+                </Tooltip>
               </ToggleButtonGroup>
             </CardContent>
           </Box>
@@ -352,6 +388,26 @@ const HomeScreen = () => {
           </Box>
         </Card>
       </Grid>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        open={openCheckInToast}
+        autoHideDuration={3000}
+        onClose={handleCloseCheckInToast}
+      >
+        <Alert severity="success" sx={{ width: "100%" }}>
+          Check-in successful
+        </Alert>
+      </Snackbar>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        open={openCheckOutToast}
+        autoHideDuration={3000}
+        onClose={handleCloseCheckOutToast}
+      >
+        <Alert severity="success" sx={{ width: "100%" }}>
+          Check-out successful
+        </Alert>
+      </Snackbar>
     </Grid>
   );
 };

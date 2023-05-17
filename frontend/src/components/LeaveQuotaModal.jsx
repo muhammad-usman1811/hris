@@ -88,7 +88,19 @@ const LeaveQuotaModal = ({ open, handleClose }) => {
     const fetchQuotas = async () => {
       try {
         const { data } = await axios.get("/api/leaveQuotas");
-        setLeaveQuotas(data);
+        if (data) {
+          setLeaveQuotas(data);
+        } else {
+          setLeaveQuotas([
+            { leaveType: "Earned", leaveCount: 12 },
+            { leaveType: "Casual", leaveCount: 4 },
+            { leaveType: "Sick", leaveCount: 4 },
+            { leaveType: "Maternity", leaveCount: 90 },
+            { leaveType: "Paternity", leaveCount: 3 },
+            { leaveType: "Special Sick", leaveCount: 30 },
+            { leaveType: "Bereavement", leaveCount: 2 },
+          ]);
+        }
       } catch (error) {
         console.log(error);
       }

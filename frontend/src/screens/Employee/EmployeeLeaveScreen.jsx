@@ -19,6 +19,8 @@ import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import CancelIcon from "@mui/icons-material/Cancel";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 //import Chip from "@mui/material/Chip";
 import LeaveModal from "../../components/LeaveModal";
 import QuotaCard from "../../components/common/QuotaCard";
@@ -167,6 +169,8 @@ const EmployeeLeaveScreen = () => {
   const dispatch = useDispatch();
 
   const [leaveQuotas, setLeaveQuotas] = useState([]);
+  const [openApproveToast, setOpenApproveToast] = useState(false);
+  const [openCancelToast, setOpenCancelToast] = useState(false);
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -249,11 +253,21 @@ const EmployeeLeaveScreen = () => {
     setOpen(false);
   };
 
+  const handleCloseApproveToast = () => {
+    setOpenApproveToast(false);
+  };
+
+  const handleCloseCancelToast = () => {
+    setOpenCancelToast(false);
+  };
+
   const handleApprove = (id) => {
     dispatch(approveLeave(id));
+    setOpenApproveToast(true);
   };
   const handleCancel = (id) => {
     dispatch(cancelLeave(id));
+    setOpenCancelToast(true);
   };
 
   useEffect(() => {
@@ -401,6 +415,26 @@ const EmployeeLeaveScreen = () => {
                 />
               </Box>
             </TabPanel>
+            <Snackbar
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              open={openApproveToast}
+              autoHideDuration={3000}
+              onClose={handleCloseApproveToast}
+            >
+              <Alert severity="success" sx={{ width: "100%" }}>
+                Leave request approved successfully
+              </Alert>
+            </Snackbar>
+            <Snackbar
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              open={openCancelToast}
+              autoHideDuration={3000}
+              onClose={handleCloseCancelToast}
+            >
+              <Alert severity="success" sx={{ width: "100%" }}>
+                Leave request cancelled
+              </Alert>
+            </Snackbar>
           </Box>
         )}
         {userInfo.role === "Employee" && (

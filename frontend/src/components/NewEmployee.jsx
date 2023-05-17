@@ -86,6 +86,9 @@ const NewEmployee = () => {
 
   const bloodGroups = [
     {
+      value: "None",
+    },
+    {
       value: "A+",
     },
     {
@@ -427,15 +430,15 @@ const NewEmployee = () => {
       isValid = false;
     }
 
-    if (!formData.emergencyAddress || !formData.emergencyAddress.trim()) {
-      errors.emergencyAddress = "Please enter emergency contact's address";
-      isValid = false;
-    }
+    // if (!formData.emergencyAddress || !formData.emergencyAddress.trim()) {
+    //   errors.emergencyAddress = "Please enter emergency contact's address";
+    //   isValid = false;
+    // }
 
-    if (!formData.blood) {
-      errors.blood = "Please enter blood group";
-      isValid = false;
-    }
+    // if (!formData.blood) {
+    //   errors.blood = "Please enter blood group";
+    //   isValid = false;
+    // }
     setIsValid(isValid);
     setErrors(errors);
   }, [formData, hasBlurred]);
@@ -667,6 +670,24 @@ const NewEmployee = () => {
             error={errors.passport}
             helperText={errors.passport && errors.passport}
           />
+          <br />
+          <TextField
+            sx={{ marginTop: "20px", width: "50%" }}
+            name="blood"
+            select
+            value={formData.blood}
+            onChange={handleFieldChange}
+            // onBlur={handleBlur}
+            // error={!!errors.blood && isTouched.blood}
+            helperText="Select blood group (optional)"
+            variant="standard"
+          >
+            {bloodGroups.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.value}
+              </MenuItem>
+            ))}
+          </TextField>
         </Box>
       </Grid>
       <Grid item xs={4}>
@@ -892,18 +913,18 @@ const NewEmployee = () => {
           <TextField
             sx={{ marginTop: "20px", width: "50%" }}
             name="emergencyAddress"
-            label="Address"
+            label="Address (optional)"
             variant="standard"
             multiline
             value={formData.emergencyAddress}
             onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.emergencyAddress && isTouched.emergencyAddress}
-            helperText={
-              errors.emergencyAddress &&
-              isTouched.emergencyAddress &&
-              errors.emergencyAddress
-            }
+            // onBlur={handleBlur}
+            // error={!!errors.emergencyAddress && isTouched.emergencyAddress}
+            // helperText={
+            //   errors.emergencyAddress &&
+            //   isTouched.emergencyAddress &&
+            //   errors.emergencyAddress
+            // }
           />
           <br />
           <TextField
@@ -919,29 +940,7 @@ const NewEmployee = () => {
             error={!!errors.contact && isTouched.contact}
             helperText={errors.contact && isTouched.contact && errors.contact}
           />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="blood"
-            select
-            value={formData.blood}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.blood && isTouched.blood}
-            helperText={
-              errors.blood && isTouched.blood
-                ? errors.blood
-                : "Please select the blood group"
-            }
-            variant="standard"
-          >
-            {bloodGroups.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.value}
-              </MenuItem>
-            ))}
-          </TextField>
-          <Stack spacing={2} direction="row" marginTop={45}>
+          <Stack spacing={2} direction="row" marginTop={65}>
             <LoadingButton
               loading={loading}
               color="error"

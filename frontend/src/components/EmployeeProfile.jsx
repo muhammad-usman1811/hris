@@ -83,6 +83,9 @@ const EmployeeProfile = () => {
 
   const bloodGroups = [
     {
+      value: "None",
+    },
+    {
       value: "A+",
     },
     {
@@ -342,15 +345,15 @@ const EmployeeProfile = () => {
     isValid = false;
   }
 
-  if (!emergencyAddress.trim()) {
-    errors.emergencyAddress = "Please enter emergency contact's address";
-    isValid = false;
-  }
+  // if (!emergencyAddress.trim()) {
+  //   errors.emergencyAddress = "Please enter emergency contact's address";
+  //   isValid = false;
+  // }
 
-  if (!blood) {
-    errors.blood = "Please enter blood group";
-    isValid = false;
-  }
+  // if (!blood) {
+  //   errors.blood = "Please enter blood group";
+  //   isValid = false;
+  // }
 
   const handleAttempt = () => {
     setAttemptedUpload(true);
@@ -735,6 +738,24 @@ const EmployeeProfile = () => {
                   errors.passport && isTouched.passport && errors.passport
                 }
               />
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="blood"
+                select
+                value={blood}
+                onChange={(e) => setBlood(e.target.value)}
+                // onBlur={handleBlur}
+                // error={!!errors.blood && isTouched.blood}
+                helperText="Select blood group (optional)"
+                variant="standard"
+              >
+                {bloodGroups.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
             </Box>
           </Grid>
           <Grid item xs={4}>
@@ -970,18 +991,18 @@ const EmployeeProfile = () => {
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="emergencyAddress"
-                label="Address"
+                label="Address (optional)"
                 variant="standard"
                 multiline
                 value={emergencyAddress}
                 onChange={(e) => setEmergencyAddress(e.target.value)}
-                onBlur={handleBlur}
-                error={!!errors.emergencyAddress && isTouched.emergencyAddress}
-                helperText={
-                  errors.emergencyAddress &&
-                  isTouched.emergencyAddress &&
-                  errors.emergencyAddress
-                }
+                // onBlur={handleBlur}
+                // error={!!errors.emergencyAddress && isTouched.emergencyAddress}
+                // helperText={
+                //   errors.emergencyAddress &&
+                //   isTouched.emergencyAddress &&
+                //   errors.emergencyAddress
+                // }
               />
               <br />
               <TextField
@@ -1000,29 +1021,7 @@ const EmployeeProfile = () => {
                   errors.contact && isTouched.contact && errors.contact
                 }
               />
-              <br />
-              <TextField
-                sx={{ marginTop: "20px", width: "50%" }}
-                name="blood"
-                select
-                value={blood}
-                onChange={(e) => setBlood(e.target.value)}
-                onBlur={handleBlur}
-                error={!!errors.blood && isTouched.blood}
-                helperText={
-                  errors.blood && isTouched.blood
-                    ? errors.blood
-                    : "Please select the blood group"
-                }
-                variant="standard"
-              >
-                {bloodGroups.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.value}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <Stack spacing={2} direction="row" marginTop={45}>
+              <Stack spacing={2} direction="row" marginTop={65}>
                 <Button
                   color="error"
                   variant="contained"
