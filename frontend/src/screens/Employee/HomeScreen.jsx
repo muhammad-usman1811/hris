@@ -290,7 +290,7 @@ const HomeScreen = () => {
                 onChange={handleChange}
                 aria-label="check-buttons"
               >
-                <Tooltip title="Check-In" arrow>
+                <Tooltip title="Check-In">
                   <ToggleButton
                     sx={{ width: 120 }}
                     onClick={handleCheckIn}
