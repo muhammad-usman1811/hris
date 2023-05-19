@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-//import Button from "@mui/material/Button";
+import Button from "@mui/material/Button";
 import moment from "moment";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
@@ -13,7 +13,9 @@ import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import Badge from '@mui/material/Badge';
 import Snackbar from '@mui/material/Snackbar';
-import { Alert } from "@mui/material";
+import { Alert} from "@mui/material";
+import { styled } from '@mui/material/styles';
+import Tooltip, { tooltipClasses } from '@mui/material/Tooltip';
 
 
 
@@ -106,6 +108,18 @@ const HomeScreen = () => {
 
     return () => clearInterval(interval);
   }, [checkIn, checkOut, userInfo]);
+  const LightTooltip = styled(({ className, ...props }) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: theme.palette.common.grey,
+      color: 'white',
+      boxShadow: theme.shadows[2],
+      fontSize: 15,
+    },
+  }));
+
+
 
   return (
     <Grid
@@ -233,7 +247,7 @@ const HomeScreen = () => {
           </Box>
           <Box>
             <CardContent sx={{ mt: 8 }}>
-              <ToggleButtonGroup
+              {/* <ToggleButtonGroup
                 color="primary"
                 value={alignment}
                 exclusive
@@ -269,7 +283,8 @@ const HomeScreen = () => {
                 Check-Out Successful
               </Alert>
             </Snackbar>
-                
+            <LightTooltip title="You can now logout after 1 hour">
+            <span>
                 <ToggleButton
                   sx={{ width: 120 }}
                   disabled={checkOut || !checkIn}
@@ -279,7 +294,56 @@ const HomeScreen = () => {
                 >
                   Check-Out
                 </ToggleButton>
-              </ToggleButtonGroup>
+                </span>
+                </LightTooltip>
+                
+                </ToggleButtonGroup> */}
+                <Snackbar
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              open={openToast}
+              autoHideDuration={3000}
+              onClose={handleClose}
+            >
+              <Alert>
+                Check-In Successful
+              </Alert>
+            </Snackbar>
+                <Button
+                 sx={{ width: 120 }}
+                 onClick={handleCheckIn}
+                 color={"success"}
+                 value="check-in"
+                 disabled={checkIn}
+                 variant="outlined"
+                 
+                >
+                  Check-In
+                </Button>
+
+                <Snackbar
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              open={openToast1}
+              autoHideDuration={3000}
+              onClose={handleClose1}
+            >
+              <Alert color="error">
+                Check-Out Successful
+              </Alert>
+            </Snackbar>
+
+            <LightTooltip title="You Cannot Check-Out Before 1 Hour">
+              <span>
+                <Button
+                 sx={{ width: 120 }}
+                 disabled={checkOut || !checkIn}
+                 onClick={handleCheckOut}
+                 color={"error"}
+                 value="check-out"
+                 variant="outlined"
+                
+                >Check-Out</Button>
+                </span>
+                </LightTooltip>
             </CardContent>
           </Box>
         </Card>
