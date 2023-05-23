@@ -206,6 +206,7 @@ const EmployeeProfile = () => {
 
   const [hasBlurred, setHasBlurred] = useState({
     password: false,
+    email: false,
     phone: false,
     cnic: false,
     passport: false,
@@ -227,6 +228,9 @@ const EmployeeProfile = () => {
 
   if (!email.trim()) {
     errors.email = "Please enter email";
+    isValid = false;
+  } else if (!email.includes("@digifloat.com") && hasBlurred.email) {
+    errors.email = "Email format is incorrect";
     isValid = false;
   }
 
@@ -447,10 +451,25 @@ const EmployeeProfile = () => {
       setImageIsChanged(true);
     }
   }, []);
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      "image/png": [".png", ".jpeg"],
+    },
+  });
 
   const handleClear = () => {
     setImageUrl(null);
+  };
+
+  const handleKeyPress = (event) => {
+    const keyCode = event.keyCode || event.which;
+    const keyValue = String.fromCharCode(keyCode);
+    const alphaRegex = /^[A-Za-z\s]+$/;
+
+    if (!alphaRegex.test(keyValue)) {
+      event.preventDefault();
+    }
   };
 
   useEffect(() => {
@@ -586,6 +605,9 @@ const EmployeeProfile = () => {
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="name"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
                 label="Full Name"
                 variant="standard"
                 value={name}
@@ -605,6 +627,7 @@ const EmployeeProfile = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 onBlur={handleBlur}
+                onFocus={handleFocus}
                 error={!!errors.email && isTouched.email}
                 helperText={errors.email && isTouched.email && errors.email}
               />
@@ -805,6 +828,9 @@ const EmployeeProfile = () => {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="title"
                 label="Title"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
                 variant="standard"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -841,6 +867,9 @@ const EmployeeProfile = () => {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="supervisor"
                 label="Supervisor"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
                 variant="standard"
                 value={supervisor}
                 onChange={(e) => setSupervisor(e.target.value)}
@@ -937,6 +966,7 @@ const EmployeeProfile = () => {
                 sx={{ marginTop: "20px", width: "50%" }}
                 InputLabelProps={{ shrink: true }}
                 name="salary"
+                type="number"
                 label="Salary"
                 variant="standard"
                 InputProps={{
@@ -960,6 +990,9 @@ const EmployeeProfile = () => {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="emergencyName"
                 label="Name"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
                 variant="standard"
                 value={emergencyName}
                 onChange={(e) => setEmergencyName(e.target.value)}
@@ -977,6 +1010,9 @@ const EmployeeProfile = () => {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="relation"
                 label="Relation"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
                 variant="standard"
                 value={relation}
                 onChange={(e) => setRelation(e.target.value)}

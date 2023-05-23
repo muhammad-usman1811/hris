@@ -1,45 +1,48 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
-//import Button from "@mui/material/Button";
+import Button from "@mui/material/Button";
 import moment from "moment";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import Badge from "@mui/material/Badge";
-import Tooltip from "@mui/material/Tooltip";
-import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 import axios from "axios";
+import AlertDialog from "../../components/common/AlertDialog";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const HomeScreen = () => {
-  const [alignment, setAlignment] = React.useState("web");
-
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
-
-  const handleChange = (event, newAlignment) => {
-    setAlignment(newAlignment);
-  };
 
   const [greeting, setGreeting] = useState("");
   const [time, setTime] = useState(new Date().toLocaleTimeString("en-Us"));
   const [checkIn, setCheckIn] = useState(
     localStorage.getItem(`checkIn:${userInfo._id}`)
   );
+
   const [checkOut, setCheckOut] = useState(
     localStorage.getItem(`checkOut:${userInfo._id}`)
   );
+
   const [isOneHourPassed, setIsOneHourPassed] = useState(false);
   const [workHours, setWorkHours] = useState("00:00:00");
 
   const [openCheckInToast, setOpenCheckInToast] = useState(false);
   const [openCheckOutToast, setOpenCheckOutToast] = useState(false);
+  const [openAlertDialog, setOpenAlertDialog] = React.useState(false);
+
+  const handleCloseAlertDialog = () => {
+    setOpenAlertDialog(false);
+  };
 
   const calculateWorkHours = (starttime, endtime) => {
     if (!endtime) {
@@ -59,7 +62,7 @@ const HomeScreen = () => {
     return totalWorkHours;
   };
 
-  const handleCheckIn = async () => {
+  const handleCheckIn = async (Transition) => {
     let now = moment();
     const checkInTime = now.format("hh:mm:ss A");
     setCheckIn(checkInTime);
@@ -82,28 +85,65 @@ const HomeScreen = () => {
   };
 
   const handleCheckOut = async () => {
-    let now = moment();
-    const checkOutTime = now.format("hh:mm:ss A");
-    setCheckOut(checkOutTime);
-    setOpenCheckOutToast(true);
+    if (!isOneHourPassed) {
+      setOpenAlertDialog(true);
+      //alert("You can check-out atleast after 1 hour since check-in");
+    } else {
+      let now = moment();
+      const checkOutTime = now.format("hh:mm:ss A");
+      setCheckOut(checkOutTime);
+      setOpenCheckOutToast(true);
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+      try {
+        await axios.put(
+          `/api/attendance/checkOut/${userInfo._id}`,
+          {
+            checkOut: checkOutTime,
+          },
+          config
+        );
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const sendEmailForCheckIn = useCallback(async () => {
     const config = {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${userInfo.token}`,
       },
     };
     try {
-      await axios.put(
-        `/api/attendance/checkOut/${userInfo._id}`,
-        {
-          checkOut: checkOutTime,
-        },
+      await axios.get(
+        `/api/attendance/sendEmail/checkIn/${userInfo._id}`,
         config
       );
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [userInfo]);
+
+  const sendEmailForCheckOut = useCallback(async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    try {
+      await axios.get(
+        `/api/attendance/sendEmail/checkOut/${userInfo._id}`,
+        config
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }, [userInfo]);
 
   const handleCloseCheckInToast = () => {
     setOpenCheckInToast(false);
@@ -136,6 +176,15 @@ const HomeScreen = () => {
       setGreeting("Good Evening");
     }
 
+    //Send email to employee if he/she misses the checkIn until 2pm
+    if (hour >= 14 && !checkIn) {
+      sendEmailForCheckIn();
+    }
+
+    if (hour >= 21 && !checkOut) {
+      sendEmailForCheckOut();
+    }
+
     const clearLocalStorageAtMidnight = () => {
       localStorage.removeItem(`checkIn:${userInfo._id}`);
       localStorage.removeItem(`checkOut:${userInfo._id}`);
@@ -155,7 +204,14 @@ const HomeScreen = () => {
       clearInterval(interval);
       clearTimeout(timeOut);
     };
-  }, [checkIn, checkOut, userInfo, isOneHourPassed]);
+  }, [
+    checkIn,
+    checkOut,
+    userInfo,
+    isOneHourPassed,
+    sendEmailForCheckIn,
+    sendEmailForCheckOut,
+  ]);
 
   return (
     <Grid
@@ -283,7 +339,32 @@ const HomeScreen = () => {
           </Box>
           <Box>
             <CardContent sx={{ mt: 8 }}>
-              <ToggleButtonGroup
+              <Button
+                sx={{ width: 120 }}
+                onClick={handleCheckIn}
+                color={"success"}
+                value="check-in"
+                disabled={checkIn}
+                variant="outlined"
+              >
+                Check-In
+              </Button>
+              <Button
+                sx={{ width: 120 }}
+                disabled={checkOut || !checkIn}
+                //disabled={checkOut || !checkIn || !isOneHourPassed}
+                onClick={handleCheckOut}
+                color={"error"}
+                value="check-out"
+                variant="outlined"
+              >
+                Check-Out
+              </Button>
+              <AlertDialog
+                open={openAlertDialog}
+                onClose={handleCloseAlertDialog}
+              />
+              {/* <ToggleButtonGroup
                 color="primary"
                 value={alignment}
                 exclusive
@@ -312,7 +393,7 @@ const HomeScreen = () => {
                     Check-Out
                   </ToggleButton>
                 </Tooltip>
-              </ToggleButtonGroup>
+              </ToggleButtonGroup> */}
             </CardContent>
           </Box>
         </Card>
@@ -389,24 +470,22 @@ const HomeScreen = () => {
         </Card>
       </Grid>
       <Snackbar
+        sx={{ width: "100%" }}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={openCheckInToast}
         autoHideDuration={3000}
         onClose={handleCloseCheckInToast}
       >
-        <Alert severity="success" sx={{ width: "100%" }}>
-          Check-in successful
-        </Alert>
+        <Alert severity="success">Check-in successful</Alert>
       </Snackbar>
       <Snackbar
+        sx={{ width: "100%" }}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         open={openCheckOutToast}
         autoHideDuration={3000}
         onClose={handleCloseCheckOutToast}
       >
-        <Alert severity="success" sx={{ width: "100%" }}>
-          Check-out successful
-        </Alert>
+        <Alert severity="success">Check-out successful</Alert>
       </Snackbar>
     </Grid>
   );
