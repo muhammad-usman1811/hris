@@ -203,6 +203,7 @@ const NewEmployee = () => {
 
   const [hasBlurred, setHasBlurred] = useState({
     password: false,
+    email: false,
     phone: false,
     cnic: false,
     passport: false,
@@ -258,7 +259,12 @@ const NewEmployee = () => {
     }
   }, []);
 
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      "image/png": [".png", ".jpeg"],
+    },
+  });
 
   const handleClear = () => {
     setFormData((prev) => ({
@@ -287,12 +293,38 @@ const NewEmployee = () => {
     setAttemptedUpload(true);
   };
 
+  const handleKeyPress = (event) => {
+    const keyCode = event.keyCode || event.which;
+    const keyValue = String.fromCharCode(keyCode);
+    const alphaRegex = /^[A-Za-z\s]+$/;
+
+    if (!alphaRegex.test(keyValue)) {
+      event.preventDefault();
+    }
+  };
+
+  const calculateAge = (date) => {
+    const today = new Date();
+    const birthDate = new Date(date);
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+    return age;
+  };
+
   useEffect(() => {
     const errors = {};
     let isValid = true;
 
     if (!formData.file) {
-      errors.file = "Please select photo";
+      errors.file = "Only *.jpeg and *.png images";
       isValid = false;
     }
 
@@ -303,6 +335,9 @@ const NewEmployee = () => {
 
     if (!formData.email || !formData.email.trim()) {
       errors.email = "Please enter email";
+      isValid = false;
+    } else if (!formData.email.includes("@digifloat.com") && hasBlurred.email) {
+      errors.email = "Email format is incorrect";
       isValid = false;
     }
 
@@ -341,6 +376,12 @@ const NewEmployee = () => {
 
     if (!formData.dob) {
       errors.dob = "Please enter date of birth";
+      isValid = false;
+    } else if (formData.dob > new Date().toISOString().split("T")[0]) {
+      errors.dob = "Future dates aren't allowed";
+      isValid = false;
+    } else if (calculateAge(formData.dob) < 18) {
+      errors.dob = "Employee must be atleast 18 years old";
       isValid = false;
     }
 
@@ -528,6 +569,10 @@ const NewEmployee = () => {
           <TextField
             sx={{ marginTop: "20px", width: "50%" }}
             name="name"
+            type="text"
+            InputProps={{
+              onKeyPress: handleKeyPress,
+            }}
             label="Full Name"
             variant="standard"
             value={formData.name}
@@ -546,6 +591,7 @@ const NewEmployee = () => {
             value={formData.email}
             onChange={handleFieldChange}
             onBlur={handleBlur}
+            onFocus={handleFocus}
             error={!!errors.email && isTouched.email}
             helperText={errors.email && isTouched.email && errors.email}
           />
@@ -734,6 +780,9 @@ const NewEmployee = () => {
           <TextField
             sx={{ marginTop: "20px", width: "50%" }}
             name="title"
+            InputProps={{
+              onKeyPress: handleKeyPress,
+            }}
             label="Title"
             variant="standard"
             value={formData.title}
@@ -768,6 +817,9 @@ const NewEmployee = () => {
           <TextField
             sx={{ marginTop: "20px", width: "50%" }}
             name="supervisor"
+            InputProps={{
+              onKeyPress: handleKeyPress,
+            }}
             label="Supervisor"
             variant="standard"
             value={formData.supervisor}
@@ -863,6 +915,7 @@ const NewEmployee = () => {
           <br />
           <TextField
             sx={{ marginTop: "20px", width: "50%" }}
+            type="number"
             name="salary"
             label="Salary"
             variant="standard"
@@ -884,6 +937,9 @@ const NewEmployee = () => {
             sx={{ marginTop: "20px", width: "50%" }}
             name="emergencyName"
             label="Name"
+            InputProps={{
+              onKeyPress: handleKeyPress,
+            }}
             variant="standard"
             value={formData.emergencyName}
             onChange={handleFieldChange}
@@ -899,6 +955,9 @@ const NewEmployee = () => {
           <TextField
             sx={{ marginTop: "20px", width: "50%" }}
             name="relation"
+            InputProps={{
+              onKeyPress: handleKeyPress,
+            }}
             label="Relation"
             variant="standard"
             value={formData.relation}

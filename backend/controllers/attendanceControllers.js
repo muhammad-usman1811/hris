@@ -1,5 +1,7 @@
+import User from "../models/userModel.js";
 import Attendance from "./../models/attendanceModel.js";
 import asyncHandler from "express-async-handler";
+import nodemailer from "nodemailer";
 
 // @desc Get attendance list
 // @route GET/api/attendance
@@ -58,4 +60,78 @@ const addCheckOut = asyncHandler(async (req, res) => {
   }
 });
 
-export { getAttendance, addCheckIn, addCheckOut };
+const sendEmailForCheckIn = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  const html = `
+<p>Dear Employee, <br> You have forgotten to check-in your day. Please login to your respective HRIS account to mark your attendance</p>
+<p>Best Regards</p>
+<p>Digifloat's HRIS</p>`;
+
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+
+    port: 465,
+
+    secure: true,
+
+    auth: {
+      user: "hrisdigifloat@gmail.com",
+      pass: "qjvuxxgqkhakreax",
+    },
+  });
+
+  transporter.sendMail({
+    from: "HRIS <hrisdigifloat@gmail.com>",
+
+    to: user.email,
+
+    subject: "Forgot to Check In",
+
+    html: html,
+  });
+
+  res.status(201).json({ message: "Email sent for missing check-in" });
+});
+
+const sendEmailForCheckOut = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id);
+
+  const html = `
+<p>Dear Employee, <br> You have forgotten to check-out your day. Please login to your respective HRIS account to mark your attendance.</p>
+<p>Best Regards</p>
+<p>Digifloat's HRIS</p>`;
+
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+
+    port: 465,
+
+    secure: true,
+
+    auth: {
+      user: "hrisdigifloat@gmail.com",
+      pass: "qjvuxxgqkhakreax",
+    },
+  });
+
+  transporter.sendMail({
+    from: "HRIS <hrisdigifloat@gmail.com>",
+
+    to: user.email,
+
+    subject: "Check Out Missing",
+
+    html: html,
+  });
+
+  res.status(201).json({ message: "Email sent for missing check-out" });
+});
+
+export {
+  getAttendance,
+  addCheckIn,
+  addCheckOut,
+  sendEmailForCheckIn,
+  sendEmailForCheckOut,
+};

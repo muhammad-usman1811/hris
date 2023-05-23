@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Input from "@mui/material/Input";
+import TextField from "@mui/material/TextField";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import Button from "@mui/lab/LoadingButton";
 import { uploadDoc } from "../actions/docActions";
@@ -70,15 +70,18 @@ const DocModal = ({ open, onClose }) => {
         <Typography id="modal-modal-title" variant="h6" component="h2">
           Add a Document
         </Typography>
-        <Input
+        <TextField
           placeholder="Enter name"
           type="text"
           onChange={handleName}
           sx={modalStyles.input}
         />
-        <Input
+        <TextField
           id="contained-button-file"
           type="file"
+          inputProps={{
+            accept: "application/pdf",
+          }}
           onChange={handleFile}
           sx={modalStyles.input}
         />

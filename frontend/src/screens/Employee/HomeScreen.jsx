@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -113,6 +113,38 @@ const HomeScreen = () => {
     }
   };
 
+  const sendEmailForCheckIn = useCallback(async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    try {
+      await axios.get(
+        `/api/attendance/sendEmail/checkIn/${userInfo._id}`,
+        config
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }, [userInfo]);
+
+  const sendEmailForCheckOut = useCallback(async () => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    try {
+      await axios.get(
+        `/api/attendance/sendEmail/checkOut/${userInfo._id}`,
+        config
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }, [userInfo]);
+
   const handleCloseCheckInToast = () => {
     setOpenCheckInToast(false);
   };
@@ -144,6 +176,15 @@ const HomeScreen = () => {
       setGreeting("Good Evening");
     }
 
+    //Send email to employee if he/she misses the checkIn until 2pm
+    if (hour >= 14 && !checkIn) {
+      sendEmailForCheckIn();
+    }
+
+    if (hour >= 21 && !checkOut) {
+      sendEmailForCheckOut();
+    }
+
     const clearLocalStorageAtMidnight = () => {
       localStorage.removeItem(`checkIn:${userInfo._id}`);
       localStorage.removeItem(`checkOut:${userInfo._id}`);
@@ -163,7 +204,14 @@ const HomeScreen = () => {
       clearInterval(interval);
       clearTimeout(timeOut);
     };
-  }, [checkIn, checkOut, userInfo, isOneHourPassed]);
+  }, [
+    checkIn,
+    checkOut,
+    userInfo,
+    isOneHourPassed,
+    sendEmailForCheckIn,
+    sendEmailForCheckOut,
+  ]);
 
   return (
     <Grid
