@@ -26,7 +26,7 @@ export default function EmployeeDoc() {
 
   const handlePreview = (path) => {
     window.open(
-      `http://localhost:5000/documents/${path}?viewonly=true`,
+      `http://10.51.100.66:5000/documents/${path}?viewonly=true`,
       "_blank"
     );
   };
