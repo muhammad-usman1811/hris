@@ -11,6 +11,11 @@ import leaveRoutes from "./routes/leaveRoutes.js";
 import documentRoutes from "./routes/documentRoutes.js";
 import leaveQuotaRoutes from "./routes/leaveQuotaRoutes.js";
 import { notFound, errorHandler } from "./middlewares/errorMiddleware.js";
+import cron from "node-cron";
+import {
+  sendEmailForCheckIn,
+  sendEmailForCheckOut,
+} from "./controllers/attendanceControllers.js";
 
 dotenv.config();
 
@@ -22,6 +27,16 @@ app.use(cors());
 
 //Middleware to parse the json from request body
 app.use(express.json());
+
+//Schedule to send reminder email for checkIn at 2pm every day
+cron.schedule("0 14 * * *", () => {
+  sendEmailForCheckIn();
+});
+
+//Schedule to send reminder email for checkout at 11pm every day
+cron.schedule("0 23 * * *", () => {
+  sendEmailForCheckOut();
+});
 
 //Define directory to store uploaded docs
 const __dirname = path.resolve();

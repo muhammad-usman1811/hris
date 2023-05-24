@@ -17,6 +17,11 @@ const attendanceSchema = mongoose.Schema(
       required: true,
       ref: "User",
     },
+    email: {
+      type: String,
+      required: true,
+      ref: "User",
+    },
     checkIn: {
       type: String,
     },

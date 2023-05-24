@@ -176,14 +176,14 @@ const HomeScreen = () => {
       setGreeting("Good Evening");
     }
 
-    //Send email to employee if he/she misses the checkIn until 2pm
-    if (hour >= 14 && !checkIn) {
-      sendEmailForCheckIn();
-    }
+    // //Send email to employee if he/she misses the checkIn until 2pm
+    // if (hour >= 14 && !checkIn) {
+    //   sendEmailForCheckIn();
+    // }
 
-    if (hour >= 21 && !checkOut) {
-      sendEmailForCheckOut();
-    }
+    // if (hour >= 21 && !checkOut) {
+    //   sendEmailForCheckOut();
+    // }
 
     const clearLocalStorageAtMidnight = () => {
       localStorage.removeItem(`checkIn:${userInfo._id}`);
