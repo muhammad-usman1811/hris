@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import Attendance from "./../models/attendanceModel.js";
 import asyncHandler from "express-async-handler";
 import nodemailer from "nodemailer";
+import moment from "moment";
 
 // @desc Get attendance list
 // @route GET/api/attendance
@@ -22,6 +23,7 @@ const addCheckIn = asyncHandler(async (req, res) => {
   const newAttendance = new Attendance({
     userId: req.user._id,
     name: req.user.name,
+    email: req.user.email,
     department: req.user.jobDetails.department,
     checkIn,
   });
@@ -60,72 +62,142 @@ const addCheckOut = asyncHandler(async (req, res) => {
   }
 });
 
-const sendEmailForCheckIn = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
+const sendEmailForCheckIn = async (req, res) => {
+  try {
+    const currentDate = moment().startOf("day"); // Get the current date
 
-  const html = `
-<p>Dear Employee, <br> You have forgotten to check-in your day. Please login to your respective HRIS account to mark your attendance</p>
-<p>Best Regards</p>
-<p>Digifloat's HRIS</p>`;
+    const usersMissingAttendance = await User.aggregate([
+      {
+        $lookup: {
+          from: "attendances", // Name of the attendance collection
+          let: { userId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$userId", "$$userId"] }, // Match the userId field
+                    { $gte: ["$createdAt", currentDate] }, // Match the current date
+                  ],
+                },
+              },
+            },
+          ],
+          as: "attendance",
+        },
+      },
+      {
+        $match: {
+          attendance: { $size: 0 }, // Filter users without attendance entries
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          email: 1,
+        },
+      },
+    ]);
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
+    if (usersMissingAttendance) {
+      usersMissingAttendance.forEach(async (user) => {
+        // Access the properties of each user
+        const name = user.name;
+        const email = user.email;
 
-    port: 465,
+        // Prepare and send the email to the user
+        const html = `
+    <p style="font-weight: bold;">Dear ${name},</p>
+    <p>This is a reminder to mark your attendance for today.</p>
+    <p>If you are currently on leave, kindly disregard this email</p>
+    <p style="font-weight: bold;">Best regards,</p>
+    <p style="color:red;">Digifloat's HRIS</p>
+  `;
 
-    secure: true,
+        // Create and send the email using a suitable email sending library (e.g., Nodemailer)
+        const transporter = nodemailer.createTransport({
+          host: "smtp.gmail.com",
 
-    auth: {
-      user: "hrisdigifloat@gmail.com",
-      pass: "qjvuxxgqkhakreax",
-    },
-  });
+          port: 465,
 
-  transporter.sendMail({
-    from: "HRIS <hrisdigifloat@gmail.com>",
+          secure: true,
 
-    to: user.email,
+          auth: {
+            user: "hrisdigifloat@gmail.com",
+            pass: "qjvuxxgqkhakreax",
+          },
+        });
 
-    subject: "Forgot to Check In",
+        transporter.sendMail({
+          from: "HRIS <hrisdigifloat@gmail.com>",
 
-    html: html,
-  });
+          to: email,
 
-  res.status(201).json({ message: "Email sent for missing check-in" });
-});
+          subject: "Reminder - Check In",
+
+          html: html,
+        });
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
 
 const sendEmailForCheckOut = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.params.id);
+  try {
+    const currentDate = moment().startOf("day"); // Get the current date
 
-  const html = `
-<p>Dear Employee, <br> You have forgotten to check-out your day. Please login to your respective HRIS account to mark your attendance.</p>
-<p>Best Regards</p>
-<p>Digifloat's HRIS</p>`;
+    const employeesMissingCheckOut = await Attendance.find({
+      checkOut: { $exists: false }, // Filter documents where checkOut field doesn't exist
+      createdAt: { $gte: currentDate }, // Filter documents created on the current date
+    });
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
+    if (employeesMissingCheckOut) {
+      employeesMissingCheckOut.forEach(async (user) => {
+        // Access the properties of each user
+        const name = user.name;
+        const email = user.email;
 
-    port: 465,
+        // Prepare and send the email to the user
+        const html = `
+    <p style="font-weight: bold;">Dear ${name},</p>
+    <p>This is a reminder to check out for today.</p>
+    <p>If you are currently on leave, kindly disregard this email</p>
+    <p style="font-weight: bold;">Best regards,</p>
+    <p style="color:red;">Digifloat's HRIS</p>
+  `;
 
-    secure: true,
+        // Create and send the email using a suitable email sending library (e.g., Nodemailer)
+        const transporter = nodemailer.createTransport({
+          host: "smtp.gmail.com",
 
-    auth: {
-      user: "hrisdigifloat@gmail.com",
-      pass: "qjvuxxgqkhakreax",
-    },
-  });
+          port: 465,
 
-  transporter.sendMail({
-    from: "HRIS <hrisdigifloat@gmail.com>",
+          secure: true,
 
-    to: user.email,
+          auth: {
+            user: "hrisdigifloat@gmail.com",
+            pass: "qjvuxxgqkhakreax",
+          },
+        });
 
-    subject: "Check Out Missing",
+        transporter.sendMail({
+          from: "HRIS <hrisdigifloat@gmail.com>",
 
-    html: html,
-  });
+          to: email,
 
-  res.status(201).json({ message: "Email sent for missing check-out" });
+          subject: "Reminder - Check Out",
+
+          html: html,
+        });
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 export {
