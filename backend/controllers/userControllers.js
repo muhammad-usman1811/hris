@@ -57,6 +57,22 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
+//Description: Get the user details based on email in case of forgot password
+//Route: GET/api/users/forgot/:email
+//Access: Public
+
+const forgotPassword = asyncHandler(async (req, res) => {
+  const email = req.params.email;
+  const userDetails = await User.find({ email }).select(
+    "emergencyDetails.name emergencyDetails.contact"
+  );
+  if (userDetails) {
+    res.json(userDetails);
+  } else {
+    res.json({ message: "Error on getting details" });
+  }
+});
+
 // @desc Get all users
 // @route GET/api/users
 // @access Private/Admin
@@ -127,14 +143,38 @@ const addUser = asyncHandler(async (req, res) => {
       return res.json({ message: "Email already exists" });
     }
 
+    const employeeIdExists = await User.findOne({ employeeId });
+    if (employeeIdExists) {
+      res.status(400);
+      return res.json({ message: "Employee Id already exists" });
+    }
+
+    const cnicExists = await User.findOne({ cnic });
+    if (cnicExists) {
+      res.status(400);
+      return res.json({ message: "CNIC already exists" });
+    }
+
     //Calculate leave quota based on date of joining
-    const leaveQuota = calculateLeaveQuota(date);
+    //const leaveQuota = calculateLeaveQuota(date);
+    const leaveQuota = [
+      { leaveType: "Earned", leaveCount: 12 },
+      { leaveType: "Casual", leaveCount: 4 },
+      { leaveType: "Sick", leaveCount: 4 },
+      { leaveType: "Maternity", leaveCount: 90 },
+      { leaveType: "Paternity", leaveCount: 3 },
+      { leaveType: "Special Sick", leaveCount: 30 },
+      { leaveType: "Bereavement", leaveCount: 2 },
+    ];
+
+    const leaveQuotaInserted = await LeaveQuota.insertMany(leaveQuota);
 
     // Creating new document
     const user = new User({
       imageUrl: file.filename,
       name,
       email,
+      employeeId,
       password,
       role,
       phone,
@@ -143,12 +183,11 @@ const addUser = asyncHandler(async (req, res) => {
       passport,
       dob,
       maritalStatus,
-      leaveQuota,
+      leaveQuota: leaveQuotaInserted,
       jobDetails: {
         title,
         designation,
         department,
-        employeeId,
         supervisor,
         dateOfJoining: date,
         workType,
@@ -224,6 +263,7 @@ const editUser = asyncHandler(async (req, res) => {
       imageUrl: file ? file.filename : imageUrl,
       name,
       email,
+      employeeId,
       password,
       role,
       phone,
@@ -236,7 +276,6 @@ const editUser = asyncHandler(async (req, res) => {
         title,
         designation,
         department,
-        employeeId,
         supervisor,
         dateOfJoining: date,
         workType,
@@ -293,4 +332,12 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
-export { authUser, getUsers, getUserById, addUser, editUser, deleteUser };
+export {
+  authUser,
+  getUsers,
+  getUserById,
+  addUser,
+  editUser,
+  deleteUser,
+  forgotPassword,
+};

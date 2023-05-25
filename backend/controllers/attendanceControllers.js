@@ -112,7 +112,8 @@ const sendEmailForCheckIn = async (req, res) => {
     <p>This is a reminder to mark your attendance for today.</p>
     <p>If you are currently on leave, kindly disregard this email</p>
     <p style="font-weight: bold;">Best regards,</p>
-    <p style="color:red;">Digifloat's HRIS</p>
+    <p>Human Resource Information System</p>
+    <p style="font-weight: bold;"><span style="color:red">Digi</span>float (Private) Ltd.</p>
   `;
 
         // Create and send the email using a suitable email sending library (e.g., Nodemailer)
@@ -167,7 +168,8 @@ const sendEmailForCheckOut = asyncHandler(async (req, res) => {
     <p>This is a reminder to check out for today.</p>
     <p>If you are currently on leave, kindly disregard this email</p>
     <p style="font-weight: bold;">Best regards,</p>
-    <p style="color:red;">Digifloat's HRIS</p>
+    <p>Human Resource Information System</p>
+    <p style="font-weight: bold;"><span style="color:red">Digi</span>float (Private) Ltd.</p>
   `;
 
         // Create and send the email using a suitable email sending library (e.g., Nodemailer)

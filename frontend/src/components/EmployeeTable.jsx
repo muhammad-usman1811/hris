@@ -109,7 +109,7 @@ function EmployeeTable() {
         users.map((user) => {
           return {
             id: user._id,
-            employeeId: user?.jobDetails.employeeId,
+            employeeId: user?.employeeId,
             name: user.name,
             email: user.email,
             designation: user.jobDetails.designation,
