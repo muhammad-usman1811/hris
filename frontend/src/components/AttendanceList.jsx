@@ -8,32 +8,32 @@ const AttendanceList = () => {
   const columns = [
     {
       field: "name",
-      headerName: "Name",
+      headerName: <b>Name</b>,
       width: 150,
     },
     {
       field: "department",
-      headerName: "Department",
+      headerName: <b>Department</b>,
       width: 180,
     },
     {
       field: "status",
-      headerName: "Status",
+      headerName: <b>Status</b>,
       width: 150,
     },
     {
       field: "checkedIn",
-      headerName: "Checked-In",
+      headerName: <b>Checked-In</b>,
       width: 150,
     },
     {
       field: "checkedOut",
-      headerName: "Checked-Out",
+      headerName: <b>Checked-Out</b>,
       width: 150,
     },
     {
       field: "workHours",
-      headerName: "Work Hours",
+      headerName: <b>Work Hours</b>,
       width: 150,
     },
   ];

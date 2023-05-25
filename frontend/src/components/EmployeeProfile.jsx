@@ -554,7 +554,7 @@ const EmployeeProfile = () => {
                 <>
                   <img
                     //src={`/photos/${imageUrl}`}
-                    src={imageUrl.preview || `/photos/${imageUrl}`}
+                    src={imageUrl.preview || `http://10.51.100.66:5000/photos/${imageUrl}`}
                     alt="Profile"
                     loading="lazy"
                     style={{
