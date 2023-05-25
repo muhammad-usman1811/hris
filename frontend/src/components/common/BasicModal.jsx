@@ -44,7 +44,7 @@ const BasicModal = ({ open, onClose }) => {
           Password Reset
         </Typography>
         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-          Enter the email that were assigned by the admin. We'll send you an
+          Enter the email that was assigned by the admin. We'll send you an
           email with a link to reset your password
         </Typography>
         <Input placeholder="E-mail" sx={modalStyles.input} />

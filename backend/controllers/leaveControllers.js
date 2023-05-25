@@ -40,7 +40,7 @@ const addLeaveRequest = asyncHandler(async (req, res) => {
   });
   await leaveRequest.save();
   const html = `
-<p>Hi ${req.user.jobDetails.supervisor}, <br> ${req.user.name} has submitted a leave request. The details of the leave request are as follows:</p>
+<p>Hi <span style="font-weight: bold;">${req.user.jobDetails.supervisor}</span>, <br> <span style="font-weight: bold;">${req.user.name}</span> has submitted a leave request. The details of the leave request are as follows:</p>
 <ul>
 <li>Leave type: ${type}</li>
 <li>Start date: ${startDate}</li>
@@ -101,10 +101,11 @@ const updateLeaveToApprove = asyncHandler(async (req, res) => {
 
     //Send email to Employee
     const html = `
-<p>Hi ${user.name}, <br> This is to inform you that your leave request for ${leave.startDate} to ${leave.endDate} has been approved and we hope
+<p>Hi <span style="font-weight:bold;">${user.name}</span>,</p> <p> <br> This is to inform you that your leave request for <span style="font-weight:bold;">${leave.startDate}</span> to <span style="font-weight:bold;">${leave.endDate}</span> has been approved and we hope
 it allows you to achieve the work-life balance you deserve.</p>
-<p>Best Regards</p>
-<p>Digifloat's HRIS</p>`;
+<p style="font-weight: bold;">Best regards,</p>
+<p style="font-weight: bold;">HRIS</p>
+<p style="font-weight: bold;"><span style="color:red">Digi</span>float (Private) Ltd.</p>`;
 
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
@@ -156,9 +157,10 @@ const updateLeaveToCancel = asyncHandler(async (req, res) => {
 
     //Send email to employee
     const html = `
-<p>Hi ${user.name}, <br> This is to inform you that your leave request for ${leave.startDate} to ${leave.endDate} has been rejected.</p>
-<p>Best Regards</p>
-<p>Digifloat's HRIS</p>`;
+<p>Hi <span style="font-weight:bold;">${user.name}</span>,</p> <p> <br> This is to inform you that your leave request for <span style="font-weight:bold;">${leave.startDate}</span> to <span="font-weight:bold;">${leave.endDate}</span> has been rejected.</p>
+<p style="font-weight: bold;">Best regards,</p>
+<p style="font-weight: bold;">HRIS</p>
+<p style="font-weight: bold;"><span style="color:red">Digi</span>float (Private) Ltd.</p>`;
 
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",

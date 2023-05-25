@@ -492,7 +492,7 @@ const EmployeeProfile = () => {
         setDob(user.dob);
         setMaritalStatus(user.maritalStatus);
         setDepartment(user.jobDetails.department);
-        setEmployeeId(user.jobDetails.employeeId);
+        setEmployeeId(user.employeeId);
         setTitle(user.jobDetails.title);
         setDesignation(user.jobDetails.designation);
         setSupervisor(user.jobDetails.supervisor);
