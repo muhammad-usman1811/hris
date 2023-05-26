@@ -15,6 +15,7 @@ import CardActions from "@mui/material/CardActions";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import { getLeaves } from "../actions/leaveActions";
+import CardMedia from "@mui/material/CardMedia";
 
 const LeaveRequestCard = () => {
   const navigate = useNavigate();
@@ -49,6 +50,11 @@ const LeaveRequestCard = () => {
             width: "400px",
           }}
         >
+          <CardMedia
+            sx={{ height: 170 }}
+            title="leaves"
+            image="/images/leave.png"
+          />
           <CardContent>
             <Typography variant="h6">Leave Requests</Typography>
             {recentLeaves?.length > 0 ? (

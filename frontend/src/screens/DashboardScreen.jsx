@@ -77,6 +77,71 @@ const DashboardScreen = () => {
           <BasicCalendar />
         </Grid>
         <Grid item xs={4} sx={{ marginTop: "1%" }}>
+          <Card
+            sx={{
+              borderRadius: "8px",
+              marginLeft: "4%",
+              marginRight: 1,
+              height: 350,
+            }}
+          >
+            <CardMedia
+              sx={{ height: 170 }}
+              image="/images/birthday.jpg"
+              title="Employee"
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="div">
+                Happy Birthday!
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Today is your special day, and we wish you all the best on your
+                birthday. We hope you have a wonderful time.
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button size="small" disabled>
+                Share
+              </Button>
+              <Button size="small" disabled>
+                Learn More
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+        <Grid item xs={4} sx={{ marginTop: "1%" }}>
+          <Card
+            sx={{
+              borderRadius: "8px",
+              marginLeft: "1%",
+              marginRight: 1,
+              height: 350,
+            }}
+          >
+            <CardMedia
+              sx={{ height: 170 }}
+              image="/images/2023.png"
+              title="event"
+            />
+            <CardContent>
+              <Typography gutterBottom variant="h5" component="h2">
+                Upcoming Events
+              </Typography>
+              <Typography variant="body2" color="textSecondary" component="p">
+                Birthdays
+              </Typography>
+            </CardContent>
+            <CardActions>
+              <Button size="small" disabled>
+                Details
+              </Button>
+            </CardActions>
+          </Card>
+        </Grid>
+        <Grid item xs={4} sx={{ marginTop: "1%" }}>
+          <LeaveRequestCard />
+        </Grid>
+        {/* <Grid item xs={4} sx={{ marginTop: "1%" }}>
           <LeaveRequestCard />
         </Grid>
         <Grid item xs={4} sx={{ marginTop: "1%" }}>
@@ -104,7 +169,7 @@ const DashboardScreen = () => {
               </Button>
             </CardActions>
           </Card>
-        </Grid>
+        </Grid> */}
         {/* <Grid item xs={3} sx={{ marginTop: "1%" }}>
           <List
             sx={{

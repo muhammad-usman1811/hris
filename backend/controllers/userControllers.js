@@ -5,6 +5,8 @@ import uploadPhoto from "../config/imageUpload.js";
 import multer from "multer";
 import fs from "fs";
 import LeaveQuota from "../models/leaveQuotaModel.js";
+import Attendance from "../models/attendanceModel.js";
+import Leave from "../models/leaveModel.js";
 
 //Function to calcualate leave quota
 const calculateLeaveQuota = async (dateOfJoining) => {
@@ -323,6 +325,8 @@ const deleteUser = asyncHandler(async (req, res) => {
       }
     });
     await user.remove();
+    await Attendance.deleteMany({ userId: req.params.id });
+    await Leave.deleteMany({ userId: req.params.id });
     res.json({ message: "User removed" });
   } else {
     res.status(404);
