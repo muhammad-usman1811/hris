@@ -167,8 +167,6 @@ const addUser = asyncHandler(async (req, res) => {
       { leaveType: "Bereavement", leaveCount: 2 },
     ];
 
-    const leaveQuotaInserted = await LeaveQuota.insertMany(leaveQuota);
-
     // Creating new document
     const user = new User({
       imageUrl: file.filename,
@@ -183,7 +181,7 @@ const addUser = asyncHandler(async (req, res) => {
       passport,
       dob,
       maritalStatus,
-      leaveQuota: leaveQuotaInserted,
+      leaveQuota,
       jobDetails: {
         title,
         designation,
