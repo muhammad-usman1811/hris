@@ -11,10 +11,12 @@ import Avatar from "@mui/material/Avatar";
 import Alert from "@mui/material/Alert";
 import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
-import { Add, Delete, Visibility } from "@mui/icons-material";
+import { Add, Visibility } from "@mui/icons-material";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 //import EditIcon from "@mui/icons-material/Edit";
 import Button from "@mui/material/Button";
-import ArticleIcon from "@mui/icons-material/Article";
+//import ArticleIcon from "@mui/icons-material/Article";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import CircularProgress from "@mui/material/CircularProgress";
 import DocModal from "./DocModal";
 import { deleteDoc, getDocs } from "../actions/docActions";
@@ -149,14 +151,14 @@ const ManageDocs = () => {
                             aria-label="delete"
                             onClick={() => handleDelete(doc._id)}
                           >
-                            <Delete />
+                            <DeleteForeverIcon />
                           </IconButton>
                         </Box>
                       }
                     >
                       <ListItemAvatar>
                         <Avatar>
-                          <ArticleIcon color="error" />
+                          <PictureAsPdfIcon color="error" />
                         </Avatar>
                       </ListItemAvatar>
                       <ListItemText primary={doc.name} />
