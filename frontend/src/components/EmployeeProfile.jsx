@@ -217,7 +217,7 @@ const EmployeeProfile = () => {
   let isValid = true;
 
   if (!imageUrl) {
-    errors.imageUrl = "Please select photo";
+    errors.imageUrl = "Only .jpeg/jpg and .png images";
     isValid = false;
   }
 
@@ -454,7 +454,7 @@ const EmployeeProfile = () => {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
-      "image/png": [".png", ".jpeg"],
+      "image/png": [".png", ".jpeg", ".jpg"],
     },
   });
 

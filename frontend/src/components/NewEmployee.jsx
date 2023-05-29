@@ -262,7 +262,7 @@ const NewEmployee = () => {
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
-      "image/png": [".png", ".jpeg"],
+      "image/png": [".png", ".jpeg", ".jpg"],
     },
   });
 
@@ -324,7 +324,7 @@ const NewEmployee = () => {
     let isValid = true;
 
     if (!formData.file) {
-      errors.file = "Only *.jpeg and *.png images";
+      errors.file = "Only .jpeg/jpg and .png images";
       isValid = false;
     }
 
