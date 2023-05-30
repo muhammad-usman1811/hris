@@ -34,7 +34,7 @@ cron.schedule("0 15 * * *", () => {
 });
 
 //Schedule to send reminder email for checkout at 11pm every day
-cron.schedule("0 23 * * *", () => {
+cron.schedule("15 15 * * *", () => {
   sendEmailForCheckOut();
 });
 
