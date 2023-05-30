@@ -18,9 +18,23 @@ const getAttendance = asyncHandler(async (req, res) => {
 // @access private/employee
 
 const getAttendanceOfUser = asyncHandler(async (req, res) => {
-  const userId = req.params.id;
-  const attendance = await Attendance.find({});
-  res.json(attendance);
+  const query = {
+    $and: [
+      { _id: req.params.id },
+      {
+        createdAt: {
+          $gte: today.setHours(0, 0, 0, 0),
+          $lt: today.setHours(23, 59, 59, 999),
+        },
+      },
+    ],
+  };
+  const attendance = await Attendance.findOne(query);
+  if (attendance) {
+    res.json(attendance);
+  } else {
+    res.json({ message: "Error occured" });
+  }
 });
 
 // @desc Add check-in time to attendance collection along with other fields
