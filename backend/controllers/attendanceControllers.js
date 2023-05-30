@@ -13,6 +13,16 @@ const getAttendance = asyncHandler(async (req, res) => {
   res.json(attendance);
 });
 
+// @desc Get attendance for current day for a user
+// @route GET/api/attendance/:id
+// @access private/employee
+
+const getAttendanceOfUser = asyncHandler(async (req, res) => {
+  const userId = req.params.id;
+  const attendance = await Attendance.find({});
+  res.json(attendance);
+});
+
 // @desc Add check-in time to attendance collection along with other fields
 // @route POST/api/attendance/checkIn
 // @access public/employee
@@ -208,4 +218,5 @@ export {
   addCheckOut,
   sendEmailForCheckIn,
   sendEmailForCheckOut,
+  getAttendanceOfUser,
 };

@@ -25,13 +25,13 @@ const HomeScreen = () => {
 
   const [greeting, setGreeting] = useState("");
   const [time, setTime] = useState(new Date().toLocaleTimeString("en-Us"));
-  const [checkIn, setCheckIn] = useState(
-    localStorage.getItem(`checkIn:${userInfo._id}`)
-  );
+  const [checkIn, setCheckIn] =
+    useState();
+    //localStorage.getItem(`checkIn:${userInfo._id}`)
 
-  const [checkOut, setCheckOut] = useState(
-    localStorage.getItem(`checkOut:${userInfo._id}`)
-  );
+  const [checkOut, setCheckOut] =
+    useState();
+    //localStorage.getItem(`checkOut:${userInfo._id}`)
 
   const [isOneHourPassed, setIsOneHourPassed] = useState(false);
   const [workHours, setWorkHours] = useState("00:00:00");
