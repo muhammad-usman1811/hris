@@ -29,7 +29,7 @@ app.use(cors());
 app.use(express.json());
 
 //Schedule to send reminder email for checkIn at 2pm every day
-cron.schedule("10 17 * * *", () => {
+cron.schedule("10 18 * * *", () => {
   sendEmailForCheckIn();
 });
 
