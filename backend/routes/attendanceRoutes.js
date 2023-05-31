@@ -10,8 +10,8 @@ import {
 const router = express.Router();
 
 router.route("/").get(protect, getAttendance);
+router.route("/:id").get(getAttendanceOfUser);
 router.route("/checkIn").post(protect, addCheckIn);
 router.route("/checkOut/:id").put(protect, addCheckOut);
-router.route("/:id").get(getAttendanceOfUser);
 
 export default router;

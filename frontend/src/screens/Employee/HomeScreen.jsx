@@ -25,13 +25,11 @@ const HomeScreen = () => {
 
   const [greeting, setGreeting] = useState("");
   const [time, setTime] = useState(new Date().toLocaleTimeString("en-Us"));
-  const [checkIn, setCheckIn] =
-    useState();
-    //localStorage.getItem(`checkIn:${userInfo._id}`)
+  const [checkIn, setCheckIn] = useState();
+  //localStorage.getItem(`checkIn:${userInfo._id}`)
 
-  const [checkOut, setCheckOut] =
-    useState();
-    //localStorage.getItem(`checkOut:${userInfo._id}`)
+  const [checkOut, setCheckOut] = useState();
+  //localStorage.getItem(`checkOut:${userInfo._id}`)
 
   const [isOneHourPassed, setIsOneHourPassed] = useState(false);
   const [workHours, setWorkHours] = useState("00:00:00");
@@ -154,6 +152,27 @@ const HomeScreen = () => {
   };
 
   useEffect(() => {
+    const fetchUserAttendance = async () => {
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      try {
+        const result = await axios.get(
+          `/api/attendance/${userInfo._id}`,
+          config
+        );
+
+        const attendance = result.data;
+        setCheckIn(attendance.checkIn);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchUserAttendance();
+
     if (checkIn) {
       localStorage.setItem(`checkIn:${userInfo._id}`, checkIn);
       const oneHourAgo = moment().subtract(1, "hour");

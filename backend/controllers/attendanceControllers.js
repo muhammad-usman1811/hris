@@ -18,23 +18,31 @@ const getAttendance = asyncHandler(async (req, res) => {
 // @access private/employee
 
 const getAttendanceOfUser = asyncHandler(async (req, res) => {
-  const today = new Date();
+  const today = moment().startOf("day");
   const query = {
     $and: [
-      { _id: req.params.id },
+      { userId: req.params.id },
       {
         createdAt: {
-          $gte: today.setHours(0, 0, 0, 0),
-          $lt: today.setHours(23, 59, 59, 999),
+          $gte: today.toDate(),
+          $lt: moment(today).endOf("day").toDate(),
         },
       },
     ],
   };
-  const attendance = await Attendance.findOne(query);
-  if (attendance) {
-    res.json(attendance);
-  } else {
-    res.json({ message: "Error occured" });
+
+  try {
+    const attendance = await Attendance.findOne(query);
+    if (attendance) {
+      res.json(attendance);
+    } else {
+      res
+        .status(404)
+        .json({ message: "No attendance record found for the user and date" });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
@@ -148,11 +156,10 @@ const sendEmailForCheckIn = async (req, res) => {
         // Prepare and send the email to the user
         const html = `
     <p style="font-weight: bold;">Dear ${name},</p>
-    <p>This is a reminder to mark your attendance for today.</p>
-    <p>If you are currently on leave, kindly disregard this email</p>
-    <p style="font-weight: bold;">Best regards,</p>
-    <p>Human Resource Information System</p>
-    <p style="font-weight: bold;"><span style="color:red">Digi</span>float (Private) Ltd.</p>
+    <p>This is a reminder to mark your attendance for today. If you are currently on leave, kindly disregard this email.</p>
+    <p style="font-weight: bold;">Best Regards,</p>
+    <p style="color:black;margin-top: -10px;"><span style="color:red">Digi</span>float's HRIS</p>
+    <footer style="font-weight: bold;font-style: italic;color: red;">This is an auto-generated message. Please do not reply to it.</footer>
   `;
 
         await transporter.sendMail({
@@ -203,11 +210,10 @@ const sendEmailForCheckOut = asyncHandler(async (req, res) => {
         // Prepare and send the email to the user
         const html = `
     <p style="font-weight: bold;">Dear ${name},</p>
-    <p>This is a reminder to check out for today.</p>
-    <p>If you are currently on leave, kindly disregard this email</p>
-    <p style="font-weight: bold;">Best regards,</p>
-    <p>Human Resource Information System</p>
-    <p style="font-weight: bold;"><span style="color:red">Digi</span>float (Private) Ltd.</p>
+    <p>This is a reminder to check out for today. If you are currently on leave, kindly disregard this email.</p>
+    <p style="font-weight: bold;">Best Regards,</p>
+    <p style="color:black;margin-top: -10px;"><span style="color:red">Digi</span>float's HRIS</p>
+    <footer style="font-weight: bold;font-style: italic;color: red;">This is an auto-generated message. Please do not reply to it.</footer>
   `;
 
         await transporter.sendMail({
