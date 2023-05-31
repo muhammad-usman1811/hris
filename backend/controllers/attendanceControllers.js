@@ -125,8 +125,22 @@ const sendEmailForCheckIn = async (req, res) => {
       },
     ]);
 
-    if (usersMissingAttendance) {
-      usersMissingAttendance.forEach(async (user) => {
+    if (usersMissingAttendance.length > 0) {
+      //Create email configuration
+      const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+
+        port: 465,
+
+        secure: true,
+
+        auth: {
+          user: "hrisdigifloat@gmail.com",
+          pass: "qjvuxxgqkhakreax",
+        },
+      });
+
+      for (const user of usersMissingAttendance) {
         // Access the properties of each user
         const name = user.name;
         const email = user.email;
@@ -141,21 +155,7 @@ const sendEmailForCheckIn = async (req, res) => {
     <p style="font-weight: bold;"><span style="color:red">Digi</span>float (Private) Ltd.</p>
   `;
 
-        // Create and send the email using a suitable email sending library (e.g., Nodemailer)
-        const transporter = nodemailer.createTransport({
-          host: "smtp.gmail.com",
-
-          port: 465,
-
-          secure: true,
-
-          auth: {
-            user: "hrisdigifloat@gmail.com",
-            pass: "qjvuxxgqkhakreax",
-          },
-        });
-
-        transporter.sendMail({
+        await transporter.sendMail({
           from: "HRIS <hrisdigifloat@gmail.com>",
 
           to: email,
@@ -164,7 +164,7 @@ const sendEmailForCheckIn = async (req, res) => {
 
           html: html,
         });
-      });
+      }
     }
   } catch (error) {
     console.error(error);
@@ -181,8 +181,21 @@ const sendEmailForCheckOut = asyncHandler(async (req, res) => {
       createdAt: { $gte: currentDate }, // Filter documents created on the current date
     });
 
-    if (employeesMissingCheckOut) {
-      employeesMissingCheckOut.forEach(async (user) => {
+    if (employeesMissingCheckOut.length > 0) {
+      //Create email configuration
+      const transporter = nodemailer.createTransport({
+        host: "smtp.gmail.com",
+
+        port: 465,
+
+        secure: true,
+
+        auth: {
+          user: "hrisdigifloat@gmail.com",
+          pass: "qjvuxxgqkhakreax",
+        },
+      });
+      for (const user of employeesMissingCheckOut) {
         // Access the properties of each user
         const name = user.name;
         const email = user.email;
@@ -197,21 +210,7 @@ const sendEmailForCheckOut = asyncHandler(async (req, res) => {
     <p style="font-weight: bold;"><span style="color:red">Digi</span>float (Private) Ltd.</p>
   `;
 
-        // Create and send the email using a suitable email sending library (e.g., Nodemailer)
-        const transporter = nodemailer.createTransport({
-          host: "smtp.gmail.com",
-
-          port: 465,
-
-          secure: true,
-
-          auth: {
-            user: "hrisdigifloat@gmail.com",
-            pass: "qjvuxxgqkhakreax",
-          },
-        });
-
-        transporter.sendMail({
+        await transporter.sendMail({
           from: "HRIS <hrisdigifloat@gmail.com>",
 
           to: email,
@@ -220,7 +219,7 @@ const sendEmailForCheckOut = asyncHandler(async (req, res) => {
 
           html: html,
         });
-      });
+      }
     }
   } catch (error) {
     console.log(error);
