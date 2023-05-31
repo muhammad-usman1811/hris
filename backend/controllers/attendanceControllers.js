@@ -18,6 +18,7 @@ const getAttendance = asyncHandler(async (req, res) => {
 // @access private/employee
 
 const getAttendanceOfUser = asyncHandler(async (req, res) => {
+  const today = new Date();
   const query = {
     $and: [
       { _id: req.params.id },
