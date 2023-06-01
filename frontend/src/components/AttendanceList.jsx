@@ -17,7 +17,7 @@ const AttendanceList = () => {
       width: 180,
     },
     {
-      field: "status",
+      field: "statusxyz",
       headerName: <b>Status</b>,
       width: 150,
     },
