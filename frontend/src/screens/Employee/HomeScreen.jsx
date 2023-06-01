@@ -166,6 +166,9 @@ const HomeScreen = () => {
 
         const attendance = result.data;
         setCheckIn(attendance.checkIn);
+        if (attendance.checkOut) {
+          setCheckOut(attendance.checkOut);
+        }
       } catch (error) {
         console.log(error);
       }

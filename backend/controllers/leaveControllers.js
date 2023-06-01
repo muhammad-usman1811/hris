@@ -66,7 +66,7 @@ const addLeaveRequest = asyncHandler(async (req, res) => {
   });
 
   transporter.sendMail({
-    from: "HRIS <hrisdigifloat@gmail.com>",
+    from: "No-Reply<hrisdigifloat@gmail.com>",
 
     to: supervisorEmail,
 
@@ -121,7 +121,7 @@ it allows you to achieve the work-life balance you deserve.</p>
     });
 
     transporter.sendMail({
-      from: "HRIS <hrisdigifloat@gmail.com>",
+      from: "No-Reply<hrisdigifloat@gmail.com>",
 
       to: user.email,
 
@@ -176,7 +176,7 @@ const updateLeaveToCancel = asyncHandler(async (req, res) => {
     });
 
     transporter.sendMail({
-      from: "HRIS <hrisdigifloat@gmail.com>",
+      from: "No-Reply<hrisdigifloat@gmail.com>",
 
       to: user.email,
 

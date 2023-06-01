@@ -28,13 +28,13 @@ app.use(cors());
 //Middleware to parse the json from request body
 app.use(express.json());
 
-//Schedule to send reminder email for checkIn at 2pm every day
-cron.schedule("15 18 * * *", () => {
+//Schedule to send reminder emails for checkIn at 2pm every day
+cron.schedule("0 14 * * *", () => {
   sendEmailForCheckIn();
 });
 
 //Schedule to send reminder email for checkout at 11pm every day
-cron.schedule("35 18 * * *", () => {
+cron.schedule("0 23 * * *", () => {
   sendEmailForCheckOut();
 });
 

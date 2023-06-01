@@ -163,7 +163,7 @@ const sendEmailForCheckIn = async (req, res) => {
   `;
 
         await transporter.sendMail({
-          from: "HRIS <hrisdigifloat@gmail.com>",
+          from: "No-Reply<hrisdigifloat@gmail.com>",
 
           to: email,
 
@@ -217,7 +217,7 @@ const sendEmailForCheckOut = asyncHandler(async (req, res) => {
   `;
 
         await transporter.sendMail({
-          from: "HRIS <hrisdigifloat@gmail.com>",
+          from: "No-Reply<hrisdigifloat@gmail.com>",
 
           to: email,
 
