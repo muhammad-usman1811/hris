@@ -29,14 +29,14 @@ app.use(cors());
 app.use(express.json());
 
 //Schedule to send reminder email for checkIn at 2pm every day
-cron.schedule("0 15 * * *", () => {
-  sendEmailForCheckIn();
-});
+// cron.schedule("0 15 * * *", () => {
+//   sendEmailForCheckIn();
+// });
 
 //Schedule to send reminder email for checkout at 11pm every day
-cron.schedule("0 23 * * *", () => {
-  sendEmailForCheckOut();
-});
+// cron.schedule("0 23 * * *", () => {
+//   sendEmailForCheckOut();
+// });
 
 //Define directory to store uploaded docs
 const __dirname = path.resolve();

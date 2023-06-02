@@ -20,6 +20,6 @@ router
   .get(protect, getUserById)
   .delete(protect, deleteUser);
 router.post("/login", authUser);
-router.route("/forgot/:email").get(forgotPassword);
+router.route("/forgot").post(forgotPassword);
 
 export default router;

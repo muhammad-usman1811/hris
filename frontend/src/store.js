@@ -6,6 +6,7 @@ import {
   userDetailsReducer,
   userAddReducer,
   userEditReducer,
+  userForgotPasswordReducer,
 } from "./reducers/userReducers";
 import {
   docDeleteReducer,
@@ -23,6 +24,7 @@ import {
 
 const reducer = {
   userLogin: userLoginReducer,
+  userForgot: userForgotPasswordReducer,
   userList: userListReducer,
   userDetails: userDetailsReducer,
   userAdd: userAddReducer,

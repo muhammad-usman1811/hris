@@ -64,15 +64,12 @@ const authUser = asyncHandler(async (req, res) => {
 //Access: Public
 
 const forgotPassword = asyncHandler(async (req, res) => {
-  const email = req.params.email;
-  const userDetails = await User.find({ email }).select(
-    "emergencyDetails.name emergencyDetails.contact"
-  );
-  if (userDetails) {
-    res.json(userDetails);
-  } else {
-    res.json({ message: "Error on getting details" });
+  const { email } = req.body;
+  const userDetails = await User.find({ email });
+  if (!userDetails) {
+    return res.status(404).json({ message: "Email doesn't exist" });
   }
+  res.json({ message: "Email sent" });
 });
 
 // @desc Get all users

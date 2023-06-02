@@ -195,12 +195,7 @@ const LoginScreen = () => {
             Log In
           </LoadingButton>
           <div>
-            <Button
-              variant="text"
-              sx={{ marginTop: 3 }}
-              onClick={handleToggle}
-              disabled
-            >
+            <Button variant="text" sx={{ marginTop: 3 }} onClick={handleToggle}>
               Forgot Password?
             </Button>
             <BasicModal open={open} onClose={() => setOpen(false)} />

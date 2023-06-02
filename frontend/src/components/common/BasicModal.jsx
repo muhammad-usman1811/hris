@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import Input from "@mui/material/Input";
+//import Input from "@mui/material/Input";
+import { TextField } from "@mui/material";
 import CommonButton from "./CommonButton";
+import { forgotPassword } from "../../actions/userActions";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const BasicModal = ({ open, onClose }) => {
   const modalStyles = {
@@ -32,6 +36,44 @@ const BasicModal = ({ open, onClose }) => {
       },
     },
   };
+
+  const dispatch = useDispatch();
+
+  const userForgot = useSelector((state) => state.userForgot);
+  const { loading, message } = userForgot;
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+
+  //Email validations
+  const emailIsEmpty = email.trim() === "";
+  const emailFormat = email.includes("@digifloat.com");
+
+  const emailIsValid = !emailIsEmpty && emailFormat;
+
+  const emailChangeHandler = (event) => {
+    setEmail(event.target.value);
+  };
+
+  const emailFocusHandler = () => {
+    setEmailError("");
+  };
+
+  const clickHandler = (event) => {
+    event.preventDefault();
+    if (emailIsEmpty) {
+      setEmailError("Email is required");
+      return;
+    }
+    if (!emailIsEmpty && !emailFormat) {
+      setEmailError("Email format is incorrect");
+      return;
+    }
+    if (emailIsValid) {
+      dispatch(forgotPassword(email));
+      setEmail("");
+      alert(message.message);
+    }
+  };
   return (
     <Modal
       open={open}
@@ -44,12 +86,27 @@ const BasicModal = ({ open, onClose }) => {
           Password Reset
         </Typography>
         <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-          Enter the email that was assigned by the admin. We'll send you an
-          email with a link to reset your password
+          Please enter your registered email. We'll send you an email with a
+          link to reset your password.
         </Typography>
-        <Input placeholder="E-mail" sx={modalStyles.input} />
+        <TextField
+          label="E-mail"
+          sx={modalStyles.input}
+          variant="outlined"
+          value={email}
+          onChange={emailChangeHandler}
+          onFocus={emailFocusHandler}
+          error={Boolean(emailError)}
+          helperText={emailError}
+        />
         <Box sx={modalStyles.button}>
-          <CommonButton variant={"contained"}>Send</CommonButton>
+          <CommonButton
+            variant={"contained"}
+            onClick={clickHandler}
+            color="error"
+          >
+            {loading ? <CircularProgress size={24} /> : "Send"}
+          </CommonButton>
         </Box>
       </Box>
     </Modal>

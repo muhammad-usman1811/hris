@@ -71,11 +71,39 @@ function EmployeeTable() {
 
   const [records, setRecords] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
+  const [openToast, setOpenToast] = useState(true);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [openToast, setOpenToast] = useState(true);
+  const userDataForExcel =
+    users &&
+    users.map((user) => {
+      return {
+        EmployeeId: user.employeeId,
+        Name: user.name,
+        Email: user.email,
+        Phone: user.phone,
+        Address: user.address,
+        CNIC: user.cnic,
+        DOB: user.dob,
+        Passport: user.passport,
+        BloodGroup: user.emergencyDetails.blood,
+        MaritalStatus: user.maritalStatus,
+        Title: user.jobDetails.title,
+        Designation: user.jobDetails.designation,
+        Dpartment: user.jobDetails.department,
+        Supervisor: user.jobDetails.supervisor,
+        DateOfJoining: user.jobDetails.dateOfJoining,
+        WorkType: user.jobDetails.workType,
+        EmploymentStatus: user.jobDetails.employmentStatus,
+        Salary: user.jobDetails.salary,
+        EmergencyName: user.emergencyDetails.name,
+        EmergencyContact: user.emergencyDetails.contact,
+        Relation: user.emergencyDetails.relation,
+        EmergencyAddress: user.emergencyDetails.address,
+      };
+    });
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure?")) {
@@ -91,7 +119,7 @@ function EmployeeTable() {
   }
 
   function exportToExcel() {
-    const worksheet = XLSX.utils.json_to_sheet(records);
+    const worksheet = XLSX.utils.json_to_sheet(userDataForExcel);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
     XLSX.writeFile(workbook, "Employees.xlsx");
