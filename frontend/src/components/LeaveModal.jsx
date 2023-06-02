@@ -153,8 +153,6 @@ const LeaveModal = ({ open, onClose, availableLeaves }) => {
         setMessage(
           "Number of applied days exceeds your available leaves for this leave type"
         );
-      } else if (leaveData.type === "Casual Leave" && leaveCount > 2) {
-        setMessage("Only 2 consecutive days are allowed for this leave type");
       } else {
         dispatch(requestLeave(leaveData));
         setMessage("Request has been submitted successfully");

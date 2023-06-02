@@ -13,6 +13,19 @@ export const userLoginReducer = (state = {}, action) => {
   }
 };
 
+export const userForgotPasswordReducer = (state = {}, action) => {
+  switch (action.type) {
+    case "FORGOT_PASSWORD_REQUEST":
+      return { loading: true };
+    case "FORGOT_PASSWORD_SUCCESS":
+      return { loading: false, message: action.payload };
+    case "FORGOT_PASSWORD_FAIL":
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
 export const userListReducer = (state = { users: [] }, action) => {
   switch (action.type) {
     case "USER_LIST_SUCCESS":

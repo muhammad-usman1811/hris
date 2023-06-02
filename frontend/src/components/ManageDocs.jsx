@@ -64,7 +64,7 @@ const ManageDocs = () => {
 
   const handlePreview = (path) => {
     const newWindow = window.open(
-      `http://localhost:5000/documents/${path}`,
+      `http://10.51.100.66:5000/documents/${path}`,
       "_blank",
       "noopener,noreferrer"
     );
