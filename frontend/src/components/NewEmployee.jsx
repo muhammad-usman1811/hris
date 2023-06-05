@@ -18,15 +18,16 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
+//import DeleteIcon from "@mui/icons-material/Delete";
 // import FormHelperText from "@mui/material/FormHelperText";
 // import FormControl from "@mui/material/FormControl";
 // import Input from "@mui/material/Input";
 import { addUser } from "../actions/userActions";
 
 const NewEmployee = () => {
-  const departments = [
+  let departments = [
     {
-      value: "Development",
+      value: "App Development",
     },
     {
       value: "Data",
@@ -147,6 +148,7 @@ const NewEmployee = () => {
     maritalStatus: "",
     cnic: "",
     department: "",
+    customOption: "",
     employeeId: "",
     designation: "",
     title: "",
@@ -229,6 +231,41 @@ const NewEmployee = () => {
       [name]: false,
     }));
   };
+  const [options, setOptions] = useState(departments);
+  // const [selectedOption, setSelectedOption] = useState("");
+  // const [customOption, setCustomOption] = useState("");
+
+  // const handleOptionChange = (event) => {
+  //   const value = event.target.value;
+  //   if (value === "addCustom") {
+  //     setSelectedOption("addCustom");
+  //   } else {
+  //     setSelectedOption(value);
+  //   }
+  // };
+
+  // const handleCustomOptionChange = (event) => {
+  //   setCustomOption(event.target.value);
+  // };
+
+  const handleAddCustomOption = () => {
+    if (formData.customOption) {
+      const newOption = { value: formData.customOption };
+      setOptions([...options, newOption]);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        department: formData.customOption,
+        customOption: "",
+      }));
+    }
+  };
+
+  // const handleDeleteOption = (optionValue) => {
+  //   const updatedOptions = options.filter(
+  //     (option) => option.value !== optionValue
+  //   );
+  //   setOptions(updatedOptions);
+  // };
 
   //Function to handle changes to form fields
   const handleFieldChange = (event) => {
@@ -770,12 +807,24 @@ const NewEmployee = () => {
             }
             variant="standard"
           >
-            {departments.map((option) => (
+            {options.map((option) => (
               <MenuItem key={option.value} value={option.value}>
                 {option.value}
               </MenuItem>
             ))}
+            <MenuItem value="addCustom">Add Custom</MenuItem>
           </TextField>
+          {formData.department === "addCustom" && (
+            <>
+              <TextField
+                name="customOption"
+                value={formData.customOption}
+                onChange={handleFieldChange}
+                variant="standard"
+              />
+              <Button onClick={handleAddCustomOption}>Add</Button>
+            </>
+          )}
           <br />
           <TextField
             sx={{ marginTop: "20px", width: "50%" }}

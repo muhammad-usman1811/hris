@@ -61,6 +61,38 @@ export const forgotPassword = (email) => async (dispatch) => {
   }
 };
 
+export const resetPassword = (password, token) => async (dispatch) => {
+  try {
+    dispatch({
+      type: "RESET_PASSWORD_REQUEST",
+    });
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const { data } = await axios.post(
+      "/api/users/reset-password",
+      { password, token },
+      config
+    );
+
+    dispatch({
+      type: "RESET_PASSWORD_SUCCESS",
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: "RESET_PASSWORD_FAIL",
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
 export const logout = (id) => (dispatch) => {
   localStorage.removeItem("userInfo");
   // localStorage.removeItem(`checkIn:${id}`);

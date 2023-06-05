@@ -22,6 +22,7 @@ import HomeScreen from "./screens/Employee/HomeScreen";
 import EmployeeProfile from "./screens/Employee/EmployeeProfile";
 import EmployeeLeaveScreen from "./screens/Employee/EmployeeLeaveScreen";
 import EmployeeDoc from "./screens/Employee/EmployeeDoc";
+import ResetPassword from "./screens/ResetPassword";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -29,6 +30,7 @@ root.render(
     <Router>
       <Routes>
         <Route path="/" element={<LoginScreen />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/home" element={<App />}>
           <Route path="/home/dashboard" element={<DashboardScreen />} />
           <Route path="/home/employeePortal" element={<HomeScreen />} />

@@ -51,6 +51,8 @@ const userSchema = mongoose.Schema(
     passport: {
       type: String,
     },
+    resetToken: String,
+    resetTokenExpires: Date,
     leaveQuota: {
       type: [LeaveQuota.schema],
       default: [],

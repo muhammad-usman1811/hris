@@ -7,6 +7,7 @@ import {
   userAddReducer,
   userEditReducer,
   userForgotPasswordReducer,
+  userResetPasswordReducer,
 } from "./reducers/userReducers";
 import {
   docDeleteReducer,
@@ -25,6 +26,7 @@ import {
 const reducer = {
   userLogin: userLoginReducer,
   userForgot: userForgotPasswordReducer,
+  userReset: userResetPasswordReducer,
   userList: userListReducer,
   userDetails: userDetailsReducer,
   userAdd: userAddReducer,

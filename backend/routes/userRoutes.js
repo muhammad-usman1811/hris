@@ -7,6 +7,7 @@ import {
   forgotPassword,
   getUserById,
   getUsers,
+  resetPassword,
 } from "../controllers/userControllers.js";
 import protect from "../middlewares/authMiddleware.js";
 import uploadPhoto from "../config/imageUpload.js";
@@ -21,5 +22,6 @@ router
   .delete(protect, deleteUser);
 router.post("/login", authUser);
 router.route("/forgot").post(forgotPassword);
+router.route("/reset-password").post(resetPassword);
 
 export default router;
