@@ -36,6 +36,11 @@ const AttendanceList = () => {
       headerName: "Work Hours",
       width: 150,
     },
+    {
+      field: "date",
+      headerName: "Date",
+      width: 150,
+    }
   ];
 
   const [attendance, setAttendance] = useState([]);
@@ -70,6 +75,7 @@ const AttendanceList = () => {
       checkedIn: row.checkIn,
       checkedOut: row.checkOut,
       workHours: calculateWorkHours(row.checkIn, row.checkOut),
+      date: row.date
     };
   });
   useEffect(() => {

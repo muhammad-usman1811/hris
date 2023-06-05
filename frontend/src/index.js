@@ -22,6 +22,7 @@ import HomeScreen from "./screens/Employee/HomeScreen";
 import EmployeeProfile from "./screens/Employee/EmployeeProfile";
 import EmployeeLeaveScreen from "./screens/Employee/EmployeeLeaveScreen";
 import EmployeeDoc from "./screens/Employee/EmployeeDoc";
+import ForgotPassword from "./components/ForgotPassword";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

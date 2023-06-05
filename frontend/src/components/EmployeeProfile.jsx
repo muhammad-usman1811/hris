@@ -20,13 +20,14 @@ import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import CircularProgress from "@mui/material/CircularProgress";
 import { editUser, getUserDetails } from "../actions/userActions";
 
+
 const EmployeeProfile = () => {
   const departments = [
     {
-      value: "Development",
+      value: "Web Development",
     },
     {
-      value: "Data",
+      value: "Data and Analytics",
     },
     {
       value: "HR",
@@ -34,17 +35,26 @@ const EmployeeProfile = () => {
     {
       value: "Project Management",
     },
+    {
+      value: "Admin",
+    },
+    {
+      value: "Pre Sales",
+    },
+    {
+      value: "Devops and Infra",
+    },
+  
+  
+  
   ];
 
   const designations = [
     {
-      value: "CEO",
+      value: "Intern Data Engineer",
     },
     {
-      value: "Director",
-    },
-    {
-      value: "Senior Consultant",
+      value: "Associate Consultant ",
     },
     {
       value: "Junior Consultant",
@@ -53,7 +63,19 @@ const EmployeeProfile = () => {
       value: "Consultant",
     },
     {
-      value: "Associate Consultant",
+      value: "Senior Consultant",
+    },
+    {
+      value: "AVP",
+    },
+    {
+      value: "VP",
+    },
+    {
+      value: "SVP",
+    },
+    {
+      value: "CEO",
     },
   ];
 
@@ -130,6 +152,14 @@ const EmployeeProfile = () => {
       value: "Married",
     },
   ];
+  const genders = [
+    {
+      value: "Male",
+    },
+    {
+      value: "Female",
+    },
+  ];
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -153,9 +183,12 @@ const EmployeeProfile = () => {
   const [cnic, setCnic] = useState("");
   const [dob, setDob] = useState("");
   const [maritalStatus, setMaritalStatus] = useState("");
+  const [gender, setGender] = useState("");
   const [department, setDepartment] = useState("");
   const [employeeId, setEmployeeId] = useState("");
   const [designation, setDesignation] = useState("");
+  const [startTime, setStartTime] = useState("");
+  const [endTime, setEndTime] = useState("");
   const [title, setTitle] = useState("");
   const [supervisor, setSupervisor] = useState("");
   const [date, setDate] = useState("");
@@ -185,7 +218,10 @@ const EmployeeProfile = () => {
     cnic: false,
     dob: false,
     maritalStatus: false,
+    gender: false,
     department: false,
+    startTime: false,
+    endTime: false,
     employeeId: false,
     designation: false,
     title: false,
@@ -279,6 +315,11 @@ const EmployeeProfile = () => {
 
   if (!maritalStatus) {
     errors.maritalStatus = "Please enter marital status";
+    isValid = false;
+  }
+
+  if (!genders) {
+    errors.gender = "Please select gender";
     isValid = false;
   }
 
@@ -402,11 +443,14 @@ const EmployeeProfile = () => {
           passport,
           dob,
           maritalStatus,
+          gender,
           phone,
           cnic,
           department,
           employeeId,
           designation,
+          startTime,
+          endTime,
           title,
           supervisor,
           date,
@@ -491,7 +535,10 @@ const EmployeeProfile = () => {
         setCnic(user.cnic);
         setDob(user.dob);
         setMaritalStatus(user.maritalStatus);
+        setGender(user.gender);
         setDepartment(user.jobDetails.department);
+        setStartTime(user.startTime);
+        setEndTime(user.endTime);
         setEmployeeId(user.employeeId);
         setTitle(user.jobDetails.title);
         setDesignation(user.jobDetails.designation);
@@ -747,6 +794,21 @@ const EmployeeProfile = () => {
               </TextField>
               <br />
               <TextField
+            sx={{ marginTop: "20px", width: "50%" }}
+            name="gender"
+            select
+            helperText="Please select gender"
+            variant="standard"
+          >
+            {genders.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.value}
+              </MenuItem>
+            ))}
+          </TextField>
+          <br />
+          
+              <TextField
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="passport"
@@ -823,6 +885,38 @@ const EmployeeProfile = () => {
                 ))}
               </TextField>
               <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="shiftStartTime"
+                variant="standard"
+                type="time"
+                value={startTime}
+                onChange={(e) => setStartTime(e.target.value)}
+                onBlur={handleBlur}
+                helperText={
+                  errors.startTime && isTouched.startTime
+                  ? errors.startTime
+                  : "Please set shift start time"
+                }
+               error={!!errors.startTime && isTouched.startTime}
+              />
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="shiftEndTime"
+                variant="standard"
+                type="time"
+                value={endTime}
+                onChange={(e) => setEndTime(e.target.value)}
+                onBlur={handleBlur}
+                helperText={
+                  errors.endTime && isTouched.endTime
+                  ? errors.endTime
+                  :"Please set shift end time"
+                }
+              />
+              <br />
+              
               <TextField
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}

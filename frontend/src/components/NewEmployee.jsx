@@ -26,10 +26,10 @@ import { addUser } from "../actions/userActions";
 const NewEmployee = () => {
   const departments = [
     {
-      value: "Development",
+      value: "Web Development",
     },
     {
-      value: "Data",
+      value: "Data and Analytics",
     },
     {
       value: "HR",
@@ -37,17 +37,23 @@ const NewEmployee = () => {
     {
       value: "Project Management",
     },
+    {
+      value: "Admin",
+    },
+    {
+      value: "Pre Sales",
+    },
+    {
+      value: "Devops and Infra",
+    },
   ];
 
   const designations = [
     {
-      value: "CEO",
+      value: "Intern Data Engineer",
     },
     {
-      value: "Director",
-    },
-    {
-      value: "Senior Consultant",
+      value: "Associate Consultant ",
     },
     {
       value: "Junior Consultant",
@@ -56,7 +62,19 @@ const NewEmployee = () => {
       value: "Consultant",
     },
     {
-      value: "Associate Consultant",
+      value: "Senior Consultant",
+    },
+    {
+      value: "AVP",
+    },
+    {
+      value: "VP",
+    },
+    {
+      value: "SVP",
+    },
+    {
+      value: "CEO",
     },
   ];
 
@@ -133,6 +151,15 @@ const NewEmployee = () => {
       value: "Married",
     },
   ];
+  const gender = [
+    {
+      value: "Male",
+    },
+    {
+      value: "Female",
+    },
+  ];
+
 
   //State to store form field values
   const [formData, setFormData] = useState({
@@ -145,8 +172,11 @@ const NewEmployee = () => {
     passport: "",
     dob: "",
     maritalStatus: "",
+    gender:"",
     cnic: "",
     department: "",
+    shiftStartTime: "",
+    shiftEndTime:"",
     employeeId: "",
     designation: "",
     title: "",
@@ -183,8 +213,11 @@ const NewEmployee = () => {
     passport: false,
     dob: false,
     maritalStatus: false,
+    gender: false,
     cnic: false,
     department: false,
+    shiftStartTime: false,
+    shiftEndTime: false,
     employeeId: false,
     designation: false,
     title: false,
@@ -390,6 +423,12 @@ const NewEmployee = () => {
       isValid = false;
     }
 
+    if (!formData.gender) {
+      errors.gender = "Please select gender";
+      isValid = false;
+    }
+    
+
     if (!formData.cnic || !formData.cnic.trim()) {
       errors.cnic = "Please enter your CNIC";
       isValid = false;
@@ -403,6 +442,16 @@ const NewEmployee = () => {
 
     if (!formData.department) {
       errors.department = "Please enter department";
+      isValid = false;
+    }
+
+    if (!formData.shiftStartTime) {
+      errors.shiftStartTime = "Please set shift start time";
+      isValid = false;
+    }
+
+    if (!formData.shiftEndTime) {
+      errors.shiftEndTime = "Please set shift end time";
       isValid = false;
     }
 
@@ -706,6 +755,25 @@ const NewEmployee = () => {
           <br />
           <TextField
             sx={{ marginTop: "20px", width: "50%" }}
+            name="gender"
+            select
+            helperText={
+              errors.gender && isTouched.gender
+                ? errors.gender
+                : "Please select gender"
+            }
+            variant="standard"
+          >
+            {gender.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.value}
+              </MenuItem>
+            ))}
+          </TextField>
+          <br />
+          
+          <TextField
+            sx={{ marginTop: "20px", width: "50%" }}
             name="passport"
             label="Passport (optional)"
             variant="standard"
@@ -777,6 +845,32 @@ const NewEmployee = () => {
             ))}
           </TextField>
           <br />
+          <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="shiftStartTime"
+                variant="standard"
+                type="time"
+                helperText={
+                  errors.shiftStartTime && isTouched.shiftStartTime
+                    ? errors.shiftStartTime
+                    : "Please set shift start time"
+                }
+                error={!!errors.shiftStartTime && isTouched.shiftStartTime}
+              />
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="shiftEndTime"
+                variant="standard"
+                type="time"
+                helperText={
+                  errors.shiftEndTime && isTouched.shiftEndTime
+                    ? errors.shiftEndTime
+                    : "Please set shift end time"
+                }
+                error={!!errors.shiftEndTime && isTouched.shiftEndTime}
+              />
+              <br />    
           <TextField
             sx={{ marginTop: "20px", width: "50%" }}
             name="title"
