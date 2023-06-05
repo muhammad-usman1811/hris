@@ -110,6 +110,9 @@ export const addUser = (userData) => async (dispatch) => {
     formData.append("contact", userData.contact);
     formData.append("date", userData.date);
     formData.append("department", userData.department);
+    formData.append("gender", userData.gender);
+    formData.append("shiftStartTime", userData.shiftStartTime);
+    formData.append("shiftEndTime", userData.shiftEndTime);
     formData.append("designation", userData.designation);
     formData.append("email", userData.email);
     formData.append("emergencyAddress", userData.emergencyAddress);
@@ -161,6 +164,9 @@ export const editUser = (userData) => async (dispatch, getState) => {
     formData.append("contact", userData.contact);
     formData.append("date", userData.date);
     formData.append("department", userData.department);
+    formData.append("gender", userData.gender);
+    formData.append("shiftStartTime", userData.shiftStartTime);
+    formData.append("shiftEndTime", userData.shiftEndTime);
     formData.append("designation", userData.designation);
     formData.append("email", userData.email);
     formData.append("emergencyAddress", userData.emergencyAddress);

@@ -40,6 +40,7 @@ const AttendanceList = () => {
       field: "date",
       headerName: "Date",
       width: 150,
+      type: 'date'
     }
   ];
 

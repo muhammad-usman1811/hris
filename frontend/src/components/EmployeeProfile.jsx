@@ -187,8 +187,8 @@ const EmployeeProfile = () => {
   const [department, setDepartment] = useState("");
   const [employeeId, setEmployeeId] = useState("");
   const [designation, setDesignation] = useState("");
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
+  const [shiftStartTime, setShiftStartTime] = useState("");
+  const [shiftEndTime, setShiftEndTime] = useState("");
   const [title, setTitle] = useState("");
   const [supervisor, setSupervisor] = useState("");
   const [date, setDate] = useState("");
@@ -220,8 +220,8 @@ const EmployeeProfile = () => {
     maritalStatus: false,
     gender: false,
     department: false,
-    startTime: false,
-    endTime: false,
+    shiftStartTime: false,
+    shiftEndTime: false,
     employeeId: false,
     designation: false,
     title: false,
@@ -318,10 +318,21 @@ const EmployeeProfile = () => {
     isValid = false;
   }
 
-  if (!genders) {
+  if (!gender) {
     errors.gender = "Please select gender";
     isValid = false;
   }
+  if (!shiftStartTime) {
+    errors.shiftStartTime = "Please set shift start time";
+    isValid = false;
+  }
+
+  if (!shiftEndTime) {
+    errors.shiftEndTime = "Please set shift end time";
+    isValid = false;
+  }
+
+
 
   if (!department) {
     errors.department = "Please enter department";
@@ -449,8 +460,8 @@ const EmployeeProfile = () => {
           department,
           employeeId,
           designation,
-          startTime,
-          endTime,
+          shiftStartTime,
+          shiftEndTime,
           title,
           supervisor,
           date,
@@ -537,8 +548,8 @@ const EmployeeProfile = () => {
         setMaritalStatus(user.maritalStatus);
         setGender(user.gender);
         setDepartment(user.jobDetails.department);
-        setStartTime(user.startTime);
-        setEndTime(user.endTime);
+        setShiftStartTime(user.shiftStartTime);
+        setShiftEndTime(user.shiftEndTime);
         setEmployeeId(user.employeeId);
         setTitle(user.jobDetails.title);
         setDesignation(user.jobDetails.designation);
@@ -796,6 +807,8 @@ const EmployeeProfile = () => {
               <TextField
             sx={{ marginTop: "20px", width: "50%" }}
             name="gender"
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
             select
             helperText="Please select gender"
             variant="standard"
@@ -890,15 +903,15 @@ const EmployeeProfile = () => {
                 name="shiftStartTime"
                 variant="standard"
                 type="time"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
+                value={shiftStartTime}
+                onChange={(e) => setShiftStartTime(e.target.value)}
                 onBlur={handleBlur}
                 helperText={
-                  errors.startTime && isTouched.startTime
-                  ? errors.startTime
+                  errors.shiftStartTime && isTouched.shiftStartTime
+                  ? errors.shiftStartTime
                   : "Please set shift start time"
                 }
-               error={!!errors.startTime && isTouched.startTime}
+               error={!!errors.shiftStartTime && isTouched.shiftStartTime}
               />
               <br />
               <TextField
@@ -906,12 +919,12 @@ const EmployeeProfile = () => {
                 name="shiftEndTime"
                 variant="standard"
                 type="time"
-                value={endTime}
-                onChange={(e) => setEndTime(e.target.value)}
+                value={shiftEndTime}
+                onChange={(e) => setShiftEndTime(e.target.value)}
                 onBlur={handleBlur}
                 helperText={
-                  errors.endTime && isTouched.endTime
-                  ? errors.endTime
+                  errors.shiftEndTime && isTouched.shiftEndTime
+                  ? errors.shiftEndTime
                   :"Please set shift end time"
                 }
               />

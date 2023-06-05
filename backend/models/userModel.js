@@ -51,6 +51,18 @@ const userSchema = mongoose.Schema(
     passport: {
       type: String,
     },
+    gender: {
+      type: String,
+      required: true,
+    },
+    shiftStartTime:{
+      type: String,
+      required: true,
+    },
+    shiftEndTime:{
+      type: String,
+      required: true,
+    },
     leaveQuota: {
       type: [LeaveQuota.schema],
       default: [],
