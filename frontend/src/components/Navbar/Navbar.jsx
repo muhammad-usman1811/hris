@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
@@ -14,6 +14,9 @@ import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import ArticleIcon from "@mui/icons-material/Article";
 import HomeIcon from "@mui/icons-material/Home";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import Collapse from "@mui/material/Collapse";
 import EventIcon from "@mui/icons-material/Event";
 import Logout from "@mui/icons-material/Logout";
 import { navbarStyles } from "./styles";
@@ -23,9 +26,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "./../../actions/userActions";
 
 const Navbar = () => {
+  const [open, setOpen] = React.useState(false);
+
+  // const handleClick = () => {
+  //   setOpen(!open);
+  // };
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const [selectedSubItem, setSelectedSubItem] = useState(null);
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -82,6 +92,9 @@ const Navbar = () => {
               selected={selectedIndex === 2}
               onClick={(event) => {
                 handleListItemClick(event, 2);
+                // Add navigation logic for the new list item
+                setOpen(!open);
+                setSelectedSubItem(null);
                 navigate("/home/attendance");
               }}
             >
@@ -89,7 +102,34 @@ const Navbar = () => {
                 <PersonIcon />
               </ListItemIcon>
               <ListItemText primary="Attendance" />
+              {open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
             </ListItemButton>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {/* Subitems for the new list item */}
+                <ListItemButton
+                  selected={selectedSubItem === 1}
+                  onClick={() => {
+                    setSelectedSubItem(1);
+                    navigate("/home/attendance/timesheet");
+                  }}
+                >
+                  <ListItemText primary="Timesheets" />
+                </ListItemButton>
+              </List>
+            </Collapse>
+            {/* <ListItemButton
+              selected={selectedIndex === 2}
+              onClick={(event) => {
+                handleListItemClick(event, 2);
+                navigate("/home/attendance");
+              }}
+            >
+              <ListItemIcon>
+                <PersonIcon />
+              </ListItemIcon>
+              <ListItemText primary="Attendance" />
+            </ListItemButton> */}
             <ListItemButton
               selected={selectedIndex === 3}
               onClick={(event) => {
@@ -118,7 +158,9 @@ const Navbar = () => {
         </>
       )}
 
-      {(userInfo.role === "Employee" || userInfo.role === "Supervisor") && (
+      {(userInfo.role === "Employee" ||
+        userInfo.role === "Supervisor" ||
+        userInfo.role === "Engagement Manager") && (
         <>
           <List component="nav">
             <ListItemButton
@@ -171,6 +213,18 @@ const Navbar = () => {
                 <ArticleIcon />
               </ListItemIcon>
               <ListItemText primary="Documents" />
+            </ListItemButton>
+            <ListItemButton
+              selected={selectedIndex === 4}
+              onClick={(event) => {
+                handleListItemClick(event, 4);
+                navigate("/home/employee/manualAttendance");
+              }}
+            >
+              <ListItemIcon>
+                <ManageAccountsIcon />
+              </ListItemIcon>
+              <ListItemText primary="Manual Attendance" />
             </ListItemButton>
           </List>
         </>

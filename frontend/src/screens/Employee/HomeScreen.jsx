@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -14,6 +14,9 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import axios from "axios";
 import AlertDialog from "../../components/common/AlertDialog";
+import PasswordChangeModal from "../../components/PasswordChangeModal";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../actions/userActions";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -23,9 +26,16 @@ const HomeScreen = () => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [greeting, setGreeting] = useState("");
   const [time, setTime] = useState(new Date().toLocaleTimeString("en-Us"));
   const [checkIn, setCheckIn] = useState();
+  const [showPasswordChangeModal, setShowPasswordChangeModal] = useState(
+    userInfo.passwordChangeRequired
+  );
+  const [modalMessage, setModalMessage] = useState("");
   //localStorage.getItem(`checkIn:${userInfo._id}`)
 
   const [checkOut, setCheckOut] = useState();
@@ -119,6 +129,36 @@ const HomeScreen = () => {
     setOpenCheckOutToast(false);
   };
 
+  const handlePasswordChange = (currentPassword, newPassword) => {
+    // Call an API endpoint or perform necessary logic to change the password
+    const sendPasswords = async () => {
+      const userId = userInfo._id;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      const response = await axios.post(
+        "/api/users/change-password",
+        {
+          currentPassword,
+          newPassword,
+          userId,
+        },
+        config
+      );
+      const message = response.data.message;
+      setModalMessage(message);
+      if (message === "Password Updated") {
+        navigate("/");
+        dispatch(logout());
+        showPasswordChangeModal(false);
+      }
+    };
+    sendPasswords();
+    // Once the password is successfully changed, close the modal
+  };
+
   useEffect(() => {
     const fetchUserAttendance = async () => {
       const config = {
@@ -203,6 +243,14 @@ const HomeScreen = () => {
         position: "relative",
       }}
     >
+      {showPasswordChangeModal && (
+        <PasswordChangeModal
+          open={true}
+          onClose={() => setShowPasswordChangeModal(false)}
+          onSubmit={handlePasswordChange}
+          message={modalMessage}
+        />
+      )}
       <Grid item xs={12}>
         <Card
           sx={{

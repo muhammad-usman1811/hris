@@ -96,7 +96,8 @@ const LoginScreen = () => {
     }
     if (
       (userInfo && userInfo.role === "Employee") ||
-      (userInfo && userInfo.role === "Supervisor")
+      (userInfo && userInfo.role === "Supervisor") ||
+      (userInfo && userInfo.role === "Engagement Manager")
     ) {
       navigate("/home/employeePortal");
     }

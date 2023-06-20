@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import DataTable from "react-data-table-component";
-import moment from "moment";
-import axios from "axios";
-import { Search } from "@mui/icons-material";
-import InputAdornment from "@mui/material/InputAdornment";
+import React, { useState, useEffect } from "react";
 import { Grid, Stack, TextField, Divider, Button } from "@mui/material";
+import DataTable from "react-data-table-component";
+import { useSelector, useDispatch } from "react-redux";
+import Graph from "./common/Graph";
+import { listUsers } from "../actions/userActions";
+import MenuItem from "@mui/material/MenuItem";
+import axios from "axios";
+import moment from "moment";
 
-const AttendanceList = () => {
+const TimeSheet = () => {
   const columns = [
     {
       name: <b>Name</b>,
       selector: (row) => row.name,
-      sortable: true,
     },
     {
       name: <b>Department</b>,
@@ -21,7 +21,6 @@ const AttendanceList = () => {
     {
       name: <b>Status</b>,
       selector: (row) => row.status,
-      sortable: true,
     },
     {
       name: <b>Checked-In</b>,
@@ -38,19 +37,23 @@ const AttendanceList = () => {
     {
       name: <b>Date</b>,
       selector: (row) => row.date,
-      sortable: true,
     },
   ];
 
-  const [attendance, setAttendance] = useState([]);
+  const dispatch = useDispatch();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [employeeNames, setEmployeeNames] = useState([]);
+  const [selectedName, setSelectedName] = useState("");
+  const [attendance, setAttendance] = useState([]);
   const [isFilterApplied, setIsFilterApplied] = useState(false);
   const [filteredRows, setFilteredRows] = useState([]);
-  const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+
+  const userList = useSelector((state) => state.userList);
+  const { users } = userList;
 
   const calculateWorkHours = (starttime, endtime) => {
     if (!endtime) {
@@ -83,14 +86,6 @@ const AttendanceList = () => {
     };
   });
 
-  function handleSearch(event) {
-    const newData = rowsData.filter((row) => {
-      return row.name.toLowerCase().includes(event.target.value.toLowerCase());
-    });
-    setFilteredRows(newData);
-    isFilterApplied(true);
-  }
-
   const handleFilter = () => {
     const filterRowsOnClick = rowsData.filter((item) => {
       const itemDate = new Date(item.date);
@@ -98,16 +93,28 @@ const AttendanceList = () => {
       const endDateTime = new Date(endDate);
       //Set the end date time to the end of the day
       endDateTime.setHours(23, 59, 59, 999);
-      return itemDate >= startDateTime && itemDate <= endDateTime;
+      return (
+        itemDate >= startDateTime &&
+        itemDate <= endDateTime &&
+        item.name === selectedName
+      );
     });
     setFilteredRows(filterRowsOnClick);
     setIsFilterApplied(true);
   };
 
+  const dataForGraph = filteredRows.map((row) => {
+    return {
+      workHours: calculateWorkHours(row.checkIn, row.checkOut),
+    };
+  });
+
   const handleClear = () => {
     setFilteredRows([]);
     setStartDate("");
     setEndDate("");
+    setSelectedName("");
+    setIsFilterApplied(false);
   };
 
   useEffect(() => {
@@ -125,29 +132,57 @@ const AttendanceList = () => {
       }
     };
     fetchAttendance();
-  }, [userInfo, dispatch]);
+    dispatch(listUsers());
+    const userNames =
+      users &&
+      users.map((user) => {
+        return {
+          name: user.name,
+        };
+      });
+    setEmployeeNames(userNames);
+  }, [userInfo, dispatch, users]);
+
   return (
-    <>
+    <Grid
+      item
+      xs={12}
+      sx={{
+        marginLeft: "256px",
+        backgroundColor: "#eaeff1",
+        padding: "32px",
+        minHeight: "calc(100vh - 67px)",
+        position: "relative",
+      }}
+    >
       <Grid>
         <Stack
           direction="row"
           sx={{ marginTop: -2, height: 80, display: "flex" }}
         >
           <TextField
-            sx={{ width: "20ch", m: 2 }}
-            color="error"
-            id="input-with-icon-textfield"
-            placeholder="Search"
-            onChange={handleSearch}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-            variant="standard"
-          />
+            InputLabelProps={{ shrink: true }}
+            label="Employee Name"
+            sx={{ m: 1, width: 300, mt: 2, background: "white" }}
+            name="selectedName"
+            select
+            value={selectedName}
+            onChange={(e) => setSelectedName(e.target.value)}
+            //onBlur={handleBlur}
+            // error={!!errors.department && isTouched.department}
+            // helperText={
+            //   errors.department && isTouched.department
+            //     ? errors.department
+            //     : "Please select the department"
+            // }
+          >
+            {employeeNames.map((option) => (
+              <MenuItem key={option.name} value={option.name}>
+                {option.name}
+              </MenuItem>
+            ))}
+          </TextField>
+
           <TextField
             InputLabelProps={{ shrink: true }}
             sx={{ width: "180px", backgroundColor: "white" }}
@@ -157,12 +192,24 @@ const AttendanceList = () => {
             margin="normal"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
+
+            // onBlur={handleBlur}
+
+            // error={!!errors.startDate && isTouched.startDate}
+
+            // helperText={
+
+            //   errors.startDate && isTouched.startDate && errors.startDate
+
+            // }
           />
+
           <Divider
             orientation="horizontal"
             variant="middle"
             sx={{ mx: 3, bgcolor: "grey.500", width: "1px", my: 3 }}
           />
+
           <TextField
             InputLabelProps={{ shrink: true }}
             sx={{ width: "180px", backgroundColor: "white" }}
@@ -172,6 +219,12 @@ const AttendanceList = () => {
             margin="normal"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
+
+            // onBlur={handleBlur}
+
+            // error={!!errors.endDate && isTouched.endDate}
+
+            // helperText={errors.endDate && isTouched.endDate && errors.endDate}
           />
           <Stack sx={{ direction: "column" }}>
             <Button
@@ -194,26 +247,12 @@ const AttendanceList = () => {
           </Stack>
         </Stack>
       </Grid>
-      {/* <Grid sx={{ height: 620, display: "flex" }}> */}
-      <DataTable
-        columns={columns}
-        data={
-          filteredRows.length === 0 ? rowsData : filteredRows
-          //isFilterApplied && filteredRows.length > 0 ? filteredRows : rowsData
-        }
-        // noHeader
-        pagination
-        highlightOnHover
-      />
-      {/* <DataTable
-          rows={
-            isFilterApplied && filteredRows.length > 0 ? filteredRows : rowsData
-          }
-          columns={columns}
-        /> */}
-      {/* /</Grid> */}
-    </>
+      {isFilterApplied && <DataTable data={filteredRows} columns={columns} />}
+      {isFilterApplied && (
+        <Graph startDate={startDate} endDate={endDate} data={dataForGraph} />
+      )}
+    </Grid>
   );
 };
 
-export default AttendanceList;
+export default TimeSheet;

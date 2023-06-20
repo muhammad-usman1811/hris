@@ -16,8 +16,14 @@ function App() {
     const parsedTitle = location.pathname.replace(/^\/home\//, "");
     const alteredTitle =
       parsedTitle.charAt(0).toUpperCase() + parsedTitle.slice(1);
+    const modifiedTitle = alteredTitle
+      .split("/")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
     if (alteredTitle.startsWith("Profile")) {
       setTitle("Edit Profile");
+    } else if (alteredTitle.endsWith("timesheet")) {
+      setTitle("Timesheets");
     } else if (alteredTitle.endsWith("leaves")) {
       setTitle("Leaves");
     } else if (alteredTitle.endsWith("documents")) {
@@ -26,6 +32,8 @@ function App() {
       setTitle("Home");
     } else if (alteredTitle.startsWith("Employees")) {
       setTitle("Employees");
+    } else if (modifiedTitle === "Employee ManualAttendance") {
+      setTitle("Attendance Request");
     } else if (alteredTitle.startsWith("Employee")) {
       setTitle("Profile");
     } else {

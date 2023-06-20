@@ -1,32 +1,76 @@
 import React, { useState, useCallback, useEffect } from "react";
+import { styled } from "@mui/material/styles";
+import Paper from "@mui/material/Paper";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import PropTypes from "prop-types";
+import { TextField } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import Alert from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
 import { Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
-import CancelIcon from "@mui/icons-material/Cancel";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
-import PhotoCamera from "@mui/icons-material/PhotoCamera";
-import CircularProgress from "@mui/material/CircularProgress";
 import { editUser, getUserDetails } from "../actions/userActions";
+import Button from "@mui/material/Button";
+import CancelIcon from "@mui/icons-material/Cancel";
+import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import Stack from "@mui/material/Stack";
+import LoadingButton from "@mui/lab/LoadingButton";
 
-const EmployeeProfile = () => {
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: "center",
+  color: theme.palette.text.secondary,
+}));
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
+
+export default function EmployeeProfile() {
   const departments = [
     {
-      value: "Development",
+      value: "Web Development",
     },
     {
-      value: "Data",
+      value: "Data and Analytics",
     },
     {
       value: "HR",
@@ -34,17 +78,23 @@ const EmployeeProfile = () => {
     {
       value: "Project Management",
     },
+    {
+      value: "Admin",
+    },
+    {
+      value: "Pre Sales",
+    },
+    {
+      value: "Devops and Infra",
+    },
   ];
 
   const designations = [
     {
-      value: "CEO",
+      value: "Intern Data Engineer",
     },
     {
-      value: "Director",
-    },
-    {
-      value: "Senior Consultant",
+      value: "Associate Consultant ",
     },
     {
       value: "Junior Consultant",
@@ -53,13 +103,28 @@ const EmployeeProfile = () => {
       value: "Consultant",
     },
     {
-      value: "Associate Consultant",
+      value: "Senior Consultant",
+    },
+    {
+      value: "AVP",
+    },
+    {
+      value: "VP",
+    },
+    {
+      value: "SVP",
+    },
+    {
+      value: "CEO",
     },
   ];
 
   const roles = [
     {
       value: "Admin",
+    },
+    {
+      value: "Engagement Manager",
     },
     {
       value: "Supervisor",
@@ -130,6 +195,181 @@ const EmployeeProfile = () => {
       value: "Married",
     },
   ];
+  const genders = [
+    {
+      value: "Male",
+    },
+    {
+      value: "Female",
+    },
+  ];
+
+  const clients = [
+    {
+      value: "AP - SAGE",
+    },
+    {
+      value: "ATOS",
+    },
+    {
+      value: "Digifloat Internal",
+    },
+    {
+      value: "EXADIVE",
+    },
+    {
+      value: "HSO",
+    },
+    {
+      value: "KEYRUS BELGIUM",
+    },
+    {
+      value: "KEYRUS SINGAPORE",
+    },
+    {
+      value: "KEYRUS UAE",
+    },
+  ];
+
+  const reportingDepartmentOpt = [
+    {
+      value: "HR",
+    },
+    {
+      value: "IT",
+    },
+    {
+      value: "Finance",
+    },
+    {
+      value: "Admin & Procurement",
+    },
+    {
+      value: "Professional Services",
+    },
+  ];
+
+  const officeOptions = [
+    {
+      value: "Lahore",
+    },
+    {
+      value: "Karachi",
+    },
+    {
+      value: "Islamabad",
+    },
+  ];
+
+  const billableHourOptions = [
+    {
+      value: "N/A",
+    },
+    {
+      value: "1",
+    },
+    {
+      value: "2",
+    },
+    {
+      value: "3",
+    },
+    {
+      value: "4",
+    },
+    {
+      value: "5",
+    },
+    {
+      value: "6",
+    },
+    {
+      value: "7",
+    },
+    {
+      value: "8",
+    },
+  ];
+
+  const fuelOptions = [
+    { value: "N/A" },
+    { value: "Assistant Consultant - 30L" },
+    { value: "Junior Consultant - 50L" },
+    { value: "Consultant - 70L" },
+    { value: "Senior Consultant - 100L" },
+    { value: "Managing Director - 150" },
+    { value: "Director - 175L" },
+  ];
+
+  //Hanlde dynamic dependency of projects based on client
+  const getProjectOptions = (client) => {
+    if (client === "Digifloat Internal") {
+      return [
+        "Yorktel",
+        "Training - Interns",
+        "Trainee",
+        "Sourcing Solutions",
+        "RMI",
+        "Proposal",
+        "Outsourcing",
+        "Management",
+        "Leave",
+        "IT and Networks",
+        "HR",
+        "General",
+        "DMX",
+        "Business Development",
+        "Boltwire",
+        "Blogs",
+      ];
+    } else if (client === "AP - SAGE") {
+      return ["AP - Sage"];
+    } else if (client === "ATOS") {
+      return ["NBB"];
+    } else if (client === "EXADIVE") {
+      return ["Ahold delhaize"];
+    } else if (client === "HSO") {
+      return [
+        "Warburg",
+        "Zenus",
+        "Mavis",
+        "Yorktel",
+        "EFI",
+        "Godiva",
+        "Sonesta",
+      ];
+    } else if (client === "KEYRUS BELGIUM") {
+      return ["Aliaxis", "Atlas Copco", "Borealis"];
+    } else if (client === "KEYRUS SINGAPORE") {
+      return ["BD", "JnJ"];
+    } else if (client === "KEYRUS UAE") {
+      return ["MAFP"];
+    } else {
+      return [];
+    }
+  };
+
+  //Client and its custom options
+  const customClientFromLocalStorage = JSON.parse(
+    localStorage.getItem("customClientOptions")
+  );
+
+  const customClientOptions = [
+    ...clients,
+    ...(customClientFromLocalStorage || []),
+  ];
+
+  // Fuel options and its custom options
+  const customFuelFromLocalStorage = JSON.parse(
+    localStorage.getItem("customFuelOptions")
+  );
+
+  const customFuelOptions = [
+    ...fuelOptions,
+    ...(customFuelFromLocalStorage || []),
+  ];
+
+  const benefitOptions = [{ value: "Eligible" }, { value: "Not Eligible" }];
 
   const { id } = useParams();
   const navigate = useNavigate();
@@ -153,11 +393,30 @@ const EmployeeProfile = () => {
   const [cnic, setCnic] = useState("");
   const [dob, setDob] = useState("");
   const [maritalStatus, setMaritalStatus] = useState("");
+  const [gender, setGender] = useState("");
   const [department, setDepartment] = useState("");
   const [employeeId, setEmployeeId] = useState("");
   const [designation, setDesignation] = useState("");
+  const [shiftStartTime, setShiftStartTime] = useState("");
+  const [shiftEndTime, setShiftEndTime] = useState("");
   const [title, setTitle] = useState("");
   const [supervisor, setSupervisor] = useState("");
+  const [engagementManager, setEngagementManager] = useState("");
+  const [permanentDate, setPermanentDate] = useState("");
+  const [reportingDepartment, setReportingDepartment] = useState("");
+  const [reportingOffice, setReportingOffice] = useState("");
+  const [client, setClient] = useState("");
+  const [projectName, setProjectName] = useState("");
+  const [projectType, setProjectType] = useState("");
+  const [projectRole, setProjectRole] = useState("");
+  const [region, setRegion] = useState("");
+  const [projectStartDate, setProjectStartDate] = useState("");
+  const [billableHours, setBillableHours] = useState("");
+  const [projectEndDate, setProjectEndDate] = useState("");
+  const [degree, setDegree] = useState("");
+  const [institute, setInstitute] = useState("");
+  const [degreeStartDate, setDegreeStartDate] = useState("");
+  const [degreeEndDate, setDegreeEndDate] = useState("");
   const [date, setDate] = useState("");
   const [workType, setWorkType] = useState("");
   const [role, setRole] = useState("");
@@ -168,7 +427,13 @@ const EmployeeProfile = () => {
   const [emergencyAddress, setEmergencyAddress] = useState("");
   const [contact, setContact] = useState("");
   const [blood, setBlood] = useState("");
-
+  const [fuel, setFuel] = useState("");
+  const [medicalAllowance, setMedicalAllowance] = useState("");
+  const [providentFund, setProvidentFund] = useState("");
+  const [empOfQuarter, setEmpOfQuarter] = useState("");
+  const [paidCertifications, setPaidCertifications] = useState("");
+  const [paidTimeOff, setPaidTimeOff] = useState("");
+  const [annualBonus, setAnnualBonus] = useState("");
   //Other states
   const [openToast, setOpenToast] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -185,11 +450,26 @@ const EmployeeProfile = () => {
     cnic: false,
     dob: false,
     maritalStatus: false,
+    gender: false,
     department: false,
+    shiftStartTime: false,
+    shiftEndTime: false,
     employeeId: false,
     designation: false,
     title: false,
     supervisor: false,
+    engagementManager: false,
+    permanentDate: false,
+    reportingDepartment: false,
+    reportingOffice: false,
+    client: false,
+    projectName: false,
+    projectRole: false,
+    projectType: false,
+    region: false,
+    billableHours: false,
+    projectStartDate: false,
+    projectEndDate: false,
     date: false,
     workType: false,
     role: false,
@@ -200,7 +480,29 @@ const EmployeeProfile = () => {
     emergencyAddress: false,
     contact: false,
     blood: false,
+    degree: false,
+    institute: false,
+    degreeStartDate: false,
+    degreeEndDate: false,
+    fuel: false,
+    medicalAllowance: false,
+    providentFund: false,
+    empOfQuarter: false,
+    paidCertifications: false,
+    paidTimeOff: false,
+    annualBonus: false,
   });
+
+  //Project and its custom options
+  const customProjectFromLocalStorage = JSON.parse(
+    localStorage.getItem("customProjectOptions")
+  );
+  const customProjectOptions = [
+    ...getProjectOptions(client),
+    ...customProjectFromLocalStorage
+      .filter((option) => option.client === client)
+      .map((option) => option.value),
+  ];
 
   const isDisabled = Object.values(isTouched).some((value) => value === true);
 
@@ -221,12 +523,12 @@ const EmployeeProfile = () => {
     isValid = false;
   }
 
-  if (!name.trim()) {
+  if (!name || !name.trim()) {
     errors.name = "Please enter name";
     isValid = false;
   }
 
-  if (!email.trim()) {
+  if (!email || !email.trim()) {
     errors.email = "Please enter email";
     isValid = false;
   } else if (!email.includes("@digifloat.com") && hasBlurred.email) {
@@ -234,7 +536,7 @@ const EmployeeProfile = () => {
     isValid = false;
   }
 
-  if (!password.trim()) {
+  if (!password || !password.trim()) {
     errors.password = "Please enter password";
     isValid = false;
   } else if (password.length < 8 && hasBlurred.password) {
@@ -247,7 +549,7 @@ const EmployeeProfile = () => {
     isValid = false;
   }
 
-  if (!phone.trim()) {
+  if (!phone || !phone.trim()) {
     errors.phone = "Please enter phone number";
     isValid = false;
   } else if (!/^[0-9]{4}-[0-9]{7}$/.test(phone) && hasBlurred.phone) {
@@ -282,6 +584,20 @@ const EmployeeProfile = () => {
     isValid = false;
   }
 
+  if (!gender) {
+    errors.gender = "Please select gender";
+    isValid = false;
+  }
+  if (!shiftStartTime) {
+    errors.shiftStartTime = "Please set shift start time";
+    isValid = false;
+  }
+
+  if (!shiftEndTime) {
+    errors.shiftEndTime = "Please set shift end time";
+    isValid = false;
+  }
+
   if (!department) {
     errors.department = "Please enter department";
     isValid = false;
@@ -292,18 +608,78 @@ const EmployeeProfile = () => {
     isValid = false;
   }
 
-  if (!designation.trim()) {
+  if (!designation) {
     errors.designation = "Please enter designation";
     isValid = false;
   }
 
-  if (!title.trim()) {
+  if (!title || !title.trim()) {
     errors.title = "Please enter title";
     isValid = false;
   }
 
-  if (!supervisor.trim()) {
+  if (!supervisor || !supervisor.trim()) {
     errors.supervisor = "Please enter supervisor";
+    isValid = false;
+  }
+
+  if (!engagementManager || !engagementManager.trim()) {
+    errors.engagementManager = "Please enter engagement manager";
+    isValid = false;
+  }
+
+  if (!reportingDepartment) {
+    errors.reportingDepartment = "Please select reporting department";
+    isValid = false;
+  }
+
+  if (!reportingOffice) {
+    errors.reportingOffice = "Please select reporting office";
+    isValid = false;
+  }
+
+  if (!permanentDate) {
+    errors.permanentDate = "Please set date of permanent employment";
+    isValid = false;
+  }
+
+  if (!client) {
+    errors.client = "Please select client";
+    isValid = false;
+  }
+
+  if (!projectName) {
+    errors.projectName = "Please select project";
+    isValid = false;
+  }
+
+  if (!projectRole) {
+    errors.projectRole = "Please select project role";
+    isValid = false;
+  }
+
+  if (!projectType) {
+    errors.projectType = "Please select project type";
+    isValid = false;
+  }
+
+  if (!billableHours) {
+    errors.billingHours = "Please set billing hours";
+    isValid = false;
+  }
+
+  if (!region) {
+    errors.region = "Please enter region";
+    isValid = false;
+  }
+
+  if (!projectStartDate) {
+    errors.projectStartDate = "Please set project start date";
+    isValid = false;
+  }
+
+  if (!projectEndDate) {
+    errors.endDate = "Please set project end date";
     isValid = false;
   }
 
@@ -321,7 +697,7 @@ const EmployeeProfile = () => {
     errors.role = "Please specify a role";
   }
 
-  if (!salary || !salary.trim()) {
+  if (!salary) {
     errors.salary = "Please enter salary";
     isValid = false;
   }
@@ -331,21 +707,76 @@ const EmployeeProfile = () => {
     isValid = false;
   }
 
-  if (!emergencyName.trim()) {
+  if (!emergencyName || !emergencyName.trim()) {
     errors.emergencyName = "Please enter emergency contact's name";
     isValid = false;
   }
 
-  if (!relation.trim()) {
+  if (!relation || !relation.trim()) {
     errors.relation = "Please enter emergency contact's relation";
     isValid = false;
   }
 
-  if (!contact.trim()) {
+  if (!contact || !contact.trim()) {
     errors.contact = "Please enter emergency contact";
     isValid = false;
   } else if (!/^[0-9]{4}-[0-9]{7}$/.test(contact) && hasBlurred.contact) {
     errors.contact = "Please enter a valid number (e.g. 0312-1234567";
+    isValid = false;
+  }
+
+  if (!degree || !degree.trim()) {
+    errors.degree = "Please enter degree";
+    isValid = false;
+  }
+
+  if (!degreeStartDate) {
+    errors.degreeStartDate = "Please set start date";
+    isValid = false;
+  }
+
+  if (!degreeEndDate) {
+    errors.degreeEndDate = "Please set end date";
+    isValid = false;
+  }
+
+  if (!institute || !institute.trim()) {
+    errors.degree = "Please enter institute";
+    isValid = false;
+  }
+
+  if (!fuel) {
+    errors.fuel = "Please select fuel";
+    isValid = false;
+  }
+
+  if (!medicalAllowance) {
+    errors.medicalAllowance = "Please select any option";
+    isValid = false;
+  }
+
+  if (!providentFund) {
+    errors.providentFund = "Please select any option";
+    isValid = false;
+  }
+
+  if (!paidCertifications) {
+    errors.paidCertifications = "Please select any option";
+    isValid = false;
+  }
+
+  if (!empOfQuarter) {
+    errors.empOfQuarter = "Please select any option";
+    isValid = false;
+  }
+
+  if (!annualBonus) {
+    errors.annualBonus = "Please select any option";
+    isValid = false;
+  }
+
+  if (!paidTimeOff) {
+    errors.paidTimeOff = "Please select any option";
     isValid = false;
   }
 
@@ -390,6 +821,61 @@ const EmployeeProfile = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (isValid) {
+      console.log({
+        id,
+        imageUrl,
+        imageIsChanged,
+        name,
+        email,
+        password,
+        address,
+        passport,
+        dob,
+        maritalStatus,
+        gender,
+        phone,
+        cnic,
+        department,
+        employeeId,
+        designation,
+        shiftStartTime,
+        shiftEndTime,
+        title,
+        supervisor,
+        engagementManager,
+        reportingDepartment,
+        reportingOffice,
+        permanentDate,
+        client,
+        projectName,
+        projectRole,
+        projectType,
+        region,
+        billableHours,
+        projectStartDate,
+        projectEndDate,
+        date,
+        workType,
+        role,
+        employmentStatus,
+        salary,
+        emergencyAddress,
+        emergencyName,
+        relation,
+        contact,
+        blood,
+        degree,
+        degreeStartDate,
+        degreeEndDate,
+        institute,
+        fuel,
+        medicalAllowance,
+        providentFund,
+        empOfQuarter,
+        paidCertifications,
+        annualBonus,
+        paidTimeOff,
+      });
       dispatch(
         editUser({
           id,
@@ -402,13 +888,28 @@ const EmployeeProfile = () => {
           passport,
           dob,
           maritalStatus,
+          gender,
           phone,
           cnic,
           department,
           employeeId,
           designation,
+          shiftStartTime,
+          shiftEndTime,
           title,
           supervisor,
+          engagementManager,
+          reportingDepartment,
+          reportingOffice,
+          permanentDate,
+          client,
+          projectName,
+          projectRole,
+          projectType,
+          region,
+          billableHours,
+          projectStartDate,
+          projectEndDate,
           date,
           workType,
           role,
@@ -419,6 +920,17 @@ const EmployeeProfile = () => {
           relation,
           contact,
           blood,
+          degree,
+          degreeStartDate,
+          degreeEndDate,
+          institute,
+          fuel,
+          medicalAllowance,
+          providentFund,
+          empOfQuarter,
+          paidCertifications,
+          annualBonus,
+          paidTimeOff,
         })
       );
     } else {
@@ -491,11 +1003,26 @@ const EmployeeProfile = () => {
         setCnic(user.cnic);
         setDob(user.dob);
         setMaritalStatus(user.maritalStatus);
+        setGender(user.gender);
         setDepartment(user.jobDetails.department);
+        setShiftStartTime(user.shiftStartTime);
+        setShiftEndTime(user.shiftEndTime);
         setEmployeeId(user.employeeId);
         setTitle(user.jobDetails.title);
         setDesignation(user.jobDetails.designation);
         setSupervisor(user.jobDetails.supervisor);
+        setEngagementManager(user.jobDetails.engagementManager);
+        setReportingDepartment(user.jobDetails.reportingDepartment);
+        setReportingOffice(user.jobDetails.reportingOffice);
+        setPermanentDate(user.jobDetails.permanentDate);
+        setClient(user.projectDetails.client);
+        setProjectName(user.projectDetails.projectName);
+        setProjectRole(user.projectDetails.projectRole);
+        setProjectType(user.projectDetails.projectType);
+        setBillableHours(user.projectDetails.billableHours);
+        setRegion(user.projectDetails.region);
+        setProjectStartDate(user.projectDetails.startDate);
+        setProjectEndDate(user.projectDetails.endDate);
         setDate(user.jobDetails.dateOfJoining);
         setWorkType(user.jobDetails.workType);
         setRole(user.role);
@@ -506,101 +1033,160 @@ const EmployeeProfile = () => {
         setEmergencyAddress(user.emergencyDetails.address);
         setContact(user.emergencyDetails.contact);
         setBlood(user.emergencyDetails.blood);
+        setDegree(user.educationalInfo.degree);
+        setDegreeStartDate(user.educationalInfo.startDate);
+        setDegreeEndDate(user.educationalInfo.endDate);
+        setInstitute(user.educationalInfo.institute);
+        setFuel(user.fuel);
+        setMedicalAllowance(user.medicalAllowance);
+        setProvidentFund(user.providentFund);
+        setPaidCertifications(user.paidCertifications);
+        setPaidTimeOff(user.paidTimeOff);
+        setEmpOfQuarter(user.empOfQuarter);
+        setAnnualBonus(user.annualBonus);
       }
     }
   }, [dispatch, id, user, success, navigate]);
 
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
   return (
+    //profile picture and cover picture
     <>
-      {loading && (
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      )}
-      {user && (
-        <Grid
-          component="form"
-          onSubmit={handleSubmit}
-          item
-          container
-          columnSpacing={2}
-          sx={{
-            width: "100%",
-            height: "100%",
-            boxSizing: "border-box",
-          }}
-        >
-          <Grid item xs={4}>
-            <Box
-              sx={{
-                width: 200,
-                height: 200,
-                border: "1px solid grey",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                overflow: "hidden",
-                position: "relative",
+      <Grid container item xs={12} component="form" onSubmit={handleSubmit}>
+        <Grid item xs={12} sx={{ height: 250 }}>
+          <Item sx={{ height: 250 }}>
+            <img
+              src="/images/cover.jpg"
+              alt="cover"
+              style={{
+                height: "100%",
+                width: "100%",
+                marginTop: -2,
+                position: "cover",
               }}
-              {...getRootProps()}
-            >
-              {imageUrl ? (
-                <>
-                  <img
-                    //src={`/photos/${imageUrl}`}
-                    src={imageUrl.preview || `http://10.51.100.66:5000/photos/${imageUrl}`}
-                    alt="Profile"
-                    loading="lazy"
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      maxHeight: "100%",
-                      maxWidth: "100%",
-                    }}
-                  />
-                  <IconButton
-                    aria-label="cancel"
-                    onClick={handleClear}
-                    style={{
-                      position: "absolute",
-                      top: 8,
-                      right: 8,
-                      backgroundColor: "white",
-                      boxShadow: "0px 0px 3px rgba(0,0,0,0.3)",
-                    }}
-                  >
-                    <CancelIcon />
-                  </IconButton>
-                </>
-              ) : (
-                <Box sx={{ display: "flex", flexDirection: "column" }}>
-                  <IconButton color="primary" onClick={handleAttempt}>
-                    <PhotoCamera />
-                  </IconButton>
-                  {(errors.imageUrl || attemptedUpload) && (
-                    <Typography color="error" variant="body2">
-                      {errors.imageUrl}
-                    </Typography>
-                  )}
-                </Box>
-              )}
-              <input {...getInputProps()} accept="image/*" />
-            </Box>
-            <Box>
-              <Typography
-                variant="h6"
-                sx={{ marginBottom: "-10px", marginTop: "15px" }}
+            />
+          </Item>
+        </Grid>
+        <Grid item xs={12}>
+          <Grid
+            item
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              position: "relative",
+              top: -100,
+              left: -250,
+            }}
+            {...getRootProps()}
+          >
+            {imageUrl ? (
+              <div style={{ position: "relative" }}>
+                <img
+                  //src={`/photos/${imageUrl}`}
+                  src={
+                    imageUrl.preview ||
+                    `http://localhost:5000/photos/${imageUrl}`
+                  }
+                  alt="Profile"
+                  loading="lazy"
+                  style={{
+                    height: 180,
+                    width: 180,
+                    borderRadius: "50%",
+                    border: "5px solid #fff",
+                  }}
+                />
+                <IconButton
+                  aria-label="cancel"
+                  onClick={handleClear}
+                  style={{
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    backgroundColor: "white",
+                    boxShadow: "0px 0px 3px rgba(0,0,0,0.3)",
+                  }}
+                >
+                  <CancelIcon />
+                </IconButton>
+              </div>
+            ) : (
+              <Box
+                sx={{
+                  width: 200,
+                  height: 200,
+                  border: "1px solid grey",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  overflow: "hidden",
+                  position: "relative",
+                  borderRadius: "50%",
+                }}
               >
-                Employee Details
-              </Typography>
+                <IconButton color="primary" onClick={handleAttempt}>
+                  <PhotoCamera />
+                </IconButton>
+                {(errors.imageUrl || attemptedUpload) && (
+                  <Typography color="error" variant="body2">
+                    {errors.imageUrl}
+                  </Typography>
+                )}
+              </Box>
+            )}
+            <input {...getInputProps()} accept="image/*" />
+          </Grid>
+          <Grid
+            sx={{
+              mr: 4,
+              mt: -10,
+              mb: 4,
+              display: "flex",
+              flexDirection: "row-reverse",
+            }}
+          >
+            <Stack spacing={2} direction="row">
+              <LoadingButton
+                //loading={loading}
+                color="error"
+                variant="contained"
+                type="submit"
+                disabled={!isValid || !isDisabled}
+                // onClick={handleClick}
+              >
+                Save Changes
+              </LoadingButton>
+              <Button
+                color="error"
+                variant="outlined"
+                onClick={() => navigate("/home/employees")}
+              >
+                Cancel
+              </Button>
+            </Stack>
+          </Grid>
+        </Grid>
+      </Grid>
+      <Box sx={{ ml: 5 }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="basic tabs example"
+        >
+          <Tab label="Personal Details" {...a11yProps(0)} />
+          <Tab label="Job Details" {...a11yProps(1)} />
+          <Tab label="Project Details" {...a11yProps(2)} />
+          <Tab label="Benefits" {...a11yProps(3)} />
+          <Tab label="Emergency Contact Information" {...a11yProps(4)} />
+          <Tab label="Educational Information" {...a11yProps(5)} />
+        </Tabs>
+        <TabPanel value={value} index={0}>
+          <Grid container spacing={2} xs={12}>
+            <Grid xs={6}>
               <TextField
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
@@ -609,7 +1195,7 @@ const EmployeeProfile = () => {
                   onKeyPress: handleKeyPress,
                 }}
                 label="Full Name"
-                variant="standard"
+                // variant="standard"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 onBlur={handleBlur}
@@ -623,7 +1209,7 @@ const EmployeeProfile = () => {
                 name="email"
                 type="email"
                 label="Email"
-                variant="standard"
+                // variant="standard"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 onBlur={handleBlur}
@@ -638,7 +1224,7 @@ const EmployeeProfile = () => {
                 name="password"
                 type={showPassword ? "text" : "password"}
                 label="Password"
-                variant="standard"
+                // variant="standard"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 onBlur={handleBlur}
@@ -669,7 +1255,7 @@ const EmployeeProfile = () => {
                 name="phone"
                 type="tel"
                 label="Phone Number"
-                variant="standard"
+                // variant="standard"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 onBlur={handleBlur}
@@ -683,7 +1269,7 @@ const EmployeeProfile = () => {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="address"
                 label="Address"
-                variant="standard"
+                // variant="standard"
                 multiline
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
@@ -699,7 +1285,7 @@ const EmployeeProfile = () => {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="cnic"
                 label="CNIC"
-                variant="standard"
+                // variant="standard"
                 value={cnic}
                 onChange={(e) => setCnic(e.target.value)}
                 onBlur={handleBlur}
@@ -708,10 +1294,12 @@ const EmployeeProfile = () => {
                 helperText={errors.cnic && isTouched.cnic && errors.cnic}
               />
               <br />
+            </Grid>
+            <Grid xs={6}>
               <TextField
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="dob"
-                variant="standard"
+                // variant="standard"
                 type="date"
                 value={dob}
                 onChange={(e) => setDob(e.target.value)}
@@ -737,9 +1325,25 @@ const EmployeeProfile = () => {
                     ? errors.maritalStatus
                     : "Please select marital status"
                 }
-                variant="standard"
+                // variant="standard"
               >
                 {maritalStatusOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="gender"
+                value={gender}
+                onChange={(e) => setGender(e.target.value)}
+                select
+                helperText="Please select gender"
+                // variant="standard"
+              >
+                {genders.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.value}
                   </MenuItem>
@@ -751,7 +1355,7 @@ const EmployeeProfile = () => {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="passport"
                 label="Passport (optional)"
-                variant="standard"
+                // variant="standard"
                 value={passport}
                 onChange={(e) => setPassport(e.target.value)}
                 onBlur={handleBlur}
@@ -768,10 +1372,10 @@ const EmployeeProfile = () => {
                 select
                 value={blood}
                 onChange={(e) => setBlood(e.target.value)}
-                // onBlur={handleBlur}
-                // error={!!errors.blood && isTouched.blood}
+                onBlur={handleBlur}
+                error={!!errors.blood && isTouched.blood}
                 helperText="Select blood group (optional)"
-                variant="standard"
+                // variant="standard"
               >
                 {bloodGroups.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -779,25 +1383,26 @@ const EmployeeProfile = () => {
                   </MenuItem>
                 ))}
               </TextField>
-            </Box>
+            </Grid>
           </Grid>
-          <Grid item xs={4}>
-            <Box>
-              <Typography variant="h6" sx={{ mb: 2 }}>
-                Job Details
-              </Typography>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <Grid container spacing={2} xs={12}>
+            <Grid xs={6}>
               <TextField
                 InputLabelProps={{ shrink: true }}
-                sx={{ width: "50%" }}
+                sx={{ marginTop: "20px", width: "50%" }}
                 name="employeeId"
                 label="Employee ID"
-                variant="standard"
+                // variant="standard"
                 value={employeeId}
                 onChange={(e) => setEmployeeId(e.target.value)}
                 onBlur={handleBlur}
                 error={!!errors.employeeId && isTouched.employeeId}
                 helperText={
                   errors.employeeId && isTouched.employeeId && errors.employeeId
+                    ? errors.employeeId
+                    : "Please set employee id"
                 }
               />
               <br />
@@ -814,7 +1419,7 @@ const EmployeeProfile = () => {
                     ? errors.department
                     : "Please select the department"
                 }
-                variant="standard"
+                // variant="standard"
               >
                 {departments.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -824,6 +1429,37 @@ const EmployeeProfile = () => {
               </TextField>
               <br />
               <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="shiftStartTime"
+                // variant="standard"
+                type="time"
+                value={shiftStartTime}
+                onChange={(e) => setShiftStartTime(e.target.value)}
+                onBlur={handleBlur}
+                helperText={
+                  errors.shiftStartTime && isTouched.shiftStartTime
+                    ? errors.shiftStartTime
+                    : "Please set shift start time"
+                }
+                error={!!errors.shiftStartTime && isTouched.shiftStartTime}
+              />
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="shiftEndTime"
+                // variant="standard"
+                type="time"
+                value={shiftEndTime}
+                onChange={(e) => setShiftEndTime(e.target.value)}
+                onBlur={handleBlur}
+                helperText={
+                  errors.shiftEndTime && isTouched.shiftEndTime
+                    ? errors.shiftEndTime
+                    : "Please set shift end time"
+                }
+              />
+              <br />
+              <TextField
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="title"
@@ -831,12 +1467,16 @@ const EmployeeProfile = () => {
                 InputProps={{
                   onKeyPress: handleKeyPress,
                 }}
-                variant="standard"
+                // variant="standard"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 onBlur={handleBlur}
                 error={!!errors.title && isTouched.title}
-                helperText={errors.title && isTouched.title && errors.title}
+                helperText={
+                  errors.title && isTouched.title && errors.title
+                    ? errors.title
+                    : "Please set title"
+                }
               />
               <br />
               <TextField
@@ -844,7 +1484,7 @@ const EmployeeProfile = () => {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="designation"
                 select
-                variant="standard"
+                // variant="standard"
                 value={designation}
                 onChange={(e) => setDesignation(e.target.value)}
                 onBlur={handleBlur}
@@ -863,20 +1503,94 @@ const EmployeeProfile = () => {
               </TextField>
               <br />
               <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="reporting office"
+                select
+                value={reportingOffice}
+                onChange={(e) => setReportingOffice(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.reportingOffice && isTouched.reportingOffice}
+                helperText={
+                  errors.reportingOffice && isTouched.reportingOffice
+                    ? errors.reportingOffice
+                    : "Please select reporting office"
+                }
+                // variant="standard"
+              >
+                {officeOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="reporting department"
+                select
+                value={reportingDepartment}
+                onChange={(e) => setReportingDepartment(e.target.value)}
+                onBlur={handleBlur}
+                error={
+                  !!errors.reportingDepartment && isTouched.reportingDepartment
+                }
+                helperText={
+                  errors.reportingDepartment && isTouched.reportingDepartment
+                    ? errors.reportingDepartment
+                    : "Please select reporting department"
+                }
+                // variant="standard"
+              >
+                {reportingDepartmentOpt.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <br />
+            <Grid xs={6}>
+              <TextField
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
-                name="supervisor"
-                label="Supervisor"
+                name="linemanager"
+                label="Line Manager"
                 InputProps={{
                   onKeyPress: handleKeyPress,
                 }}
-                variant="standard"
+                // variant="standard"
                 value={supervisor}
                 onChange={(e) => setSupervisor(e.target.value)}
                 onBlur={handleBlur}
                 error={!!errors.supervisor && isTouched.supervisor}
                 helperText={
                   errors.supervisor && isTouched.supervisor && errors.supervisor
+                    ? errors.supervisor
+                    : "Please enter Line Manager"
+                }
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="engagement manager"
+                label="Engagement Manager"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
+                // variant="standard"
+                value={engagementManager}
+                onChange={(e) => setEngagementManager(e.target.value)}
+                onBlur={handleBlur}
+                error={
+                  !!errors.engagementManager && isTouched.engagementManager
+                }
+                helperText={
+                  errors.engagementManager &&
+                  isTouched.engagementManager &&
+                  errors.engagementManager
+                    ? errors.supervisor
+                    : "Please set Engagement Manager"
                 }
               />
               <br />
@@ -884,7 +1598,7 @@ const EmployeeProfile = () => {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="date"
                 type="date"
-                variant="standard"
+                // variant="standard"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 onBlur={handleBlur}
@@ -893,6 +1607,22 @@ const EmployeeProfile = () => {
                   errors.date && isTouched.date
                     ? errors.date
                     : "Please select the date of joining"
+                }
+              />
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="permanent date"
+                type="date"
+                // variant="standard"
+                value={permanentDate}
+                onChange={(e) => setPermanentDate(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.permanentDate && isTouched.permanentDate}
+                helperText={
+                  errors.permanentDate && isTouched.permanentDate
+                    ? errors.permanentDate
+                    : "Please select date of permanent employment"
                 }
               />
               <br />
@@ -909,7 +1639,7 @@ const EmployeeProfile = () => {
                     ? errors.workType
                     : "Please select the work location"
                 }
-                variant="standard"
+                // variant="standard"
               >
                 {workTypes.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -931,7 +1661,7 @@ const EmployeeProfile = () => {
                     ? errors.role
                     : "Please select the user role"
                 }
-                variant="standard"
+                // variant="standard"
               >
                 {roles.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -953,7 +1683,7 @@ const EmployeeProfile = () => {
                     ? errors.employmentStatus
                     : "Please select employment status"
                 }
-                variant="standard"
+                // variant="standard"
               >
                 {employmentStatusOptions.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -968,7 +1698,7 @@ const EmployeeProfile = () => {
                 name="salary"
                 type="number"
                 label="Salary"
-                variant="standard"
+                // variant="standard"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">PKR</InputAdornment>
@@ -980,11 +1710,12 @@ const EmployeeProfile = () => {
                 error={!!errors.salary && isTouched.salary}
                 helperText={errors.salary && isTouched.salary && errors.salary}
               />
-            </Box>
+            </Grid>
           </Grid>
-          <Grid item xs={4}>
-            <Box>
-              <Typography variant="h6">Emergency Details</Typography>
+        </TabPanel>
+        <TabPanel value={value} index={4}>
+          <Grid container spacing={2} xs={12}>
+            <Grid xs={6}>
               <TextField
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
@@ -993,7 +1724,7 @@ const EmployeeProfile = () => {
                 InputProps={{
                   onKeyPress: handleKeyPress,
                 }}
-                variant="standard"
+                // variant="standard"
                 value={emergencyName}
                 onChange={(e) => setEmergencyName(e.target.value)}
                 onBlur={handleBlur}
@@ -1013,7 +1744,7 @@ const EmployeeProfile = () => {
                 InputProps={{
                   onKeyPress: handleKeyPress,
                 }}
-                variant="standard"
+                // variant="standard"
                 value={relation}
                 onChange={(e) => setRelation(e.target.value)}
                 onBlur={handleBlur}
@@ -1022,23 +1753,25 @@ const EmployeeProfile = () => {
                   errors.relation && isTouched.relation && errors.relation
                 }
               />
-              <br />
+            </Grid>
+            <br />
+            <Grid xs={6}>
               <TextField
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="emergencyAddress"
                 label="Address (optional)"
-                variant="standard"
+                // variant="standard"
                 multiline
                 value={emergencyAddress}
                 onChange={(e) => setEmergencyAddress(e.target.value)}
-                // onBlur={handleBlur}
-                // error={!!errors.emergencyAddress && isTouched.emergencyAddress}
-                // helperText={
-                //   errors.emergencyAddress &&
-                //   isTouched.emergencyAddress &&
-                //   errors.emergencyAddress
-                // }
+                onBlur={handleBlur}
+                error={!!errors.emergencyAddress && isTouched.emergencyAddress}
+                helperText={
+                  errors.emergencyAddress &&
+                  isTouched.emergencyAddress &&
+                  errors.emergencyAddress
+                }
               />
               <br />
               <TextField
@@ -1047,7 +1780,7 @@ const EmployeeProfile = () => {
                 name="contact"
                 type="tel"
                 label="Contact"
-                variant="standard"
+                // variant="standard"
                 value={contact}
                 onChange={(e) => setContact(e.target.value)}
                 onBlur={handleBlur}
@@ -1057,42 +1790,432 @@ const EmployeeProfile = () => {
                   errors.contact && isTouched.contact && errors.contact
                 }
               />
-              <Stack spacing={2} direction="row" marginTop={65}>
-                <Button
-                  color="error"
-                  variant="contained"
-                  type="submit"
-                  disabled={!isValid || !isDisabled}
-                  onClick={handleClick}
-                >
-                  Save Changes
-                </Button>
-                <Button
-                  color="error"
-                  variant="outlined"
-                  onClick={() => navigate("/home/employees")}
-                >
-                  Cancel
-                </Button>
-              </Stack>
-              {error && (
-                <Snackbar
-                  anchorOrigin={{ vertical: "top", horizontal: "right" }}
-                  open={openToast}
-                  onClose={handleToastClose}
-                  autoHideDuration={3000}
-                >
-                  <Alert severity="error" sx={{ width: "100%" }}>
-                    {error}
-                  </Alert>
-                </Snackbar>
-              )}
-            </Box>
+            </Grid>
           </Grid>
-        </Grid>
-      )}
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          <Grid container xs={12}>
+            <Grid item xs={6}>
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="fuel"
+                label="Fuel Allowance"
+                select
+                value={fuel}
+                onChange={(e) => setFuel(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.fuel && isTouched.fuel}
+                helperText={errors.fuel && isTouched.fuel && errors.fuel}
+              >
+                {customFuelOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="medicalAllowance"
+                label="Medical Allowance"
+                select
+                value={medicalAllowance}
+                onChange={(e) => setMedicalAllowance(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.medicalAllowance && isTouched.medicalAllowance}
+                helperText={
+                  errors.medicalAllowance &&
+                  isTouched.medicalAllowance &&
+                  errors.medicalAllowance
+                }
+              >
+                {benefitOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="providentFund"
+                label="Provident Fund"
+                select
+                value={providentFund}
+                onChange={(e) => setProvidentFund(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.providentFund && isTouched.providentFund}
+                helperText={
+                  errors.providentFund &&
+                  isTouched.providentFund &&
+                  errors.providentFund
+                }
+              >
+                {benefitOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="empOfQuarter"
+                label="Employee of Quarter"
+                select
+                value={empOfQuarter}
+                onChange={(e) => setEmpOfQuarter(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.empOfQuarter && isTouched.empOfQuarter}
+                helperText={
+                  errors.empOfQuarter &&
+                  isTouched.empOfQuarter &&
+                  errors.empOfQuarter
+                }
+              >
+                {benefitOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="paidCertifications"
+                label="Paid Certifications"
+                select
+                value={paidCertifications}
+                onChange={(e) => setPaidCertifications(e.target.value)}
+                onBlur={handleBlur}
+                error={
+                  !!errors.paidCertifications && isTouched.paidCertifications
+                }
+                helperText={
+                  errors.paidCertifications &&
+                  isTouched.paidCertifications &&
+                  errors.paidCertifications
+                }
+              >
+                {benefitOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="annualBonus"
+                label="Annual Bonus"
+                select
+                value={annualBonus}
+                onChange={(e) => setAnnualBonus(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.annualBonus && isTouched.annualBonus}
+                helperText={
+                  errors.annualBonus &&
+                  isTouched.annualBonus &&
+                  errors.annualBonus
+                }
+              >
+                {benefitOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="paidTimeOff"
+                label="Paid Time Off"
+                select
+                value={paidTimeOff}
+                onChange={(e) => setPaidTimeOff(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.paidTimeOff && isTouched.paidTimeOff}
+                helperText={
+                  errors.paidTimeOff &&
+                  isTouched.paidTimeOff &&
+                  errors.paidTimeOff
+                }
+              >
+                {benefitOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+          </Grid>
+        </TabPanel>
+        <TabPanel value={value} index={5}>
+          <Grid container xs={12}>
+            <Grid xs={6}>
+              <TextField
+                id="degree"
+                label="Degree"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
+                // variant="standard"
+                value={degree}
+                onChange={(e) => setDegree(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.degree && isTouched.degree}
+                helperText={
+                  errors.degree && isTouched.degree && errors.degree
+                    ? errors.degree
+                    : "Please set degree"
+                }
+              />
+              <br />
+              <TextField
+                sx={{ mt: 2 }}
+                id="institute"
+                label="Institute"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
+                // variant="standard"
+                value={institute}
+                onChange={(e) => setInstitute(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.institute && isTouched.institute}
+                helperText={
+                  errors.institute && isTouched.institute && errors.institute
+                    ? errors.institute
+                    : "Please set institute"
+                }
+              />
+            </Grid>
+            <Grid xs={6}>
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="degreeStartDate"
+                label="Start date"
+                type="date"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
+                value={degreeStartDate}
+                onChange={(e) => setDegreeStartDate(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.degreeStartDate && isTouched.degreeStartDate}
+                helperText={
+                  errors.degreeStartDate &&
+                  isTouched.degreeStartDate &&
+                  errors.degreeStartDate
+                }
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="degreeEndDate"
+                label="End date (or expected)"
+                type="date"
+                value={degreeEndDate}
+                onChange={(e) => setDegreeEndDate(e.target.value)}
+                onBlur={handleBlur}
+                error={!!errors.degreeEndDate && isTouched.degreeEndDate}
+                helperText={
+                  errors.degreeEndDate &&
+                  isTouched.degreeEndDate &&
+                  errors.degreeEndDate
+                }
+              />
+            </Grid>
+          </Grid>
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          <Grid container spacing={1} xs={12}>
+            <Grid xs={6}>
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="client"
+                select
+                error={!!errors.client && isTouched.client && errors.client}
+                value={client}
+                onChange={(e) => setClient(e.target.value)}
+                onBlur={handleBlur}
+                helperText={
+                  errors.client && isTouched.client
+                    ? errors.client
+                    : "Please select client"
+                }
+                // variant="standard"
+              >
+                {customClientOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="projectType"
+                label="Project Type"
+                // variant="standard"
+                value={projectType}
+                onChange={(e) => setProjectType(e.target.value)}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.projectType && isTouched.projectType}
+                helperText={
+                  errors.projectType &&
+                  isTouched.projectType &&
+                  errors.projectType
+                    ? errors.projectType
+                    : "Please set project type"
+                }
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="projectRole"
+                label="Project Role"
+                // variant="standard"
+                value={projectRole}
+                onChange={(e) => setProjectName(e.target.value)}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.projectRole && isTouched.projectRole}
+                helperText={
+                  errors.projectRole &&
+                  isTouched.projectRole &&
+                  errors.projectRole
+                    ? errors.projectRole
+                    : "Please set project role"
+                }
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="region"
+                label="Region"
+                // variant="standard"
+                value={region}
+                onChange={(e) => setRegion(e.target.value)}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.region && isTouched.region}
+                helperText={
+                  errors.region && isTouched.region && errors.region
+                    ? errors.region
+                    : "Please set region"
+                }
+              />
+
+              <br />
+            </Grid>
+            <Grid xs={6}>
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="projectName"
+                select
+                error={!!errors.project && isTouched.project && errors.project}
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                onBlur={handleBlur}
+                helperText={
+                  errors.projectName && isTouched.projectName
+                    ? errors.projectName
+                    : "Please select project"
+                }
+                // variant="standard"
+              >
+                {customProjectOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="projectStartDate"
+                label="Starting Date"
+                type="date"
+                // variant="standard"
+                value={projectStartDate}
+                onChange={(e) => setProjectStartDate(e.target.value)}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.projectStartDate && isTouched.projectStartDate}
+                helperText={
+                  errors.projectStartDate &&
+                  isTouched.projectStartDate &&
+                  errors.projectStartDate
+                    ? errors.startDate
+                    : "Please set project start date"
+                }
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="billable hours"
+                label="Billable Hours"
+                select
+                // variant="standard"
+                value={billableHours}
+                onChange={(e) => setBillableHours(e.target.value)}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.billableHours && isTouched.billableHours}
+                helperText={
+                  errors.billableHours &&
+                  isTouched.billableHours &&
+                  errors.billableHours
+                }
+              >
+                {billableHourOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="projectEndDate"
+                label="Ending Date"
+                type="date"
+                // variant="standard"
+                value={projectEndDate}
+                onChange={(e) => setProjectEndDate(e.target.value)}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.projectEndDate && isTouched.projectEndDate}
+                helperText={
+                  errors.projectEndDate &&
+                  isTouched.projectEndDate &&
+                  errors.projectEndDate
+                }
+              />
+              <br />
+            </Grid>
+          </Grid>
+        </TabPanel>
+      </Box>
     </>
   );
-};
-
-export default EmployeeProfile;
+}

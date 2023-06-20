@@ -1,6 +1,6 @@
 import React from "react";
 import Grid from "@mui/material/Grid";
-import AttendanceList from "./../components/AttendanceList";
+import AttendanceList from "../components/AttendanceList";
 
 const AttendanceScreen = () => {
   return (

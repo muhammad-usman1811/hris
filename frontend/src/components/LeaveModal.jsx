@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   Button,
   Modal,
@@ -15,6 +15,17 @@ import MenuItem from "@mui/material/MenuItem";
 import { requestLeave } from "../actions/leaveActions";
 
 const LeaveModal = ({ open, onClose, availableLeaves }) => {
+  const userDetails = useSelector((state) => state.userDetails);
+  const { user } = userDetails;
+
+  let paternityOrMaternity = "";
+  if (user?.gender === "Male") {
+    paternityOrMaternity = "Paternity";
+  }
+  if (user?.gender === "Female") {
+    paternityOrMaternity = "Maternity";
+  }
+
   const leaveTypes = [
     {
       value: "Earned Leave",
@@ -26,10 +37,7 @@ const LeaveModal = ({ open, onClose, availableLeaves }) => {
       value: "Sick Leave",
     },
     {
-      value: "Maternity Leave",
-    },
-    {
-      value: "Paternity Leave",
+      value: paternityOrMaternity,
     },
     {
       value: "Leave Without Pay",

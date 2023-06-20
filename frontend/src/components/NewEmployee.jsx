@@ -1,5 +1,10 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { styled } from "@mui/material/styles";
+import PropTypes from "prop-types";
+import Paper from "@mui/material/Paper";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import Grid from "@mui/material/Grid";
@@ -12,8 +17,8 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
-import Alert from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
+// import Alert from "@mui/material/Alert";
+// import Snackbar from "@mui/material/Snackbar";
 import CancelIcon from "@mui/icons-material/Cancel";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
@@ -24,13 +29,53 @@ import PhotoCamera from "@mui/icons-material/PhotoCamera";
 // import Input from "@mui/material/Input";
 import { addUser } from "../actions/userActions";
 
+const Item = styled(Paper)(({ theme }) => ({
+  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
+  ...theme.typography.body2,
+  padding: theme.spacing(1),
+  textAlign: "center",
+  color: theme.palette.text.secondary,
+}));
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
+
 const NewEmployee = () => {
-  let departments = [
+  const departments = [
     {
-      value: "App Development",
+      value: "Web Development",
     },
     {
-      value: "Data",
+      value: "Data and Analytics",
     },
     {
       value: "HR",
@@ -38,17 +83,23 @@ const NewEmployee = () => {
     {
       value: "Project Management",
     },
+    {
+      value: "Admin",
+    },
+    {
+      value: "Pre Sales",
+    },
+    {
+      value: "Devops and Infra",
+    },
   ];
 
   const designations = [
     {
-      value: "CEO",
+      value: "Intern",
     },
     {
-      value: "Director",
-    },
-    {
-      value: "Senior Consultant",
+      value: "Associate Consultant ",
     },
     {
       value: "Junior Consultant",
@@ -57,13 +108,28 @@ const NewEmployee = () => {
       value: "Consultant",
     },
     {
-      value: "Associate Consultant",
+      value: "Senior Consultant",
+    },
+    {
+      value: "AVP",
+    },
+    {
+      value: "VP",
+    },
+    {
+      value: "SVP",
+    },
+    {
+      value: "CEO",
     },
   ];
 
   const roles = [
     {
       value: "Admin",
+    },
+    {
+      value: "Engagement Manager",
     },
     {
       value: "Supervisor",
@@ -126,7 +192,7 @@ const NewEmployee = () => {
       value: "Permanent",
     },
   ];
-  const maritalStatus = [
+  const maritalStatusOptions = [
     {
       value: "Single",
     },
@@ -134,6 +200,114 @@ const NewEmployee = () => {
       value: "Married",
     },
   ];
+
+  const genders = [
+    {
+      value: "Male",
+    },
+    {
+      value: "Female",
+    },
+  ];
+
+  const clients = [
+    {
+      value: "AP - SAGE",
+    },
+    {
+      value: "ATOS",
+    },
+    {
+      value: "Digifloat Internal",
+    },
+    {
+      value: "EXADIVE",
+    },
+    {
+      value: "HSO",
+    },
+    {
+      value: "KEYRUS BELGIUM",
+    },
+    {
+      value: "KEYRUS SINGAPORE",
+    },
+    {
+      value: "KEYRUS UAE",
+    },
+  ];
+
+  const reportingDepartmentOpt = [
+    {
+      value: "HR",
+    },
+    {
+      value: "IT",
+    },
+    {
+      value: "Finance",
+    },
+    {
+      value: "Admin & Procurement",
+    },
+    {
+      value: "Professional Services",
+    },
+  ];
+
+  const officeOptions = [
+    {
+      value: "Lahore",
+    },
+    {
+      value: "Karachi",
+    },
+    {
+      value: "Islamabad",
+    },
+  ];
+
+  const billableHourOptions = [
+    {
+      value: "N/A",
+    },
+    {
+      value: "1",
+    },
+    {
+      value: "2",
+    },
+    {
+      value: "3",
+    },
+    {
+      value: "4",
+    },
+    {
+      value: "5",
+    },
+    {
+      value: "6",
+    },
+    {
+      value: "7",
+    },
+    {
+      value: "8",
+    },
+  ];
+
+  const fuelOptions = [
+    { value: "N/A" },
+    { value: "Assistant Consultant - 30L" },
+    { value: "Junior Consultant - 50L" },
+    { value: "Consultant - 70L" },
+    { value: "Senior Consultant - 100L" },
+    { value: "Managing Director - 150" },
+    { value: "Director - 175L" },
+  ];
+
+  const benefitOptions = [{ value: "Eligible" }, { value: "Not Eligible" }];
 
   //State to store form field values
   const [formData, setFormData] = useState({
@@ -146,11 +320,34 @@ const NewEmployee = () => {
     passport: "",
     dob: "",
     maritalStatus: "",
+    gender: "",
     cnic: "",
     department: "",
-    customOption: "",
+    shiftStartTime: "",
+    shiftEndTime: "",
+    customDepartmentOption: "",
+    customDesignationOption: "",
+    customClientOption: "",
+    customProjectOption: "",
+    customFuelOption: "",
     employeeId: "",
     designation: "",
+    engagementManager: "",
+    permanentDate: "",
+    reportingDepartment: "",
+    reportingOffice: "",
+    client: "",
+    projectName: "",
+    projectType: "",
+    projectRole: "",
+    region: "",
+    projectStartDate: "",
+    billableHours: "",
+    projectEndDate: "",
+    degree: "",
+    institute: "",
+    degreeStartDate: "",
+    degreeEndDate: "",
     title: "",
     supervisor: "",
     date: "",
@@ -163,16 +360,23 @@ const NewEmployee = () => {
     emergencyAddress: "",
     contact: "",
     blood: "",
+    fuel: "",
+    medicalAllowance: "",
+    providentFund: "",
+    empOfQuarter: "",
+    paidCertifications: "",
+    annualBonus: "",
+    paidTimeOff: "",
   });
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const userAdd = useSelector((state) => state.userAdd);
-  const { loading, message, error } = userAdd;
+  // const userAdd = useSelector((state) => state.userAdd);
+  // const { loading, message, error } = userAdd;
 
   const [showPassword, setShowPassword] = useState(false);
-  const [openToast, setOpenToast] = useState(true);
+  // const [openToast, setOpenToast] = useState(true);
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
   const [attemptedUpload, setAttemptedUpload] = useState(false);
@@ -185,10 +389,29 @@ const NewEmployee = () => {
     passport: false,
     dob: false,
     maritalStatus: false,
+    gender: false,
     cnic: false,
     department: false,
+    shiftStartTime: false,
+    shiftEndTime: false,
     employeeId: false,
     designation: false,
+    engagementManager: false,
+    permanentDate: false,
+    reportingDepartment: false,
+    reportingOffice: false,
+    client: false,
+    projectName: false,
+    projectType: false,
+    projectRole: false,
+    region: false,
+    projectStartDate: false,
+    billableHours: false,
+    projectEndDate: false,
+    degree: false,
+    institute: false,
+    degreeStartDate: false,
+    degreeEndDate: false,
     title: false,
     supervisor: false,
     date: false,
@@ -201,6 +424,13 @@ const NewEmployee = () => {
     emergencyAddress: false,
     contact: false,
     blood: false,
+    fuel: false,
+    medicalAllowance: false,
+    providentFund: false,
+    empOfQuarter: false,
+    paidCertifications: false,
+    annualBonus: false,
+    paidTimeOff: false,
   });
 
   const [hasBlurred, setHasBlurred] = useState({
@@ -211,6 +441,12 @@ const NewEmployee = () => {
     passport: false,
     contact: false,
   });
+
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const handleBlur = (e) => {
     const { name } = e.target;
@@ -231,45 +467,221 @@ const NewEmployee = () => {
       [name]: false,
     }));
   };
-  const [options, setOptions] = useState(departments);
-  // const [selectedOption, setSelectedOption] = useState("");
-  // const [customOption, setCustomOption] = useState("");
 
-  // const handleOptionChange = (event) => {
-  //   const value = event.target.value;
-  //   if (value === "addCustom") {
-  //     setSelectedOption("addCustom");
-  //   } else {
-  //     setSelectedOption(value);
-  //   }
-  // };
-
-  // const handleCustomOptionChange = (event) => {
-  //   setCustomOption(event.target.value);
-  // };
-
-  const handleAddCustomOption = () => {
-    if (formData.customOption) {
-      const newOption = { value: formData.customOption };
-      setOptions([...options, newOption]);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        department: formData.customOption,
-        customOption: "",
-      }));
+  //Hanlde dynamic dependency of projects based on client
+  const getProjectOptions = (client) => {
+    if (client === "Digifloat Internal") {
+      return [
+        "Yorktel",
+        "Training - Interns",
+        "Trainee",
+        "Sourcing Solutions",
+        "RMI",
+        "Proposal",
+        "Outsourcing",
+        "Management",
+        "Leave",
+        "IT and Networks",
+        "HR",
+        "General",
+        "DMX",
+        "Business Development",
+        "Boltwire",
+        "Blogs",
+      ];
+    } else if (client === "AP - SAGE") {
+      return ["AP - Sage"];
+    } else if (client === "ATOS") {
+      return ["NBB"];
+    } else if (client === "EXADIVE") {
+      return ["Ahold delhaize"];
+    } else if (client === "HSO") {
+      return [
+        "Warburg",
+        "Zenus",
+        "Mavis",
+        "Yorktel",
+        "EFI",
+        "Godiva",
+        "Sonesta",
+      ];
+    } else if (client === "KEYRUS BELGIUM") {
+      return ["Aliaxis", "Atlas Copco", "Borealis"];
+    } else if (client === "KEYRUS SINGAPORE") {
+      return ["BD", "JnJ"];
+    } else if (client === "KEYRUS UAE") {
+      return ["MAFP"];
+    } else {
+      return [];
     }
   };
 
-  // const handleDeleteOption = (optionValue) => {
-  //   const updatedOptions = options.filter(
-  //     (option) => option.value !== optionValue
-  //   );
-  //   setOptions(updatedOptions);
-  // };
+  //State for handling fuel options
+  const customFuelFromLocalStorage = JSON.parse(
+    localStorage.getItem("customFuelOptions")
+  );
+
+  const [customFuelOptions, setCustomFuelOptions] = useState([
+    ...fuelOptions,
+    ...(customFuelFromLocalStorage || []),
+  ]);
+
+  //State for handling project options and its custom options
+  const [customProjectOptions, setCustomProjectOptions] = useState(
+    JSON.parse(localStorage.getItem("customProjectOptions")) || []
+  );
+
+  //Dynamic project options
+  const projectOptions = [
+    ...getProjectOptions(formData.client),
+    ...customProjectOptions
+      .filter((option) => option.client === formData.client)
+      .map((option) => option.value),
+  ];
+
+  //State for handling client options and its custom options
+  const customClientFromLocalStorage = JSON.parse(
+    localStorage.getItem("customClientOptions")
+  );
+
+  const [clientOptions, setClientOptions] = useState([
+    ...clients,
+    ...(customClientFromLocalStorage || []),
+  ]);
+
+  //State for handling designation options and its custom options
+  const customDesignationsFromLocalStorage = JSON.parse(
+    localStorage.getItem("customDesignationOptions")
+  );
+  const [designationOptions, setDesignationOptions] = useState([
+    ...designations,
+    ...(customDesignationsFromLocalStorage || []),
+  ]);
+
+  //State for handling department options and its custom options
+  const customDepartmentsFromLocalStorage = JSON.parse(
+    localStorage.getItem("customDepartmentOptions")
+  );
+  const [departmentOptions, setDepartmentOptions] = useState([
+    ...departments,
+    ...(customDepartmentsFromLocalStorage || []),
+  ]);
+
+  const handleAddFuelOption = () => {
+    if (formData.customFuelOption) {
+      const newOption = { value: formData.customFuelOption };
+      setCustomFuelOptions([...customFuelOptions, newOption]);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        fuel: formData.customFuelOption,
+        customFuelOption: "",
+      }));
+
+      const existingOptions =
+        JSON.parse(localStorage.getItem("customFuelOptions")) || [];
+      const updatedOptions = [...existingOptions, newOption];
+      localStorage.setItem("customFuelOptions", JSON.stringify(updatedOptions));
+    }
+  };
+
+  const handleAddProjectOption = () => {
+    if (formData.client && formData.customProjectOption) {
+      const newOption = {
+        client: formData.client,
+        value: formData.customProjectOption,
+      };
+      setCustomProjectOptions([...customProjectOptions, newOption]);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        projectName: formData.customProjectOption,
+        customProjectOption: "",
+      }));
+
+      const existingOptions =
+        JSON.parse(localStorage.getItem("customProjectOptions")) || [];
+
+      const updatedOptions = [...existingOptions, newOption];
+      localStorage.setItem(
+        "customProjectOptions",
+        JSON.stringify(updatedOptions)
+      );
+    }
+  };
+
+  const handleAddClientOption = () => {
+    if (formData.customClientOption) {
+      const newOption = { value: formData.customClientOption };
+      setClientOptions([...clientOptions, newOption]);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        client: formData.customClientOption,
+        customClientOption: "",
+      }));
+
+      const existingOptions =
+        JSON.parse(localStorage.getItem("customClientOptions")) || [];
+      const updatedOptions = [...existingOptions, newOption];
+      localStorage.setItem(
+        "customClientOptions",
+        JSON.stringify(updatedOptions)
+      );
+    }
+  };
+
+  const handleAddDesignationOption = () => {
+    if (formData.customDesignationOption) {
+      const newOption = { value: formData.customDesignationOption };
+      setDesignationOptions([...departmentOptions, newOption]);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        designation: formData.customDesignationOption,
+        customDesignationOption: "",
+      }));
+
+      //Retrieve existing custom options from local storage
+      const existingOptions =
+        JSON.parse(localStorage.getItem("customDesignationOptions")) || [];
+
+      //Add new option to existing options
+      const updatedOptions = [...existingOptions, newOption];
+
+      //Store the updated options array in local storage
+      localStorage.setItem(
+        "customDesignationOptions",
+        JSON.stringify(updatedOptions)
+      );
+    }
+  };
+
+  const handleAddDepartmentOption = () => {
+    if (formData.customDepartmentOption) {
+      const newOption = { value: formData.customDepartmentOption };
+      setDepartmentOptions([...departmentOptions, newOption]);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        department: formData.customDepartmentOption,
+        customDepartmentOption: "",
+      }));
+
+      //Retrieve existing custom options from local storage
+      const existingOptions =
+        JSON.parse(localStorage.getItem("customDepartmentOptions")) || [];
+
+      //Add new option to existing options
+      const updatedOptions = [...existingOptions, newOption];
+
+      //Store the updated options array in local storage
+      localStorage.setItem(
+        "customDepartmentOptions",
+        JSON.stringify(updatedOptions)
+      );
+    }
+  };
 
   //Function to handle changes to form fields
   const handleFieldChange = (event) => {
     const { name, value } = event.target;
+
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
     setErrors((prevErrors) => ({ ...prevErrors, [name]: null }));
   };
@@ -279,6 +691,7 @@ const NewEmployee = () => {
     if (isValid) {
       dispatch(addUser(formData));
       setErrors({});
+      navigate("/home/employees");
     } else {
       return;
     }
@@ -310,13 +723,13 @@ const NewEmployee = () => {
     }));
   };
 
-  const handleToastClose = () => {
-    setOpenToast(false);
-  };
+  // const handleToastClose = () => {
+  //   setOpenToast(false);
+  // };
 
-  const handleClick = () => {
-    setOpenToast(true);
-  };
+  // const handleClick = () => {
+  //   setOpenToast(true);
+  // };
 
   const handleClickShowPassword = () => {
     setShowPassword((show) => !show);
@@ -427,6 +840,11 @@ const NewEmployee = () => {
       isValid = false;
     }
 
+    if (!formData.gender) {
+      errors.gender = "Please select gender";
+      isValid = false;
+    }
+
     if (!formData.cnic || !formData.cnic.trim()) {
       errors.cnic = "Please enter your CNIC";
       isValid = false;
@@ -440,6 +858,16 @@ const NewEmployee = () => {
 
     if (!formData.department) {
       errors.department = "Please enter department";
+      isValid = false;
+    }
+
+    if (!formData.shiftStartTime) {
+      errors.shiftStartTime = "Please set shift start time";
+      isValid = false;
+    }
+
+    if (!formData.shiftEndTime) {
+      errors.shiftEndTime = "Please set shift end time";
       isValid = false;
     }
 
@@ -508,592 +936,1344 @@ const NewEmployee = () => {
       isValid = false;
     }
 
-    // if (!formData.emergencyAddress || !formData.emergencyAddress.trim()) {
-    //   errors.emergencyAddress = "Please enter emergency contact's address";
-    //   isValid = false;
-    // }
+    if (!formData.engagementManager) {
+      errors.engagementManager = "Please enter engagement manager";
+      isValid = false;
+    }
 
-    // if (!formData.blood) {
-    //   errors.blood = "Please enter blood group";
-    //   isValid = false;
-    // }
+    if (!formData.reportingDepartment) {
+      errors.reportingDepartment = "Please select reporting department";
+      isValid = false;
+    }
+
+    if (!formData.reportingOffice) {
+      errors.reportingOffice = "Please select reporting office";
+      isValid = false;
+    }
+
+    if (!formData.permanentDate) {
+      errors.permanentDate = "Please set date of permanent employment";
+      isValid = false;
+    }
+
+    if (!formData.client) {
+      errors.client = "Please select client";
+      isValid = false;
+    }
+
+    if (!formData.projectName) {
+      errors.projectName = "Please select project";
+      isValid = false;
+    }
+
+    if (!formData.projectRole) {
+      errors.projectRole = "Please select project role";
+      isValid = false;
+    }
+
+    if (!formData.projectType) {
+      errors.projectType = "Please select project type";
+      isValid = false;
+    }
+
+    if (!formData.billableHours) {
+      errors.billableHours = "Please select billable hours";
+      isValid = false;
+    }
+
+    if (!formData.region) {
+      errors.region = "Please set region";
+      isValid = false;
+    }
+
+    if (!formData.projectStartDate) {
+      errors.projectStartDate = "Please select project start date";
+      isValid = false;
+    }
+
+    if (!formData.projectEndDate) {
+      errors.projectEndDate = "Please select project end date";
+      isValid = false;
+    }
+
+    if (!formData.degree.trim()) {
+      errors.degree = "Please enter degree";
+      isValid = false;
+    }
+
+    if (!formData.degreeStartDate) {
+      errors.degreeStartDate = "Please select degree start date";
+      isValid = false;
+    }
+
+    if (!formData.degreeEndDate) {
+      errors.degreeEndDate = "Please select degree end date";
+      isValid = false;
+    }
+
+    if (!formData.institute.trim()) {
+      errors.institute = "Please enter institute";
+      isValid = false;
+    }
+
+    if (!formData.fuel) {
+      errors.fuel = "Please select fuel";
+      isValid = false;
+    }
+
+    if (!formData.medicalAllowance) {
+      errors.medicalAllowance = "Please select any option";
+      isValid = false;
+    }
+
+    if (!formData.providentFund) {
+      errors.providentFund = "Please select any option";
+      isValid = false;
+    }
+
+    if (!formData.paidCertifications) {
+      errors.paidCertifications = "Please select any option";
+      isValid = false;
+    }
+
+    if (!formData.empOfQuarter) {
+      errors.empOfQuarter = "Please select any option";
+      isValid = false;
+    }
+
+    if (!formData.annualBonus) {
+      errors.annualBonus = "Please select any option";
+      isValid = false;
+    }
+
+    if (!formData.paidTimeOff) {
+      errors.paidTimeOff = "Please select any option";
+      isValid = false;
+    }
+
     setIsValid(isValid);
     setErrors(errors);
   }, [formData, hasBlurred]);
 
   return (
-    <Grid
-      component="form"
-      onSubmit={handleSubmit}
-      item
-      container
-      columnSpacing={2}
-      sx={{
-        width: "100%",
-        height: "100%",
-        boxSizing: "border-box",
-        marginLeft: "256px",
-        backgroundColor: "#eaeff1",
-        padding: "32px",
-        minHeight: "calc(100vh - 67px)",
-        position: "relative",
-      }}
-    >
-      <Grid item xs={4}>
-        <Box
-          sx={{
-            width: 200,
-            height: 200,
-            border: "1px solid grey",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            overflow: "hidden",
-            position: "relative",
-          }}
-          {...getRootProps()}
-        >
-          {formData.file ? (
-            <>
-              <img
-                src={formData.file.preview}
-                alt="Profile"
-                loading="lazy"
-                style={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  transform: "translate(-50%, -50%)",
-                  maxHeight: "100%",
-                  maxWidth: "100%",
-                }}
-              />
-              <IconButton
-                aria-label="cancel"
-                onClick={handleClear}
-                style={{
-                  position: "absolute",
-                  top: 8,
-                  right: 8,
-                  backgroundColor: "white",
-                  boxShadow: "0px 0px 3px rgba(0,0,0,0.3)",
+    //profile picture and cover picture
+    <>
+      <Grid container item xs={12} component="form" onSubmit={handleSubmit}>
+        <Grid item xs={12} sx={{ height: 250 }}>
+          <Item sx={{ height: 250 }}>
+            <img
+              src="/images/cover.jpg"
+              alt="cover"
+              style={{
+                height: "100%",
+                width: "100%",
+                marginTop: -2,
+                position: "cover",
+              }}
+            />
+          </Item>
+        </Grid>
+        <Grid item xs={12}>
+          <Grid
+            item
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              position: "relative",
+              top: -100,
+              left: -250,
+            }}
+            {...getRootProps()}
+          >
+            {formData.file ? (
+              <div style={{ position: "relative" }}>
+                <img
+                  src={formData.file.preview}
+                  alt="Profile"
+                  loading="lazy"
+                  style={{
+                    height: 180,
+                    width: 180,
+                    borderRadius: "50%",
+                    border: "5px solid #fff",
+                  }}
+                />
+                <IconButton
+                  aria-label="cancel"
+                  onClick={handleClear}
+                  style={{
+                    position: "absolute",
+                    top: 2,
+                    right: 2,
+                    backgroundColor: "white",
+                    boxShadow: "0px 0px 3px rgba(0,0,0,0.3)",
+                  }}
+                >
+                  <CancelIcon />
+                </IconButton>
+              </div>
+            ) : (
+              <Box
+                sx={{
+                  width: 180,
+                  height: 180,
+                  border: "1px solid grey",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  overflow: "hidden",
+                  position: "relative",
+                  borderRadius: "50%",
                 }}
               >
-                <CancelIcon />
-              </IconButton>
-            </>
-          ) : (
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
-              <IconButton color="primary" onClick={handleAttempt}>
-                <PhotoCamera />
-              </IconButton>
-              {!!errors.file && attemptedUpload && (
-                <Typography color="error" variant="body2">
-                  {errors.file}
-                </Typography>
-              )}
-            </Box>
-          )}
-          <input {...getInputProps()} accept="image/*" />
-        </Box>
-        <Box>
-          <Typography
-            variant="h6"
-            sx={{ marginBottom: "-10px", marginTop: "15px" }}
-          >
-            Employee Details
-          </Typography>
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="name"
-            type="text"
-            InputProps={{
-              onKeyPress: handleKeyPress,
+                <IconButton color="primary" onClick={handleAttempt}>
+                  <PhotoCamera />
+                </IconButton>
+                {!!errors.file && attemptedUpload && (
+                  <Typography color="error" variant="body2">
+                    {errors.file}
+                  </Typography>
+                )}
+              </Box>
+            )}
+            <input {...getInputProps()} accept="image/*" />
+          </Grid>
+          <Grid
+            sx={{
+              mr: 4,
+              mt: -10,
+              mb: 4,
+              display: "flex",
+              flexDirection: "row-reverse",
             }}
-            label="Full Name"
-            variant="standard"
-            value={formData.name}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.name && isTouched.name}
-            helperText={errors.name && isTouched.name && errors.name}
-          />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="email"
-            type="email"
-            label="Email"
-            variant="standard"
-            value={formData.email}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            onFocus={handleFocus}
-            error={!!errors.email && isTouched.email}
-            helperText={errors.email && isTouched.email && errors.email}
-          />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="password"
-            type={showPassword ? "text" : "password"}
-            label="Password"
-            variant="standard"
-            value={formData.password}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            onFocus={handleFocus}
-            error={!!errors.password && isTouched.password}
-            helperText={
-              errors.password && isTouched.password && errors.password
-            }
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="phone"
-            type="tel"
-            label="Phone Number"
-            variant="standard"
-            value={formData.phone}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            onFocus={handleFocus}
-            error={!!errors.phone && isTouched.phone}
-            helperText={errors.phone && isTouched.phone && errors.phone}
-          />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="address"
-            label="Address"
-            variant="standard"
-            multiline
-            value={formData.address}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.address && isTouched.address}
-            helperText={errors.address && isTouched.address && errors.address}
-          />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="cnic"
-            label="CNIC"
-            variant="standard"
-            value={formData.cnic}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            onFocus={handleFocus}
-            error={!!errors.cnic && isTouched.cnic}
-            helperText={errors.cnic && isTouched.cnic && errors.cnic}
-          />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="dob"
-            variant="standard"
-            type="date"
-            value={formData.dob}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.dob && isTouched.dob}
-            helperText={
-              errors.dob && isTouched.dob
-                ? errors.dob
-                : "Please select date of birth"
-            }
-          />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="maritalStatus"
-            select
-            value={formData.maritalStatus}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.maritalStatus && isTouched.maritalStatus}
-            helperText={
-              errors.maritalStatus && isTouched.maritalStatus
-                ? errors.maritalStatus
-                : "Please select marital status"
-            }
-            variant="standard"
           >
-            {maritalStatus.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.value}
-              </MenuItem>
-            ))}
-          </TextField>
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="passport"
-            label="Passport (optional)"
-            variant="standard"
-            value={formData.passport}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            onFocus={handleFocus}
-            error={errors.passport}
-            helperText={errors.passport && errors.passport}
-          />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="blood"
-            select
-            value={formData.blood}
-            onChange={handleFieldChange}
-            // onBlur={handleBlur}
-            // error={!!errors.blood && isTouched.blood}
-            helperText="Select blood group (optional)"
-            variant="standard"
-          >
-            {bloodGroups.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.value}
-              </MenuItem>
-            ))}
-          </TextField>
-        </Box>
+            <Stack spacing={2} direction="row">
+              <LoadingButton
+                //loading={loading}
+                color="error"
+                variant="contained"
+                type="submit"
+                disabled={!isValid}
+                // onClick={handleClick}
+              >
+                Save Changes
+              </LoadingButton>
+              <Button
+                color="error"
+                variant="outlined"
+                onClick={() => navigate("/home/employees")}
+              >
+                Cancel
+              </Button>
+            </Stack>
+          </Grid>
+        </Grid>
       </Grid>
-      <Grid item xs={4}>
-        <Box>
-          <Typography variant="h6" sx={{ mb: 2 }}>
-            Job Details
-          </Typography>
-          <TextField
-            sx={{ width: "50%" }}
-            name="employeeId"
-            label="Employee ID"
-            variant="standard"
-            value={formData.employeeId}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.employeeId && isTouched.employeeId}
-            helperText={
-              errors.employeeId && isTouched.employeeId && errors.employeeId
-            }
-          />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="department"
-            select
-            value={formData.department}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.department && isTouched.department}
-            helperText={
-              errors.department && isTouched.department
-                ? errors.department
-                : "Please select the department"
-            }
-            variant="standard"
-          >
-            {options.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.value}
-              </MenuItem>
-            ))}
-            <MenuItem value="addCustom">Add Custom</MenuItem>
-          </TextField>
-          {formData.department === "addCustom" && (
-            <>
+      <Box sx={{ ml: 40 }}>
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="basic tabs example"
+        >
+          <Tab label="Personal Details" {...a11yProps(0)} />
+          <Tab label="Job Details" {...a11yProps(1)} />
+          <Tab label="Project Details" {...a11yProps(2)} />
+          <Tab label="Benefits" {...a11yProps(3)} />
+          <Tab label="Emergency Contact Information" {...a11yProps(4)} />
+          <Tab label="Educational Information" {...a11yProps(5)} />
+        </Tabs>
+        <TabPanel value={value} index={0}>
+          <Grid container spacing={2} xs={12}>
+            <Grid item xs={6}>
               <TextField
-                name="customOption"
-                value={formData.customOption}
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="name"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
+                label="Full Name"
+                required
+                value={formData.name}
                 onChange={handleFieldChange}
-                variant="standard"
+                onBlur={handleBlur}
+                error={!!errors.name && isTouched.name}
+                helperText={errors.name && isTouched.name && errors.name}
               />
-              <Button onClick={handleAddCustomOption}>Add</Button>
-            </>
-          )}
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="title"
-            InputProps={{
-              onKeyPress: handleKeyPress,
-            }}
-            label="Title"
-            variant="standard"
-            value={formData.title}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.title && isTouched.title}
-            helperText={errors.title && isTouched.title && errors.title}
-          />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="designation"
-            select
-            variant="standard"
-            value={formData.designation}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.designation && isTouched.designation}
-            helperText={
-              errors.designation && isTouched.designation
-                ? errors.designation
-                : "Please select designation"
-            }
-          >
-            {designations.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.value}
-              </MenuItem>
-            ))}
-          </TextField>
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="supervisor"
-            InputProps={{
-              onKeyPress: handleKeyPress,
-            }}
-            label="Supervisor"
-            variant="standard"
-            value={formData.supervisor}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.supervisor && isTouched.supervisor}
-            helperText={
-              errors.supervisor && isTouched.supervisor && errors.supervisor
-            }
-          />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="date"
-            type="date"
-            variant="standard"
-            value={formData.date}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.date && isTouched.date}
-            helperText={
-              errors.date && isTouched.date
-                ? errors.date
-                : "Please select the date of joining"
-            }
-          />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="workType"
-            select
-            value={formData.workType}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.workType && isTouched.workType}
-            helperText={
-              errors.workType && isTouched.workType
-                ? errors.workType
-                : "Please select the work location"
-            }
-            variant="standard"
-          >
-            {workTypes.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.value}
-              </MenuItem>
-            ))}
-          </TextField>
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="role"
-            select
-            value={formData.role}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.role && isTouched.role}
-            helperText={
-              errors.role && isTouched.role
-                ? errors.role
-                : "Please select the user role"
-            }
-            variant="standard"
-          >
-            {roles.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.value}
-              </MenuItem>
-            ))}
-          </TextField>
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="employmentStatus"
-            select
-            value={formData.employmentStatus}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.employmentStatus && isTouched.employmentStatus}
-            helperText={
-              errors.employmentStatus && isTouched.employmentStatus
-                ? errors.employmentStatus
-                : "Please select employment status"
-            }
-            variant="standard"
-          >
-            {employmentStatus.map((option) => (
-              <MenuItem key={option.value} value={option.value}>
-                {option.value}
-              </MenuItem>
-            ))}
-          </TextField>
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            type="number"
-            name="salary"
-            label="Salary"
-            variant="standard"
-            InputProps={{
-              endAdornment: <InputAdornment position="end">PKR</InputAdornment>,
-            }}
-            value={formData.salary}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.salary && isTouched.salary}
-            helperText={errors.salary && isTouched.salary && errors.salary}
-          />
-        </Box>
-      </Grid>
-      <Grid item xs={4}>
-        <Box>
-          <Typography variant="h6">Emergency Details</Typography>
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="emergencyName"
-            label="Name"
-            InputProps={{
-              onKeyPress: handleKeyPress,
-            }}
-            variant="standard"
-            value={formData.emergencyName}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.emergencyName && isTouched.emergencyName}
-            helperText={
-              errors.emergencyName &&
-              isTouched.emergencyName &&
-              errors.emergencyName
-            }
-          />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="relation"
-            InputProps={{
-              onKeyPress: handleKeyPress,
-            }}
-            label="Relation"
-            variant="standard"
-            value={formData.relation}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            error={!!errors.relation && isTouched.relation}
-            helperText={
-              errors.relation && isTouched.relation && errors.relation
-            }
-          />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="emergencyAddress"
-            label="Address (optional)"
-            variant="standard"
-            multiline
-            value={formData.emergencyAddress}
-            onChange={handleFieldChange}
-            // onBlur={handleBlur}
-            // error={!!errors.emergencyAddress && isTouched.emergencyAddress}
-            // helperText={
-            //   errors.emergencyAddress &&
-            //   isTouched.emergencyAddress &&
-            //   errors.emergencyAddress
-            // }
-          />
-          <br />
-          <TextField
-            sx={{ marginTop: "20px", width: "50%" }}
-            name="contact"
-            type="tel"
-            label="Contact"
-            variant="standard"
-            value={formData.contact}
-            onChange={handleFieldChange}
-            onBlur={handleBlur}
-            onFocus={handleFocus}
-            error={!!errors.contact && isTouched.contact}
-            helperText={errors.contact && isTouched.contact && errors.contact}
-          />
-          <Stack spacing={2} direction="row" marginTop={65}>
-            <LoadingButton
-              loading={loading}
-              color="error"
-              variant="contained"
-              type="submit"
-              disabled={!isValid}
-              onClick={handleClick}
-            >
-              Save Changes
-            </LoadingButton>
-            <Button
-              color="error"
-              variant="outlined"
-              onClick={() => navigate("/home/employees")}
-            >
-              Cancel
-            </Button>
-          </Stack>
-          {message && (
-            <Snackbar
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
-              open={openToast}
-              onClose={handleToastClose}
-              autoHideDuration={3000}
-            >
-              <Alert severity="success" sx={{ width: "100%" }}>
-                {message.message}
-              </Alert>
-            </Snackbar>
-          )}
-          {error && (
-            <Snackbar
-              anchorOrigin={{ vertical: "top", horizontal: "right" }}
-              open={openToast}
-              onClose={handleToastClose}
-              autoHideDuration={3000}
-            >
-              <Alert severity="error" sx={{ width: "100%" }}>
-                {error}
-              </Alert>
-            </Snackbar>
-          )}
-        </Box>
-      </Grid>
-    </Grid>
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                required
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="email"
+                type="email"
+                label="Email"
+                value={formData.email}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.email && isTouched.email}
+                helperText={errors.email && isTouched.email && errors.email}
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="password"
+                type={showPassword ? "text" : "password"}
+                label="Password"
+                required
+                value={formData.password}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.password && isTouched.password}
+                helperText={
+                  errors.password && isTouched.password && errors.password
+                }
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="phone"
+                type="tel"
+                label="Phone Number"
+                required
+                value={formData.phone}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.phone && isTouched.phone}
+                helperText={errors.phone && isTouched.phone && errors.phone}
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="address"
+                label="Address"
+                required
+                multiline
+                value={formData.address}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.address && isTouched.address}
+                helperText={
+                  errors.address && isTouched.address && errors.address
+                }
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="cnic"
+                label="CNIC"
+                required
+                value={formData.cnic}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.cnic && isTouched.cnic}
+                helperText={errors.cnic && isTouched.cnic && errors.cnic}
+              />
+              <br />
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="dob"
+                required
+                type="date"
+                value={formData.dob}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.dob && isTouched.dob}
+                helperText={
+                  errors.dob && isTouched.dob
+                    ? errors.dob
+                    : "Please select date of birth"
+                }
+              />
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="maritalStatus"
+                select
+                value={formData.maritalStatus}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.maritalStatus && isTouched.maritalStatus}
+                helperText={
+                  errors.maritalStatus && isTouched.maritalStatus
+                    ? errors.maritalStatus
+                    : "Please select marital status"
+                }
+              >
+                {maritalStatusOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="gender"
+                value={formData.gender}
+                onChange={handleFieldChange}
+                select
+                helperText="Please select gender"
+              >
+                {genders.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="passport"
+                label="Passport (optional)"
+                value={formData.passport}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.passport && isTouched.passport}
+                helperText={
+                  errors.passport && isTouched.passport && errors.passport
+                }
+              />
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="blood"
+                select
+                value={formData.blood}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.blood && isTouched.blood}
+                helperText="Select blood group (optional)"
+              >
+                {bloodGroups.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+          </Grid>
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <Grid container spacing={2} xs={12}>
+            <Grid xs={6}>
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="employeeId"
+                required
+                label="Employee ID"
+                value={formData.employeeId}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.employeeId && isTouched.employeeId}
+                helperText={
+                  errors.employeeId && isTouched.employeeId && errors.employeeId
+                }
+              />
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="department"
+                select
+                value={formData.department}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.department && isTouched.department}
+                helperText={
+                  errors.department && isTouched.department
+                    ? errors.department
+                    : "Please select the department"
+                }
+              >
+                {departmentOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+                <MenuItem value="addCustom">Add Custom</MenuItem>
+              </TextField>
+              {formData.department === "addCustom" && (
+                <>
+                  <br />
+                  <TextField
+                    sx={{ width: "40%" }}
+                    name="customDepartmentOption"
+                    variant="standard"
+                    value={formData.customDepartmentOption}
+                    onChange={handleFieldChange}
+                  />
+                  <Button onClick={handleAddDepartmentOption}>Add</Button>
+                </>
+              )}
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="shiftStartTime"
+                type="time"
+                value={formData.shiftStartTime}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.shiftStartTime && isTouched.shiftStartTime}
+                helperText={
+                  errors.shiftStartTime && isTouched.shiftStartTime
+                    ? errors.shiftStartTime
+                    : "Please set shift start time"
+                }
+              />
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="shiftEndTime"
+                type="time"
+                value={formData.shiftEndTime}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.shiftEndTime && isTouched.shiftEndTime}
+                helperText={
+                  errors.shiftEndTime && isTouched.shiftEndTime
+                    ? errors.shiftEndTime
+                    : "Please set shift end time"
+                }
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="title"
+                label="Title"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
+                required
+                value={formData.title}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.title && isTouched.title}
+                helperText={errors.title && isTouched.title && errors.title}
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="designation"
+                select
+                required
+                value={formData.designation}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.designation && isTouched.designation}
+                helperText={
+                  errors.designation && isTouched.designation
+                    ? errors.designation
+                    : "Please select designation"
+                }
+              >
+                {designationOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+                <MenuItem value="addCustom">Add Custom</MenuItem>
+              </TextField>
+              {formData.designation === "addCustom" && (
+                <>
+                  <br />
+                  <TextField
+                    name="customDesignationOption"
+                    sx={{ width: "40%" }}
+                    value={formData.customDesignationOption}
+                    onChange={handleFieldChange}
+                    variant="standard"
+                  />
+                  <Button onClick={handleAddDesignationOption}>Add</Button>
+                </>
+              )}
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="reportingOffice"
+                select
+                value={formData.reportingOffice}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.reportingOffice && isTouched.reportingOffice}
+                helperText={
+                  errors.reportingOffice && isTouched.reportingOffice
+                    ? errors.reportingOffice
+                    : "Please select reporting office"
+                }
+              >
+                {officeOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="reportingDepartment"
+                select
+                value={formData.reportingDepartment}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={
+                  !!errors.reportingDepartment && isTouched.reportingDepartment
+                }
+                helperText={
+                  errors.reportingDepartment && isTouched.reportingDepartment
+                    ? errors.reportingDepartment
+                    : "Please select reporting department"
+                }
+              >
+                {reportingDepartmentOpt.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <br />
+            <Grid xs={6}>
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="supervisor"
+                label="Line Manager"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
+                required
+                value={formData.supervisor}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.supervisor && isTouched.supervisor}
+                helperText={
+                  errors.supervisor && isTouched.supervisor && errors.supervisor
+                }
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="engagementManager"
+                label="Engagement Manager"
+                required
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
+                value={formData.engagementManager}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={
+                  !!errors.engagementManager && isTouched.engagementManager
+                }
+                helperText={
+                  errors.engagementManager &&
+                  isTouched.engagementManager &&
+                  errors.engagementManager
+                }
+              />
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="date"
+                type="date"
+                value={formData.date}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.date && isTouched.date}
+                helperText={
+                  errors.date && isTouched.date
+                    ? errors.date
+                    : "Please select the date of joining"
+                }
+              />
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="permanentDate"
+                type="date"
+                value={formData.permanentDate}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.permanentDate && isTouched.permanentDate}
+                helperText={
+                  errors.permanentDate && isTouched.permanentDate
+                    ? errors.permanentDate
+                    : "Date of permanent employment"
+                }
+              />
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="workType"
+                select
+                value={formData.workType}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.workType && isTouched.workType}
+                helperText={
+                  errors.workType && isTouched.workType
+                    ? errors.workType
+                    : "Please select the work location"
+                }
+              >
+                {workTypes.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="role"
+                select
+                value={formData.role}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.role && isTouched.role}
+                helperText={
+                  errors.role && isTouched.role
+                    ? errors.role
+                    : "Please select the user role"
+                }
+              >
+                {roles.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="employmentStatus"
+                select
+                value={formData.employmentStatus}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.employmentStatus && isTouched.employmentStatus}
+                helperText={
+                  errors.employmentStatus && isTouched.employmentStatus
+                    ? errors.employmentStatus
+                    : "Please select employment status"
+                }
+              >
+                {employmentStatus.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                InputLabelProps={{ shrink: true }}
+                name="salary"
+                type="number"
+                label="Salary"
+                required
+                // variant="standard"
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">PKR</InputAdornment>
+                  ),
+                }}
+                value={formData.salary}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.salary && isTouched.salary}
+                helperText={errors.salary && isTouched.salary && errors.salary}
+              />
+            </Grid>
+          </Grid>
+        </TabPanel>
+        <TabPanel value={value} index={4}>
+          <Grid container spacing={2} xs={12}>
+            <Grid xs={6}>
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="emergencyName"
+                label="Name"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
+                required
+                value={formData.emergencyName}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.emergencyName && isTouched.emergencyName}
+                helperText={
+                  errors.emergencyName &&
+                  isTouched.emergencyName &&
+                  errors.emergencyName
+                }
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="relation"
+                label="Relation"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
+                required
+                value={formData.relation}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.relation && isTouched.relation}
+                helperText={
+                  errors.relation && isTouched.relation && errors.relation
+                }
+              />
+            </Grid>
+            <br />
+            <Grid xs={6}>
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="emergencyAddress"
+                label="Address (optional)"
+                multiline
+                value={formData.emergencyAddress}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.emergencyAddress && isTouched.emergencyAddress}
+                helperText={
+                  errors.emergencyAddress &&
+                  isTouched.emergencyAddress &&
+                  errors.emergencyAddress
+                }
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="contact"
+                type="tel"
+                label="Contact"
+                required
+                value={formData.contact}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.contact && isTouched.contact}
+                helperText={
+                  errors.contact && isTouched.contact && errors.contact
+                }
+              />
+            </Grid>
+          </Grid>
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          <Grid container xs={12}>
+            <Grid item xs={6}>
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="fuel"
+                label="Fuel Allowance"
+                select
+                value={formData.fuel}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.fuel && isTouched.fuel}
+                helperText={errors.fuel && isTouched.fuel && errors.fuel}
+              >
+                {customFuelOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+                <MenuItem value="addCustom">Add Custom</MenuItem>
+              </TextField>
+              {formData.fuel === "addCustom" && (
+                <>
+                  <br />
+                  <TextField
+                    sx={{ width: "40%" }}
+                    name="customFuelOption"
+                    variant="standard"
+                    value={formData.customFuelOption}
+                    onChange={handleFieldChange}
+                  />
+                  <Button onClick={handleAddFuelOption}>Add</Button>
+                </>
+              )}
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="medicalAllowance"
+                label="Medical Allowance"
+                select
+                value={formData.medicalAllowance}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.medicalAllowance && isTouched.medicalAllowance}
+                helperText={
+                  errors.medicalAllowance &&
+                  isTouched.medicalAllowance &&
+                  errors.medicalAllowance
+                }
+              >
+                {benefitOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="providentFund"
+                label="Provident Fund"
+                select
+                value={formData.providentFund}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.providentFund && isTouched.providentFund}
+                helperText={
+                  errors.providentFund &&
+                  isTouched.providentFund &&
+                  errors.providentFund
+                }
+              >
+                {benefitOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="empOfQuarter"
+                label="Employee of Quarter"
+                select
+                value={formData.empOfQuarter}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.empOfQuarter && isTouched.empOfQuarter}
+                helperText={
+                  errors.empOfQuarter &&
+                  isTouched.empOfQuarter &&
+                  errors.empOfQuarter
+                }
+              >
+                {benefitOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+            <Grid item xs={6}>
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="paidCertifications"
+                label="Paid Certifications"
+                select
+                value={formData.paidCertifications}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={
+                  !!errors.paidCertifications && isTouched.paidCertifications
+                }
+                helperText={
+                  errors.paidCertifications &&
+                  isTouched.paidCertifications &&
+                  errors.paidCertifications
+                }
+              >
+                {benefitOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="annualBonus"
+                label="Annual Bonus"
+                select
+                value={formData.annualBonus}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.annualBonus && isTouched.annualBonus}
+                helperText={
+                  errors.annualBonus &&
+                  isTouched.annualBonus &&
+                  errors.annualBonus
+                }
+              >
+                {benefitOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="paidTimeOff"
+                label="Paid Time Off"
+                select
+                value={formData.paidTimeOff}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.paidTimeOff && isTouched.paidTimeOff}
+                helperText={
+                  errors.paidTimeOff &&
+                  isTouched.paidTimeOff &&
+                  errors.paidTimeOff
+                }
+              >
+                {benefitOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
+          </Grid>
+        </TabPanel>
+        <TabPanel value={value} index={5}>
+          <Grid container xs={12}>
+            <Grid xs={6}>
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="degree"
+                label="Degree"
+                required
+                value={formData.degree}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.degree && isTouched.degree}
+                helperText={errors.degree && isTouched.degree && errors.degree}
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="institute"
+                label="Institute"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
+                required
+                value={formData.institute}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.institute && isTouched.institute}
+                helperText={
+                  errors.institute && isTouched.institute && errors.institute
+                }
+              />
+            </Grid>
+            <Grid xs={6}>
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="degreeStartDate"
+                label="Start date"
+                type="date"
+                InputProps={{
+                  onKeyPress: handleKeyPress,
+                }}
+                value={formData.degreeStartDate}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.degreeStartDate && isTouched.degreeStartDate}
+                helperText={
+                  errors.degreeStartDate &&
+                  isTouched.degreeStartDate &&
+                  errors.degreeStartDate
+                }
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="degreeEndDate"
+                label="End date (or expected)"
+                type="date"
+                value={formData.degreeEndDate}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                error={!!errors.degreeEndDate && isTouched.degreeEndDate}
+                helperText={
+                  errors.degreeEndDate &&
+                  isTouched.degreeEndDate &&
+                  errors.degreeEndDate
+                }
+              />
+            </Grid>
+          </Grid>
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          <Grid container spacing={1} xs={12}>
+            <Grid xs={6}>
+              {/* <Autocomplete
+                sx={{ marginTop: "20px", width: "50%" }}
+                multiple
+                options={clientOptions}
+                getOptionLabel={(option) => option.value}
+                value={formData.clients} // Use an array to store the selected clients
+                onChange={handleFieldChange} // Update the "clients" field in formData
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    name="clients"
+                    label="Clients"
+                    required
+                    error={
+                      !!errors.clients && isTouched.clients && errors.clients
+                    }
+                    helperText={
+                      errors.clients && isTouched.clients
+                        ? errors.clients
+                        : "Please select clients"
+                    }
+                  />
+                )}
+              /> */}
+
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="client"
+                multiple
+                required
+                select
+                error={!!errors.client && isTouched.client && errors.client}
+                value={formData.client}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                helperText={
+                  errors.client && isTouched.client
+                    ? errors.client
+                    : "Please select client"
+                }
+              >
+                {clientOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+                <MenuItem value="addCustom">Add Custom</MenuItem>
+              </TextField>
+              {formData.client === "addCustom" && (
+                <>
+                  <br />
+                  <TextField
+                    sx={{ width: "40%" }}
+                    name="customClientOption"
+                    variant="standard"
+                    value={formData.customClientOption}
+                    onChange={handleFieldChange}
+                  />
+                  <Button onClick={handleAddClientOption}>Add</Button>
+                </>
+              )}
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="projectType"
+                label="Project Type"
+                required
+                value={formData.projectType}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.projectType && isTouched.projectType}
+                helperText={
+                  errors.projectType &&
+                  isTouched.projectType &&
+                  errors.projectType
+                }
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="projectRole"
+                label="Project Role"
+                required
+                value={formData.projectRole}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.projectRole && isTouched.projectRole}
+                helperText={
+                  errors.projectRole &&
+                  isTouched.projectRole &&
+                  errors.projectRole
+                }
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="region"
+                label="Region"
+                required
+                value={formData.region}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.region && isTouched.region}
+                helperText={errors.region && isTouched.region && errors.region}
+              />
+              <br />
+            </Grid>
+            <Grid xs={6}>
+              <TextField
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="projectName"
+                required
+                select
+                error={!!errors.project && isTouched.project && errors.project}
+                value={formData.projectName}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                helperText={
+                  errors.projectName && isTouched.projectName
+                    ? errors.projectName
+                    : "Please select project"
+                }
+              >
+                {projectOptions.map((option) => (
+                  <MenuItem key={option} value={option}>
+                    {option}
+                  </MenuItem>
+                ))}
+                <MenuItem value="addCustom">Add Custom</MenuItem>
+              </TextField>
+              {formData.projectName === "addCustom" && (
+                <>
+                  <br />
+                  <TextField
+                    sx={{ width: "40%" }}
+                    name="customProjectOption"
+                    variant="standard"
+                    value={formData.customProjectOption}
+                    onChange={handleFieldChange}
+                  />
+                  <Button onClick={handleAddProjectOption}>Add</Button>
+                </>
+              )}
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="projectStartDate"
+                label="Starting Date"
+                type="date"
+                required
+                value={formData.projectStartDate}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.projectStartDate && isTouched.projectStartDate}
+                helperText={
+                  errors.projectStartDate &&
+                  isTouched.projectStartDate &&
+                  errors.projectStartDate
+                    ? errors.projectStartDate
+                    : "Please select project start date"
+                }
+              />
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="billableHours"
+                label="Billable Hours"
+                select
+                // variant="standard"
+                value={formData.billableHours}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.billableHours && isTouched.billableHours}
+                helperText={
+                  errors.billableHours &&
+                  isTouched.billableHours &&
+                  errors.billableHours
+                }
+              >
+                {billableHourOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.value}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <br />
+              <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="projectEndDate"
+                label="Ending Date"
+                type="date"
+                // variant="standard"
+                value={formData.projectEndDate}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.projectEndDate && isTouched.projectEndDate}
+                helperText={
+                  errors.projectEndDate &&
+                  isTouched.projectEndDate &&
+                  errors.projectEndDate
+                    ? errors.projectEndDate
+                    : "Please select project end date"
+                }
+              />
+              <br />
+            </Grid>
+          </Grid>
+        </TabPanel>
+      </Box>
+    </>
   );
 };
 

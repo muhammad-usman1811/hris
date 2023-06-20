@@ -57,6 +57,56 @@ const userSchema = mongoose.Schema(
       type: [LeaveQuota.schema],
       default: [],
     },
+    gender: {
+      type: String,
+      required: true,
+    },
+    shiftStartTime: {
+      type: String,
+      required: true,
+    },
+    shiftEndTime: {
+      type: String,
+      required: true,
+    },
+    passwordChangeRequired: {
+      type: Boolean,
+      default: true,
+    },
+    projectDetails: {
+      client: {
+        type: String,
+        required: true,
+      },
+      projectName: {
+        type: String,
+        required: true,
+      },
+      projectRole: {
+        type: String,
+        required: true,
+      },
+      projectType: {
+        type: String,
+        required: true,
+      },
+      billableHours: {
+        type: String,
+        required: true,
+      },
+      region: {
+        type: String,
+        required: true,
+      },
+      startDate: {
+        type: String,
+        required: true,
+      },
+      endDate: {
+        type: String,
+        required: true,
+      },
+    },
     jobDetails: {
       title: {
         type: String,
@@ -89,6 +139,68 @@ const userSchema = mongoose.Schema(
         type: String,
         required: true,
       },
+      engagementManager: {
+        type: String,
+        required: true,
+      },
+      reportingOffice: {
+        type: String,
+        required: true,
+      },
+      reportingDepartment: {
+        type: String,
+        required: true,
+      },
+      permanentDate: {
+        type: String,
+        required: true,
+      },
+    },
+    educationalInfo: {
+      degree: {
+        type: String,
+        required: true,
+      },
+      startDate: {
+        type: String,
+        required: true,
+      },
+      endDate: {
+        type: String,
+        required: true,
+      },
+      institute: {
+        type: String,
+        required: true,
+      },
+    },
+    fuel: {
+      type: String,
+      required: true,
+    },
+    medicalAllowance: {
+      type: String,
+      required: true,
+    },
+    empOfQuarter: {
+      type: String,
+      required: true,
+    },
+    providentFund: {
+      type: String,
+      required: true,
+    },
+    paidCertifications: {
+      type: String,
+      required: true,
+    },
+    annualBonus: {
+      type: String,
+      required: true,
+    },
+    paidTimeOff: {
+      type: String,
+      required: true,
     },
     emergencyDetails: {
       name: {

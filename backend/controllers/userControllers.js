@@ -50,6 +50,7 @@ const authUser = asyncHandler(async (req, res) => {
       department: user.jobDetails.department,
       supervisor: user.jobDetails.supervisor,
       leaveQuota: user.leaveQuota,
+      passwordChangeRequired: user.passwordChangeRequired,
       token: generateToken(user._id),
     });
   } else {
@@ -114,7 +115,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
 });
 
 //Description: Reset password
-//Route: POST/api/reset-password
+//Route: POST/api/users/reset-password
 //Access: Private
 const resetPassword = asyncHandler(async (req, res) => {
   const { password, token } = req.body;
@@ -125,6 +126,30 @@ const resetPassword = asyncHandler(async (req, res) => {
       await user.save();
     }
     res.json({ message: "Password Updated" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+//Description: Change password
+//Route: POST/api/users/change-password
+//Access: Private
+const changePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword, userId } = req.body;
+  try {
+    const user = await User.findById(userId);
+    if (user) {
+      if (user.password !== currentPassword) {
+        res.json({ message: "Current password is incorrect" });
+      } else {
+        user.password = newPassword;
+        user.passwordChangeRequired = false;
+        await user.save();
+        res.json({ message: "Password Updated" });
+      }
+    } else {
+      res.status(400).json({ message: "User not found" });
+    }
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -174,7 +199,26 @@ const addUser = asyncHandler(async (req, res) => {
       contact,
       date,
       department,
+      gender,
+      shiftStartTime,
+      shiftEndTime,
       designation,
+      reportingOffice,
+      reportingDepartment,
+      engagementManager,
+      permanentDate,
+      client,
+      projectName,
+      projectRole,
+      projectType,
+      billableHours,
+      region,
+      projectStartDate,
+      projectEndDate,
+      degree,
+      degreeStartDate,
+      degreeEndDate,
+      institute,
       email,
       emergencyAddress,
       emergencyName,
@@ -190,6 +234,13 @@ const addUser = asyncHandler(async (req, res) => {
       supervisor,
       title,
       workType,
+      fuel,
+      medicalAllowance,
+      providentFund,
+      empOfQuarter,
+      paidCertifications,
+      paidTimeOff,
+      annualBonus,
     } = req.body;
 
     //Check if user already exists
@@ -237,8 +288,34 @@ const addUser = asyncHandler(async (req, res) => {
       cnic,
       passport,
       dob,
+      gender,
+      shiftStartTime,
+      shiftEndTime,
       maritalStatus,
       leaveQuota,
+      projectDetails: {
+        client,
+        projectName,
+        projectRole,
+        projectType,
+        billableHours,
+        region,
+        startDate: projectStartDate,
+        endDate: projectEndDate,
+      },
+      educationalInfo: {
+        degree,
+        startDate: degreeStartDate,
+        endDate: degreeEndDate,
+        institute,
+      },
+      fuel,
+      medicalAllowance,
+      providentFund,
+      empOfQuarter,
+      paidCertifications,
+      paidTimeOff,
+      annualBonus,
       jobDetails: {
         title,
         designation,
@@ -248,6 +325,10 @@ const addUser = asyncHandler(async (req, res) => {
         workType,
         employmentStatus,
         salary,
+        engagementManager,
+        permanentDate,
+        reportingOffice,
+        reportingDepartment,
       },
       emergencyDetails: {
         name: emergencyName,
@@ -296,7 +377,26 @@ const editUser = asyncHandler(async (req, res) => {
       contact,
       date,
       department,
+      gender,
+      shiftStartTime,
+      shiftEndTime,
       designation,
+      reportingOffice,
+      reportingDepartment,
+      engagementManager,
+      permanentDate,
+      client,
+      projectName,
+      projectRole,
+      projectType,
+      billableHours,
+      region,
+      projectStartDate,
+      projectEndDate,
+      degree,
+      degreeStartDate,
+      degreeEndDate,
+      institute,
       email,
       emergencyAddress,
       emergencyName,
@@ -312,6 +412,13 @@ const editUser = asyncHandler(async (req, res) => {
       supervisor,
       title,
       workType,
+      fuel,
+      medicalAllowance,
+      providentFund,
+      empOfQuarter,
+      paidCertifications,
+      paidTimeOff,
+      annualBonus,
     } = req.body;
 
     const updatedData = {
@@ -326,7 +433,33 @@ const editUser = asyncHandler(async (req, res) => {
       cnic,
       dob,
       maritalStatus,
+      gender,
+      shiftStartTime,
+      shiftEndTime,
       passport,
+      projectDetails: {
+        client,
+        projectName,
+        projectRole,
+        projectType,
+        billableHours,
+        region,
+        startDate: projectStartDate,
+        endDate: projectEndDate,
+      },
+      educationalInfo: {
+        degree,
+        startDate: degreeStartDate,
+        endDate: degreeEndDate,
+        institute,
+      },
+      fuel,
+      medicalAllowance,
+      providentFund,
+      empOfQuarter,
+      paidCertifications,
+      paidTimeOff,
+      annualBonus,
       jobDetails: {
         title,
         designation,
@@ -336,6 +469,10 @@ const editUser = asyncHandler(async (req, res) => {
         workType,
         employmentStatus,
         salary,
+        engagementManager,
+        permanentDate,
+        reportingOffice,
+        reportingDepartment,
       },
       emergencyDetails: {
         name: emergencyName,
@@ -398,4 +535,5 @@ export {
   deleteUser,
   forgotPassword,
   resetPassword,
+  changePassword,
 };
