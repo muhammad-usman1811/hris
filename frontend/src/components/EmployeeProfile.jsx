@@ -377,10 +377,10 @@ export default function EmployeeProfile() {
   const dispatch = useDispatch();
 
   const userDetails = useSelector((state) => state.userDetails);
-  const { loading, user } = userDetails;
+  const { user } = userDetails;
 
   const userEdit = useSelector((state) => state.userEdit);
-  const { success, error } = userEdit;
+  const { success } = userEdit;
 
   //States to store values
   const [imageUrl, setImageUrl] = useState("");
@@ -435,7 +435,7 @@ export default function EmployeeProfile() {
   const [paidTimeOff, setPaidTimeOff] = useState("");
   const [annualBonus, setAnnualBonus] = useState("");
   //Other states
-  const [openToast, setOpenToast] = useState(true);
+  //const [openToast, setOpenToast] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [attemptedUpload, setAttemptedUpload] = useState(false);
   const [imageIsChanged, setImageIsChanged] = useState(false);
@@ -946,13 +946,13 @@ export default function EmployeeProfile() {
     event.preventDefault();
   };
 
-  const handleToastClose = () => {
-    setOpenToast(false);
-  };
+  // const handleToastClose = () => {
+  //   setOpenToast(false);
+  // };
 
-  const handleClick = () => {
-    setOpenToast(true);
-  };
+  // const handleClick = () => {
+  //   setOpenToast(true);
+  // };
 
   const onDrop = useCallback((acceptedFiles) => {
     if (acceptedFiles?.length) {
