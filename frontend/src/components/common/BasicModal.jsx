@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
@@ -40,7 +40,7 @@ const BasicModal = ({ open, onClose }) => {
   const dispatch = useDispatch();
 
   const userForgot = useSelector((state) => state.userForgot);
-  const { loading, message } = userForgot;
+  const { loading, message, error } = userForgot;
   const [email, setEmail] = useState("");
   const [emailError, setEmailError] = useState("");
 
@@ -74,6 +74,16 @@ const BasicModal = ({ open, onClose }) => {
       alert(message.message);
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      setEmailError(error);
+    }
+    if (message) {
+      alert(message?.message);
+    }
+  }, [error, message]);
+
   return (
     <Modal
       open={open}

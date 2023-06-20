@@ -2,11 +2,13 @@ import express from "express";
 import {
   addUser,
   authUser,
+  changePassword,
   deleteUser,
   editUser,
   forgotPassword,
   getUserById,
   getUsers,
+  resetPassword,
 } from "../controllers/userControllers.js";
 import protect from "../middlewares/authMiddleware.js";
 import uploadPhoto from "../config/imageUpload.js";
@@ -21,5 +23,7 @@ router
   .delete(protect, deleteUser);
 router.post("/login", authUser);
 router.route("/forgot").post(forgotPassword);
+router.route("/reset-password").post(resetPassword);
+router.route("/change-password").post(changePassword);
 
 export default router;

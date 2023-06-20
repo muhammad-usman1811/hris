@@ -2,7 +2,21 @@ import React from "react";
 import Grid from "@mui/material/Grid";
 import EmployeeProfile from "../components/EmployeeProfile";
 
+// const TabPanel = ({ children, value, index }) => {
+//   return (
+//     <div hidden={value !== index}>
+//       {value === index && <Box sx={{ marginTop: "20px" }}>{children}</Box>}
+//     </div>
+//   );
+// };
+
 const EmployeeProfileScreen = () => {
+  // const [selectedTab, setSelectedTab] = useState(0);
+
+  // const handleTabChange = (event, newValue) => {
+  //   setSelectedTab(newValue);
+  // };
+
   return (
     <Grid
       item
@@ -14,7 +28,7 @@ const EmployeeProfileScreen = () => {
         minHeight: "calc(100vh - 67px)",
       }}
     >
-      <EmployeeProfile />
+      <EmployeeProfile />;
     </Grid>
   );
 };

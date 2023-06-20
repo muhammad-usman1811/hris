@@ -61,6 +61,38 @@ export const forgotPassword = (email) => async (dispatch) => {
   }
 };
 
+export const resetPassword = (password, token) => async (dispatch) => {
+  try {
+    dispatch({
+      type: "RESET_PASSWORD_REQUEST",
+    });
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const { data } = await axios.post(
+      "/api/users/reset-password",
+      { password, token },
+      config
+    );
+
+    dispatch({
+      type: "RESET_PASSWORD_SUCCESS",
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: "RESET_PASSWORD_FAIL",
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
 export const logout = (id) => (dispatch) => {
   localStorage.removeItem("userInfo");
   // localStorage.removeItem(`checkIn:${id}`);
@@ -130,23 +162,44 @@ export const addUser = (userData) => async (dispatch) => {
     dispatch({ type: "USER_ADD_REQUEST" });
 
     const formData = new FormData();
+    formData.append("photo", userData.file);
+    formData.append("name", userData.name);
+    formData.append("email", userData.email);
     formData.append("address", userData.address);
+    formData.append("passport", userData.passport);
+    formData.append("password", userData.password);
+    formData.append("phone", userData.phone);
     formData.append("blood", userData.blood);
     formData.append("cnic", userData.cnic);
     formData.append("dob", userData.dob);
     formData.append("maritalStatus", userData.maritalStatus);
-    formData.append("contact", userData.contact);
+    formData.append("gender", userData.gender);
     formData.append("date", userData.date);
     formData.append("department", userData.department);
+    formData.append("shiftStartTime", userData.shiftStartTime);
+    formData.append("shiftEndTime", userData.shiftEndTime);
     formData.append("designation", userData.designation);
-    formData.append("email", userData.email);
+    formData.append("client", userData.client);
+    formData.append("projectName", userData.projectName);
+    formData.append("projectType", userData.projectType);
+    formData.append("projectRole", userData.projectRole);
+    formData.append("billableHours", userData.billableHours);
+    formData.append("region", userData.region);
+    formData.append("projectStartDate", userData.projectStartDate);
+    formData.append("projectEndDate", userData.projectEndDate);
+    formData.append("reportingOffice", userData.reportingOffice);
+    formData.append("reportingDepartment", userData.reportingDepartment);
+    formData.append("engagementManager", userData.engagementManager);
+    formData.append("permanentDate", userData.permanentDate);
+    formData.append("benfits", userData.benefits);
+    formData.append("degree", userData.degree);
+    formData.append("degreeStartDate", userData.degreeStartDate);
+    formData.append("degreeEndDate", userData.degreeEndDate);
+    formData.append("institute", userData.institute);
     formData.append("emergencyAddress", userData.emergencyAddress);
     formData.append("emergencyName", userData.emergencyName);
+    formData.append("contact", userData.contact);
     formData.append("employeeId", userData.employeeId);
-    formData.append("name", userData.name);
-    formData.append("passport", userData.passport);
-    formData.append("password", userData.password);
-    formData.append("phone", userData.phone);
     formData.append("relation", userData.relation);
     formData.append("role", userData.role);
     formData.append("employmentStatus", userData.employmentStatus);
@@ -154,7 +207,13 @@ export const addUser = (userData) => async (dispatch) => {
     formData.append("supervisor", userData.supervisor);
     formData.append("title", userData.title);
     formData.append("workType", userData.workType);
-    formData.append("photo", userData.file);
+    formData.append("fuel", userData.fuel);
+    formData.append("medicalAllowance", userData.medicalAllowance);
+    formData.append("providentFund", userData.providentFund);
+    formData.append("empOfQuarter", userData.empOfQuarter);
+    formData.append("paidCertifications", userData.paidCertifications);
+    formData.append("annualBonus", userData.annualBonus);
+    formData.append("paidTimeOff", userData.paidTimeOff);
 
     const config = {
       headers: {
@@ -189,7 +248,27 @@ export const editUser = (userData) => async (dispatch, getState) => {
     formData.append("contact", userData.contact);
     formData.append("date", userData.date);
     formData.append("department", userData.department);
+    formData.append("gender", userData.gender);
+    formData.append("shiftStartTime", userData.shiftStartTime);
+    formData.append("shiftEndTime", userData.shiftEndTime);
     formData.append("designation", userData.designation);
+    formData.append("client", userData.client);
+    formData.append("projectName", userData.projectName);
+    formData.append("projectType", userData.projectType);
+    formData.append("projectRole", userData.projectRole);
+    formData.append("billableHours", userData.billableHours);
+    formData.append("region", userData.region);
+    formData.append("projectStartDate", userData.projectStartDate);
+    formData.append("projectEndDate", userData.projectEndDate);
+    formData.append("reportingOffice", userData.reportingOffice);
+    formData.append("reportingDepartment", userData.reportingDepartment);
+    formData.append("engagementManager", userData.engagementManager);
+    formData.append("permanentDate", userData.permanentDate);
+    formData.append("benfits", userData.benefits);
+    formData.append("degree", userData.degree);
+    formData.append("institute", userData.institute);
+    formData.append("degreeStartDate", userData.degreeStartDate);
+    formData.append("degreeEndDate", userData.degreeEndDate);
     formData.append("email", userData.email);
     formData.append("emergencyAddress", userData.emergencyAddress);
     formData.append("emergencyName", userData.emergencyName);
@@ -205,6 +284,13 @@ export const editUser = (userData) => async (dispatch, getState) => {
     formData.append("supervisor", userData.supervisor);
     formData.append("title", userData.title);
     formData.append("workType", userData.workType);
+    formData.append("fuel", userData.fuel);
+    formData.append("medicalAllowance", userData.medicalAllowance);
+    formData.append("providentFund", userData.providentFund);
+    formData.append("empOfQuarter", userData.empOfQuarter);
+    formData.append("paidCertifications", userData.paidCertifications);
+    formData.append("annualBonus", userData.annualBonus);
+    formData.append("paidTimeOff", userData.paidTimeOff);
     formData.append("photo", userData.imageUrl);
 
     const {

@@ -90,9 +90,12 @@ function EmployeeTable() {
         Passport: user.passport,
         BloodGroup: user.emergencyDetails.blood,
         MaritalStatus: user.maritalStatus,
+        Gender: user.gender,
         Title: user.jobDetails.title,
         Designation: user.jobDetails.designation,
-        Dpartment: user.jobDetails.department,
+        Department: user.jobDetails.department,
+        ShiftStartTime: user.shiftStartTime,
+        ShiftEndTime: user.shiftEndTime,
         Supervisor: user.jobDetails.supervisor,
         DateOfJoining: user.jobDetails.dateOfJoining,
         WorkType: user.jobDetails.workType,
@@ -203,7 +206,7 @@ function EmployeeTable() {
         onRowClicked={(row) => {
           navigate(`/home/profile/${row.id}`);
         }}
-      ></DataTable>
+      />
       {message && (
         <Snackbar
           anchorOrigin={{ vertical: "bottom", horizontal: "right" }}

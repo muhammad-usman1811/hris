@@ -33,6 +33,7 @@ import {
   getTeamLeaves,
   getUserLeaves,
 } from "../../actions/leaveActions";
+import Badge from "@mui/material/Badge";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -211,6 +212,13 @@ const EmployeeLeaveScreen = () => {
     };
   });
 
+  const pendingLeaveRequests = rowsForLeaveRequests?.filter(
+    (leave) => leave.status === "Pending"
+  );
+
+  const numberOfPendingLeaves = pendingLeaveRequests?.length;
+  console.log(numberOfPendingLeaves);
+
   const rowsForLeaves = userLeavesData?.map((leave) => {
     return {
       id: leave._id,
@@ -239,7 +247,6 @@ const EmployeeLeaveScreen = () => {
     const name = `available${leaveType}`;
     availableLeaves[name] = leaveCount;
   }
-  console.log(availableLeaves);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -308,7 +315,21 @@ const EmployeeLeaveScreen = () => {
                 aria-label="basic tabs example"
               >
                 <Tab label="My Leaves" {...a11yProps(0)} />
-                <Tab label="Leave Requests" {...a11yProps(1)} />
+                <Tab
+                  label={
+                    <Badge
+                      badgeContent={numberOfPendingLeaves}
+                      color="error"
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                    >
+                      Leave Requests
+                    </Badge>
+                  }
+                  {...a11yProps(1)}
+                />
 
                 <Box sx={{ marginLeft: "24px" }}>
                   <Button
@@ -437,7 +458,8 @@ const EmployeeLeaveScreen = () => {
             </Snackbar>
           </Box>
         )}
-        {userInfo.role === "Employee" && (
+        {(userInfo.role === "Employee" ||
+          userInfo.role === "Engagement Manager") && (
           <>
             <div
               style={{

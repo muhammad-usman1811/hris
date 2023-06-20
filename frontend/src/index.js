@@ -22,6 +22,9 @@ import HomeScreen from "./screens/Employee/HomeScreen";
 import EmployeeProfile from "./screens/Employee/EmployeeProfile";
 import EmployeeLeaveScreen from "./screens/Employee/EmployeeLeaveScreen";
 import EmployeeDoc from "./screens/Employee/EmployeeDoc";
+import ResetPassword from "./screens/ResetPassword";
+import TimeSheet from "./components/TimeSheet";
+import ManualAttendanceScreen from "./screens/Employee/ManualAttendanceScreen";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -29,6 +32,7 @@ root.render(
     <Router>
       <Routes>
         <Route path="/" element={<LoginScreen />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/home" element={<App />}>
           <Route path="/home/dashboard" element={<DashboardScreen />} />
           <Route path="/home/employeePortal" element={<HomeScreen />} />
@@ -40,11 +44,16 @@ root.render(
             path="/home/employee/leaves"
             element={<EmployeeLeaveScreen />}
           />
+          <Route
+            path="/home/employee/manualAttendance"
+            element={<ManualAttendanceScreen />}
+          />
           <Route path="/home/employee/documents" element={<EmployeeDoc />} />
           <Route path="/home/employees" element={<EmployeeScreen />} />
           <Route path="/home/add" element={<NewEmployee />} />
           <Route path="/home/profile/:id" element={<EmployeeProfileScreen />} />
           <Route path="/home/attendance" element={<AttendanceScreen />} />
+          <Route path="/home/attendance/timesheet" element={<TimeSheet />} />
           <Route path="/home/leaves" element={<LeaveScreen />} />
           <Route path="/home/docs" element={<DocScreen />} />
           <Route path="*" element={<Navigate to="/" />} />

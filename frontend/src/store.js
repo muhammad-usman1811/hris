@@ -7,6 +7,7 @@ import {
   userAddReducer,
   userEditReducer,
   userForgotPasswordReducer,
+  userResetPasswordReducer,
 } from "./reducers/userReducers";
 import {
   docDeleteReducer,
@@ -21,10 +22,20 @@ import {
   teamLeavesReducer,
   userLeavesReducer,
 } from "./reducers/leaveReducers";
+import {
+  attendanceRequestReducer,
+  requestApprovedByEMReducer,
+  requestApprovedBySupervisorReducer,
+  requestCancelledBySuervisorReducer,
+  teamAttendanceRequestForEMReducer,
+  teamAttendanceRequestReducer,
+  userAttendanceRequestReducer,
+} from "./reducers/attendanceRequestReducer";
 
 const reducer = {
   userLogin: userLoginReducer,
   userForgot: userForgotPasswordReducer,
+  userReset: userResetPasswordReducer,
   userList: userListReducer,
   userDetails: userDetailsReducer,
   userAdd: userAddReducer,
@@ -38,6 +49,13 @@ const reducer = {
   teamLeaves: teamLeavesReducer,
   leaveApprove: leaveApproveReducer,
   leaveCancel: leaveCancelReducer,
+  attendanceRequest: attendanceRequestReducer,
+  userAttendanceRequest: userAttendanceRequestReducer,
+  teamAttendanceRequest: teamAttendanceRequestReducer,
+  teamAttendanceRequestForEM: teamAttendanceRequestForEMReducer,
+  attendanceApprovedBySupervisor: requestApprovedBySupervisorReducer,
+  attendanceApprovedByEM: requestApprovedByEMReducer,
+  attendanceCancelledBySupervisor: requestCancelledBySuervisorReducer,
 };
 const middleware = [thunk];
 

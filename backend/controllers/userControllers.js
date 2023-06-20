@@ -7,6 +7,8 @@ import fs from "fs";
 import LeaveQuota from "../models/leaveQuotaModel.js";
 import Attendance from "../models/attendanceModel.js";
 import Leave from "../models/leaveModel.js";
+import crypto from "crypto";
+import nodemailer from "nodemailer";
 
 //Function to calcualate leave quota
 const calculateLeaveQuota = async (dateOfJoining) => {
@@ -48,6 +50,7 @@ const authUser = asyncHandler(async (req, res) => {
       department: user.jobDetails.department,
       supervisor: user.jobDetails.supervisor,
       leaveQuota: user.leaveQuota,
+      passwordChangeRequired: user.passwordChangeRequired,
       token: generateToken(user._id),
     });
   } else {
@@ -65,11 +68,91 @@ const authUser = asyncHandler(async (req, res) => {
 
 const forgotPassword = asyncHandler(async (req, res) => {
   const { email } = req.body;
-  const userDetails = await User.find({ email });
-  if (!userDetails) {
-    return res.status(404).json({ message: "Email doesn't exist" });
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw new Error("Email doesn't exist");
+  } else {
+    // Generate a secure random token
+    const resetToken = crypto.randomBytes(20).toString("hex");
+
+    // Set the reset token and its expiration time in the user model
+    user.resetToken = resetToken;
+    user.resetTokenExpires = Date.now() + 3600000; //Set the token to expire in hour
+
+    await user.save();
+    //Create email configuration
+    const transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+
+      port: 465,
+
+      secure: true,
+
+      auth: {
+        user: "hrisdigifloat@gmail.com",
+        pass: "qjvuxxgqkhakreax",
+      },
+    });
+
+    // Prepare the email content
+    const emailContent = {
+      from: "HRIS <hrisdigifloat@gmail.com>",
+      to: user.email,
+      subject: "Password Reset Request",
+      html: `<p>Dear ${user.name},</p><p>Click the following link to reset your password: <a href="http://localhost:3000/reset-password?token=${resetToken}">Reset Password</a></p><p>If you didn't request this password reset, please ignore this email.</p>`,
+    };
+
+    // Send the reset email
+    transporter.sendMail(emailContent, (error, info) => {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Reset email sent: " + info.response);
+      }
+    });
+    res.json({ message: "Email sent successfully" });
   }
-  res.json({ message: "Email sent" });
+});
+
+//Description: Reset password
+//Route: POST/api/users/reset-password
+//Access: Private
+const resetPassword = asyncHandler(async (req, res) => {
+  const { password, token } = req.body;
+  try {
+    const user = await User.findOne({ resetToken: token });
+    if (user) {
+      user.password = password;
+      await user.save();
+    }
+    res.json({ message: "Password Updated" });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+//Description: Change password
+//Route: POST/api/users/change-password
+//Access: Private
+const changePassword = asyncHandler(async (req, res) => {
+  const { currentPassword, newPassword, userId } = req.body;
+  try {
+    const user = await User.findById(userId);
+    if (user) {
+      if (user.password !== currentPassword) {
+        res.json({ message: "Current password is incorrect" });
+      } else {
+        user.password = newPassword;
+        user.passwordChangeRequired = false;
+        await user.save();
+        res.json({ message: "Password Updated" });
+      }
+    } else {
+      res.status(400).json({ message: "User not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 // @desc Get all users
@@ -116,7 +199,26 @@ const addUser = asyncHandler(async (req, res) => {
       contact,
       date,
       department,
+      gender,
+      shiftStartTime,
+      shiftEndTime,
       designation,
+      reportingOffice,
+      reportingDepartment,
+      engagementManager,
+      permanentDate,
+      client,
+      projectName,
+      projectRole,
+      projectType,
+      billableHours,
+      region,
+      projectStartDate,
+      projectEndDate,
+      degree,
+      degreeStartDate,
+      degreeEndDate,
+      institute,
       email,
       emergencyAddress,
       emergencyName,
@@ -132,6 +234,13 @@ const addUser = asyncHandler(async (req, res) => {
       supervisor,
       title,
       workType,
+      fuel,
+      medicalAllowance,
+      providentFund,
+      empOfQuarter,
+      paidCertifications,
+      paidTimeOff,
+      annualBonus,
     } = req.body;
 
     //Check if user already exists
@@ -179,8 +288,34 @@ const addUser = asyncHandler(async (req, res) => {
       cnic,
       passport,
       dob,
+      gender,
+      shiftStartTime,
+      shiftEndTime,
       maritalStatus,
       leaveQuota,
+      projectDetails: {
+        client,
+        projectName,
+        projectRole,
+        projectType,
+        billableHours,
+        region,
+        startDate: projectStartDate,
+        endDate: projectEndDate,
+      },
+      educationalInfo: {
+        degree,
+        startDate: degreeStartDate,
+        endDate: degreeEndDate,
+        institute,
+      },
+      fuel,
+      medicalAllowance,
+      providentFund,
+      empOfQuarter,
+      paidCertifications,
+      paidTimeOff,
+      annualBonus,
       jobDetails: {
         title,
         designation,
@@ -190,6 +325,10 @@ const addUser = asyncHandler(async (req, res) => {
         workType,
         employmentStatus,
         salary,
+        engagementManager,
+        permanentDate,
+        reportingOffice,
+        reportingDepartment,
       },
       emergencyDetails: {
         name: emergencyName,
@@ -238,7 +377,26 @@ const editUser = asyncHandler(async (req, res) => {
       contact,
       date,
       department,
+      gender,
+      shiftStartTime,
+      shiftEndTime,
       designation,
+      reportingOffice,
+      reportingDepartment,
+      engagementManager,
+      permanentDate,
+      client,
+      projectName,
+      projectRole,
+      projectType,
+      billableHours,
+      region,
+      projectStartDate,
+      projectEndDate,
+      degree,
+      degreeStartDate,
+      degreeEndDate,
+      institute,
       email,
       emergencyAddress,
       emergencyName,
@@ -254,6 +412,13 @@ const editUser = asyncHandler(async (req, res) => {
       supervisor,
       title,
       workType,
+      fuel,
+      medicalAllowance,
+      providentFund,
+      empOfQuarter,
+      paidCertifications,
+      paidTimeOff,
+      annualBonus,
     } = req.body;
 
     const updatedData = {
@@ -268,7 +433,33 @@ const editUser = asyncHandler(async (req, res) => {
       cnic,
       dob,
       maritalStatus,
+      gender,
+      shiftStartTime,
+      shiftEndTime,
       passport,
+      projectDetails: {
+        client,
+        projectName,
+        projectRole,
+        projectType,
+        billableHours,
+        region,
+        startDate: projectStartDate,
+        endDate: projectEndDate,
+      },
+      educationalInfo: {
+        degree,
+        startDate: degreeStartDate,
+        endDate: degreeEndDate,
+        institute,
+      },
+      fuel,
+      medicalAllowance,
+      providentFund,
+      empOfQuarter,
+      paidCertifications,
+      paidTimeOff,
+      annualBonus,
       jobDetails: {
         title,
         designation,
@@ -278,6 +469,10 @@ const editUser = asyncHandler(async (req, res) => {
         workType,
         employmentStatus,
         salary,
+        engagementManager,
+        permanentDate,
+        reportingOffice,
+        reportingDepartment,
       },
       emergencyDetails: {
         name: emergencyName,
@@ -339,4 +534,6 @@ export {
   editUser,
   deleteUser,
   forgotPassword,
+  resetPassword,
+  changePassword,
 };

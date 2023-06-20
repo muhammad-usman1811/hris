@@ -16,6 +16,7 @@ import {
   sendEmailForCheckIn,
   sendEmailForCheckOut,
 } from "./controllers/attendanceControllers.js";
+import attendanceRequestRoutes from "./routes/attendanceRequestRoutes.js";
 
 dotenv.config();
 
@@ -28,15 +29,15 @@ app.use(cors());
 //Middleware to parse the json from request body
 app.use(express.json());
 
-//Schedule to send reminder email for checkIn at 2pm every day
-// cron.schedule("0 15 * * *", () => {
+//Schedule to send reminder email for check in every hour
+// cron.schedule("0 * * * *", () => {
 //   sendEmailForCheckIn();
 // });
 
-//Schedule to send reminder email for checkout at 11pm every day
-// cron.schedule("0 23 * * *", () => {
-//   sendEmailForCheckOut();
-// });
+//Schedule to send reminder email for missing checkout every hour
+cron.schedule("0 * * * *", () => {
+  sendEmailForCheckOut();
+});
 
 //Define directory to store uploaded docs
 const __dirname = path.resolve();
@@ -74,6 +75,7 @@ app.use("/api/attendance", attendanceRoutes);
 app.use("/api/leaves", leaveRoutes);
 app.use("/api/documents", documentRoutes);
 app.use("/api/leaveQuotas", leaveQuotaRoutes);
+app.use("/api/attendanceRequest", attendanceRequestRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
