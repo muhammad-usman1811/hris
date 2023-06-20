@@ -194,10 +194,10 @@ const ManualAttendanceScreen = () => {
   const attendanceRequest = useSelector((state) => state.attendanceRequest);
   const { success } = attendanceRequest;
 
-  const userAttendanceRequest = useSelector(
-    (state) => state.userAttendanceRequest
-  );
-  const { userAttendanceRequest: userRequest } = userAttendanceRequest;
+  // const userAttendanceRequest = useSelector(
+  //   (state) => state.userAttendanceRequest
+  // );
+  // const { userAttendanceRequest: userRequest } = userAttendanceRequest;
 
   const teamAttendanceRequest = useSelector(
     (state) => state.teamAttendanceRequest
