@@ -497,12 +497,27 @@ export default function EmployeeProfile() {
   const customProjectFromLocalStorage = JSON.parse(
     localStorage.getItem("customProjectOptions")
   );
-  const customProjectOptions = [
-    ...getProjectOptions(client),
-    ...customProjectFromLocalStorage
-      .filter((option) => option.client === client)
-      .map((option) => option.value),
-  ];
+
+  let customProjectOptions = getProjectOptions(client);
+
+  if (
+    customProjectFromLocalStorage &&
+    Array.isArray(customProjectFromLocalStorage)
+  ) {
+    customProjectOptions = [
+      ...customProjectOptions,
+      ...customProjectFromLocalStorage
+        .filter((option) => option.client === client)
+        .map((option) => option.value),
+    ];
+  }
+
+  // const customProjectOptions = [
+  //   ...getProjectOptions(client),
+  //   ...customProjectFromLocalStorage
+  //     .filter((option) => option.client === client)
+  //     .map((option) => option.value),
+  // ];
 
   const isDisabled = Object.values(isTouched).some((value) => value === true);
 
