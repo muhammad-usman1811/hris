@@ -104,7 +104,7 @@ const userSchema = mongoose.Schema(
       },
       endDate: {
         type: String,
-        required: true,
+        //required: true,
       },
     },
     jobDetails: {

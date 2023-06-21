@@ -407,7 +407,7 @@ const NewEmployee = () => {
     region: false,
     projectStartDate: false,
     billableHours: false,
-    projectEndDate: false,
+    //projectEndDate: false,
     degree: false,
     institute: false,
     degreeStartDate: false,
@@ -631,7 +631,7 @@ const NewEmployee = () => {
   const handleAddDesignationOption = () => {
     if (formData.customDesignationOption) {
       const newOption = { value: formData.customDesignationOption };
-      setDesignationOptions([...departmentOptions, newOption]);
+      setDesignationOptions([...designationOptions, newOption]);
       setFormData((prevFormData) => ({
         ...prevFormData,
         designation: formData.customDesignationOption,
@@ -991,10 +991,10 @@ const NewEmployee = () => {
       isValid = false;
     }
 
-    if (!formData.projectEndDate) {
-      errors.projectEndDate = "Please select project end date";
-      isValid = false;
-    }
+    // if (!formData.projectEndDate) {
+    //   errors.projectEndDate = "Please select project end date";
+    //   isValid = false;
+    // }
 
     if (!formData.degree.trim()) {
       errors.degree = "Please enter degree";
@@ -2252,21 +2252,21 @@ const NewEmployee = () => {
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="projectEndDate"
-                label="Ending Date"
+                label="Ending Date (optional)"
                 type="date"
                 // variant="standard"
                 value={formData.projectEndDate}
                 onChange={handleFieldChange}
-                onBlur={handleBlur}
-                onFocus={handleFocus}
-                error={!!errors.projectEndDate && isTouched.projectEndDate}
-                helperText={
-                  errors.projectEndDate &&
-                  isTouched.projectEndDate &&
-                  errors.projectEndDate
-                    ? errors.projectEndDate
-                    : "Please select project end date"
-                }
+                // onBlur={handleBlur}
+                // onFocus={handleFocus}
+                // error={!!errors.projectEndDate && isTouched.projectEndDate}
+                // helperText={
+                //   errors.projectEndDate &&
+                //   isTouched.projectEndDate &&
+                //   errors.projectEndDate
+                //     ? errors.projectEndDate
+                //     : "Please select project end date"
+                // }
               />
               <br />
             </Grid>

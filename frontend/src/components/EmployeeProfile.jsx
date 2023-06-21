@@ -18,7 +18,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import { editUser, getUserDetails } from "../actions/userActions";
 import Button from "@mui/material/Button";
-import CancelIcon from "@mui/icons-material/Cancel";
+import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import Stack from "@mui/material/Stack";
 import LoadingButton from "@mui/lab/LoadingButton";
@@ -469,7 +469,7 @@ export default function EmployeeProfile() {
     region: false,
     billableHours: false,
     projectStartDate: false,
-    projectEndDate: false,
+    //projectEndDate: false,
     date: false,
     workType: false,
     role: false,
@@ -678,10 +678,10 @@ export default function EmployeeProfile() {
     isValid = false;
   }
 
-  if (!projectEndDate) {
-    errors.endDate = "Please set project end date";
-    isValid = false;
-  }
+  // if (!projectEndDate) {
+  //   errors.endDate = "Please set project end date";
+  //   isValid = false;
+  // }
 
   if (!date) {
     errors.date = "Please enter date of joining";
@@ -1011,18 +1011,18 @@ export default function EmployeeProfile() {
         setTitle(user.jobDetails.title);
         setDesignation(user.jobDetails.designation);
         setSupervisor(user.jobDetails.supervisor);
-        setEngagementManager(user.jobDetails.engagementManager);
+        setEngagementManager(user.jobDetails?.engagementManager ?? "add");
         setReportingDepartment(user.jobDetails.reportingDepartment);
-        setReportingOffice(user.jobDetails.reportingOffice);
-        setPermanentDate(user.jobDetails.permanentDate);
-        setClient(user.projectDetails.client);
-        setProjectName(user.projectDetails.projectName);
-        setProjectRole(user.projectDetails.projectRole);
-        setProjectType(user.projectDetails.projectType);
-        setBillableHours(user.projectDetails.billableHours);
-        setRegion(user.projectDetails.region);
-        setProjectStartDate(user.projectDetails.startDate);
-        setProjectEndDate(user.projectDetails.endDate);
+        setReportingOffice(user.jobDetails?.reportingOffice ?? "add");
+        setPermanentDate(user.jobDetails?.permanentDate ?? "add");
+        setClient(user.projectDetails?.client ?? "add");
+        setProjectName(user.projectDetails?.projectName ?? "add");
+        setProjectRole(user.projectDetails?.projectRole ?? "add");
+        setProjectType(user.projectDetails?.projectType ?? "add");
+        setBillableHours(user.projectDetails?.billableHours ?? "add");
+        setRegion(user.projectDetails?.region ?? "add");
+        setProjectStartDate(user.projectDetails?.startDate ?? "add");
+        setProjectEndDate(user.projectDetails?.endDate ?? "add");
         setDate(user.jobDetails.dateOfJoining);
         setWorkType(user.jobDetails.workType);
         setRole(user.role);
@@ -1033,17 +1033,17 @@ export default function EmployeeProfile() {
         setEmergencyAddress(user.emergencyDetails.address);
         setContact(user.emergencyDetails.contact);
         setBlood(user.emergencyDetails.blood);
-        setDegree(user.educationalInfo.degree);
-        setDegreeStartDate(user.educationalInfo.startDate);
-        setDegreeEndDate(user.educationalInfo.endDate);
-        setInstitute(user.educationalInfo.institute);
-        setFuel(user.fuel);
-        setMedicalAllowance(user.medicalAllowance);
-        setProvidentFund(user.providentFund);
-        setPaidCertifications(user.paidCertifications);
-        setPaidTimeOff(user.paidTimeOff);
-        setEmpOfQuarter(user.empOfQuarter);
-        setAnnualBonus(user.annualBonus);
+        setDegree(user.educationalInfo?.degree ?? "add");
+        setDegreeStartDate(user.educationalInfo?.startDate ?? "add");
+        setDegreeEndDate(user.educationalInfo?.endDate ?? "add");
+        setInstitute(user.educationalInfo?.institute ?? "add");
+        setFuel(user.fuel ?? "add");
+        setMedicalAllowance(user.medicalAllowance ?? "add");
+        setProvidentFund(user.providentFund ?? "add");
+        setPaidCertifications(user.paidCertifications ?? "add");
+        setPaidTimeOff(user.paidTimeOff ?? "add");
+        setEmpOfQuarter(user.empOfQuarter ?? "add");
+        setAnnualBonus(user.annualBonus ?? "add");
       }
     }
   }, [dispatch, id, user, success, navigate]);
@@ -1084,7 +1084,15 @@ export default function EmployeeProfile() {
             {...getRootProps()}
           >
             {imageUrl ? (
-              <div style={{ position: "relative" }}>
+              <Item
+                sx={{
+                  position: "relative",
+                  height: 180,
+                  width: 180,
+                  borderRadius: "50%",
+                  backgroundColor: "#eaeff1",
+                }}
+              >
                 <img
                   //src={`/photos/${imageUrl}`}
                   src={
@@ -1097,7 +1105,7 @@ export default function EmployeeProfile() {
                     height: 180,
                     width: 180,
                     borderRadius: "50%",
-                    border: "5px solid #fff",
+                    //border: "5px solid #fff",
                   }}
                 />
                 <IconButton
@@ -1111,9 +1119,9 @@ export default function EmployeeProfile() {
                     boxShadow: "0px 0px 3px rgba(0,0,0,0.3)",
                   }}
                 >
-                  <CancelIcon />
+                  <AddAPhotoIcon />
                 </IconButton>
-              </div>
+              </Item>
             ) : (
               <Box
                 sx={{
@@ -2197,19 +2205,19 @@ export default function EmployeeProfile() {
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="projectEndDate"
-                label="Ending Date"
+                label="Ending Date (optional)"
                 type="date"
                 // variant="standard"
                 value={projectEndDate}
                 onChange={(e) => setProjectEndDate(e.target.value)}
-                onBlur={handleBlur}
-                onFocus={handleFocus}
-                error={!!errors.projectEndDate && isTouched.projectEndDate}
-                helperText={
-                  errors.projectEndDate &&
-                  isTouched.projectEndDate &&
-                  errors.projectEndDate
-                }
+                // onBlur={handleBlur}
+                // onFocus={handleFocus}
+                // error={!!errors.projectEndDate && isTouched.projectEndDate}
+                // helperText={
+                //   errors.projectEndDate &&
+                //   isTouched.projectEndDate &&
+                //   errors.projectEndDate
+                // }
               />
               <br />
             </Grid>
