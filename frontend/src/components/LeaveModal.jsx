@@ -15,14 +15,14 @@ import MenuItem from "@mui/material/MenuItem";
 import { requestLeave } from "../actions/leaveActions";
 
 const LeaveModal = ({ open, onClose, availableLeaves }) => {
-  const userDetails = useSelector((state) => state.userDetails);
-  const { user } = userDetails;
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
   let paternityOrMaternity = "";
-  if (user?.gender === "Male") {
+  if (userInfo?.gender === "Male") {
     paternityOrMaternity = "Paternity";
   }
-  if (user?.gender === "Female") {
+  if (userInfo?.gender === "Female") {
     paternityOrMaternity = "Maternity";
   }
 

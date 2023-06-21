@@ -50,6 +50,7 @@ const authUser = asyncHandler(async (req, res) => {
       department: user.jobDetails.department,
       supervisor: user.jobDetails.supervisor,
       leaveQuota: user.leaveQuota,
+      gender: user.gender,
       passwordChangeRequired: user.passwordChangeRequired,
       token: generateToken(user._id),
     });
@@ -99,7 +100,7 @@ const forgotPassword = asyncHandler(async (req, res) => {
       from: "HRIS <hrisdigifloat@gmail.com>",
       to: user.email,
       subject: "Password Reset Request",
-      html: `<p>Dear ${user.name},</p><p>Click the following link to reset your password: <a href="http://localhost:3000/reset-password?token=${resetToken}">Reset Password</a></p><p>If you didn't request this password reset, please ignore this email.</p>`,
+      html: `<p>Dear ${user.name},</p><p>Click the following link to reset your password: <a href="http://10.51.100.66:3000/reset-password?token=${resetToken}">Reset Password</a></p><p>If you didn't request this password reset, please ignore this email.</p>`,
     };
 
     // Send the reset email
