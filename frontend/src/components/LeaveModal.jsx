@@ -79,6 +79,18 @@ const LeaveModal = ({ open, onClose, availableLeaves }) => {
     },
   ];
 
+  const leaveDuration = [
+    {
+      value: "Quarter Day",
+    },
+    {
+      value: "Half Day",
+    },
+    {
+      value: "Full Day",
+    },
+  ];
+
   const calculateDays = (start, end) => {
     const startDate = new Date(start);
     const endDate = new Date(end);
@@ -90,6 +102,7 @@ const LeaveModal = ({ open, onClose, availableLeaves }) => {
   const dispatch = useDispatch();
 
   const [type, setType] = useState("");
+  const [duration, setDuration] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [reason, setReason] = useState("");
@@ -98,16 +111,25 @@ const LeaveModal = ({ open, onClose, availableLeaves }) => {
 
   const [isTouched, setIsTouched] = useState({
     type: false,
+    duration: false,
     startDate: false,
     endDate: false,
     reason: false,
   });
+
+  const numberOfDays = calculateDays(startDate, endDate);
 
   const errors = {};
   let isValid = true;
 
   if (!type) {
     errors.type = "Please select a type";
+    isValid = false;
+  }
+
+  if (!duration) {
+    errors.duration = "Please select duration";
+
     isValid = false;
   }
 
@@ -146,6 +168,7 @@ const LeaveModal = ({ open, onClose, availableLeaves }) => {
     e.preventDefault();
     const leaveData = {
       type,
+      duration,
       startDate,
       endDate,
       reason,
@@ -169,6 +192,7 @@ const LeaveModal = ({ open, onClose, availableLeaves }) => {
     }
 
     setType("");
+    setDuration("");
     setStartDate("");
     setEndDate("");
     setReason("");
@@ -261,6 +285,29 @@ const LeaveModal = ({ open, onClose, availableLeaves }) => {
               helperText={errors.endDate && isTouched.endDate && errors.endDate}
             />
           </Stack>
+          {numberOfDays === 1 && (
+            <TextField
+              name="duration"
+              select
+              label="Leave Duration"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+              onBlur={handleBlur}
+              error={!!errors.duration && isTouched.duration}
+              helperText={
+                errors.duration && isTouched.duration && errors.duration
+              }
+            >
+              {leaveDuration.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.value}
+                </MenuItem>
+              ))}
+            </TextField>
+          )}
           <TextField
             name="reason"
             select

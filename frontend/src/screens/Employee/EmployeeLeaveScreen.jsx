@@ -217,15 +217,25 @@ const EmployeeLeaveScreen = () => {
   );
 
   const numberOfPendingLeaves = pendingLeaveRequests?.length;
-  console.log(numberOfPendingLeaves);
 
   const rowsForLeaves = userLeavesData?.map((leave) => {
+    let numberOfDays = calculateDays(leave.startDate, leave.endDate);
+    if (numberOfDays === 1) {
+      if (leave.duration === "Half Day") {
+        numberOfDays = 0.5;
+      } else if (leave.duration === "Quarter Day") {
+        numberOfDays = 0.25;
+      } else {
+        numberOfDays = 1;
+      }
+    }
     return {
       id: leave._id,
       type: leave.type,
       startDate: leave.startDate,
       endDate: leave.endDate,
-      days: calculateDays(leave.startDate, leave.endDate),
+      days: numberOfDays,
+      //days: calculateDays(leave.startDate, leave.endDate),
       reason: leave.reason,
       status: leave.status,
     };

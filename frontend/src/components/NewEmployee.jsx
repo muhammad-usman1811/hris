@@ -275,22 +275,43 @@ const NewEmployee = () => {
       value: "1",
     },
     {
+      value: "1.5",
+    },
+    {
       value: "2",
+    },
+    {
+      value: "2.5",
     },
     {
       value: "3",
     },
     {
+      value: "3.5",
+    },
+    {
       value: "4",
+    },
+    {
+      value: "4.5",
     },
     {
       value: "5",
     },
     {
+      value: "5.5",
+    },
+    {
       value: "6",
     },
     {
+      value: "6.5",
+    },
+    {
       value: "7",
+    },
+    {
+      value: "7.5",
     },
     {
       value: "8",

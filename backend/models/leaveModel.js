@@ -34,6 +34,10 @@ const leaveSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    duration: {
+      type: String,
+      default: "Full Day",
+    },
     reason: {
       type: String,
       required: true,

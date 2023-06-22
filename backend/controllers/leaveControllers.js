@@ -20,7 +20,7 @@ const getLeaves = asyncHandler(async (req, res) => {
 });
 
 const addLeaveRequest = asyncHandler(async (req, res) => {
-  const { type, startDate, endDate, reason } = req.body;
+  const { type, startDate, endDate, duration, reason } = req.body;
   const supervisor = await User.findOne({
     name: req.user.jobDetails.supervisor,
   })
@@ -36,6 +36,7 @@ const addLeaveRequest = asyncHandler(async (req, res) => {
     type,
     startDate,
     endDate,
+    duration,
     reason,
   });
   await leaveRequest.save();
