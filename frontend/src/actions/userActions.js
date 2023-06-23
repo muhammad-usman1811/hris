@@ -165,6 +165,7 @@ export const addUser = (userData) => async (dispatch) => {
     formData.append("photo", userData.file);
     formData.append("name", userData.name);
     formData.append("email", userData.email);
+    formData.append("personalEmail", userData.personalEmail);
     formData.append("address", userData.address);
     formData.append("passport", userData.passport);
     formData.append("password", userData.password);
@@ -270,6 +271,7 @@ export const editUser = (userData) => async (dispatch, getState) => {
     formData.append("degreeStartDate", userData.degreeStartDate);
     formData.append("degreeEndDate", userData.degreeEndDate);
     formData.append("email", userData.email);
+    formData.append("personalEmail", userData.personalEmail);
     formData.append("emergencyAddress", userData.emergencyAddress);
     formData.append("emergencyName", userData.emergencyName);
     formData.append("employeeId", userData.employeeId);

@@ -71,6 +71,7 @@ const EmployeeProfile = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [personalEmail, setPersonalEmail] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
   const [passport, setPassport] = useState("");
@@ -140,6 +141,7 @@ const EmployeeProfile = () => {
       setImageUrl(user.imageUrl);
       setName(user.name);
       setEmail(user.email);
+      setPersonalEmail(user.personalEmail);
       setPassword(user.password);
       setAddress(user.address);
       setPhone(user.phone);
@@ -283,9 +285,9 @@ const EmployeeProfile = () => {
                   <TextField
                     InputLabelProps={{ shrink: true }}
                     sx={{ marginTop: "20px", width: "50%" }}
-                    name="email"
-                    label="Email"
-                    value={email}
+                    name="personalEmail"
+                    label="Personal Email"
+                    value={personalEmail}
                   />
                   <br />
                   <TextField
@@ -388,6 +390,14 @@ const EmployeeProfile = () => {
                     name="employeeId"
                     label="Employee ID"
                     value={employeeId}
+                  />
+                  <br />
+                  <TextField
+                    InputLabelProps={{ shrink: true }}
+                    sx={{ marginTop: "20px", width: "50%" }}
+                    name="email"
+                    label="Email"
+                    value={email}
                   />
                   <br />
                   <TextField

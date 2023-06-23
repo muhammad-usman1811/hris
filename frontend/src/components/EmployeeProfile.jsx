@@ -193,6 +193,9 @@ export default function EmployeeProfile() {
     {
       value: "Permanent",
     },
+    {
+      value: "Contractual"
+    },
   ];
   const maritalStatusOptions = [
     {
@@ -414,6 +417,7 @@ export default function EmployeeProfile() {
   const [imageUrl, setImageUrl] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [personalEmail, setPersonalEmail] = useState("");
   const [password, setPassword] = useState("");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState("");
@@ -472,6 +476,7 @@ export default function EmployeeProfile() {
     imageUrl: false,
     name: false,
     email: false,
+    personalEmail: false,
     password: false,
     address: false,
     phone: false,
@@ -559,6 +564,7 @@ export default function EmployeeProfile() {
   const [hasBlurred, setHasBlurred] = useState({
     password: false,
     email: false,
+    personalEmail: false,
     phone: false,
     cnic: false,
     passport: false,
@@ -583,6 +589,11 @@ export default function EmployeeProfile() {
     isValid = false;
   } else if (!email.includes("@digifloat.com") && hasBlurred.email) {
     errors.email = "Email format is incorrect";
+    isValid = false;
+  }
+
+  if (!personalEmail || !personalEmail.trim()) {
+    errors.personalEmail = "Please enter your personal email";
     isValid = false;
   }
 
@@ -678,10 +689,10 @@ export default function EmployeeProfile() {
     isValid = false;
   }
 
-  if (!reportingDepartment) {
-    errors.reportingDepartment = "Please select reporting department";
-    isValid = false;
-  }
+  // if (!reportingDepartment) {
+  //   errors.reportingDepartment = "Please select reporting department";
+  //   isValid = false;
+  // }
 
   if (!reportingOffice) {
     errors.reportingOffice = "Please select reporting office";
@@ -878,6 +889,7 @@ export default function EmployeeProfile() {
           imageIsChanged,
           name,
           email,
+          personalEmail,
           password,
           address,
           passport,
@@ -991,6 +1003,7 @@ export default function EmployeeProfile() {
         setImageUrl(user.imageUrl);
         setName(user.name);
         setEmail(user.email);
+        setPersonalEmail(user.personalEmail ?? "add");
         setPassword(user.password);
         setAddress(user.address);
         setPhone(user.phone);
@@ -1209,16 +1222,16 @@ export default function EmployeeProfile() {
               <TextField
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
-                name="email"
+                name="personalEmail"
                 type="email"
-                label="Email"
+                label="Personal Email"
                 // variant="standard"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={personalEmail}
+                onChange={(e) => setPersonalEmail(e.target.value)}
                 onBlur={handleBlur}
                 onFocus={handleFocus}
-                error={!!errors.email && isTouched.email}
-                helperText={errors.email && isTouched.email && errors.email}
+                error={!!errors.personalEmail && isTouched.personalEmail}
+                helperText={errors.personalEmail && isTouched.personalEmail && errors.personalEmail}
               />
               <br />
               <TextField
@@ -1410,6 +1423,21 @@ export default function EmployeeProfile() {
               />
               <br />
               <TextField
+                InputLabelProps={{ shrink: true }}
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="email"
+                type="email"
+                label="Email"
+                // variant="standard"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.email && isTouched.email}
+                helperText={errors.email && isTouched.email && errors.email}
+              />
+              <br />
+              <TextField
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="department"
                 select
@@ -1507,7 +1535,7 @@ export default function EmployeeProfile() {
               <br />
               <TextField
                 sx={{ marginTop: "20px", width: "50%" }}
-                name="reporting office"
+                name="reportingOffice"
                 select
                 value={reportingOffice}
                 onChange={(e) => setReportingOffice(e.target.value)}
@@ -1529,20 +1557,15 @@ export default function EmployeeProfile() {
               <br />
               <TextField
                 sx={{ marginTop: "20px", width: "50%" }}
-                name="reporting department"
+                name="reportingDepartment"
                 select
                 value={reportingDepartment}
                 onChange={(e) => setReportingDepartment(e.target.value)}
                 onBlur={handleBlur}
-                error={
-                  !!errors.reportingDepartment && isTouched.reportingDepartment
-                }
-                helperText={
-                  errors.reportingDepartment && isTouched.reportingDepartment
-                    ? errors.reportingDepartment
-                    : "Please select reporting department"
-                }
-                // variant="standard"
+                helperText="Please select reporting department"
+                // error={
+                //   !!errors.reportingDepartment && isTouched.reportingDepartment
+                // }
               >
                 {reportingDepartmentOpt.map((option) => (
                   <MenuItem key={option.value} value={option.value}>

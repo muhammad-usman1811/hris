@@ -16,6 +16,10 @@ const userSchema = mongoose.Schema(
       required: true,
       unique: true,
     },
+    personalEmail: {
+      type: String,
+      required: true,
+    },
     employeeId: {
       type: String,
       required: true,
@@ -150,7 +154,6 @@ const userSchema = mongoose.Schema(
       },
       reportingDepartment: {
         type: String,
-        required: true,
       },
       permanentDate: {
         type: String,

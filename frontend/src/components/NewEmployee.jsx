@@ -198,6 +198,9 @@ const NewEmployee = () => {
     {
       value: "Permanent",
     },
+    {
+      value: "Contractual"
+    }
   ];
   const maritalStatusOptions = [
     {
@@ -342,6 +345,7 @@ const NewEmployee = () => {
     file: null,
     name: "",
     email: "",
+    personalEmail: "",
     password: "",
     address: "",
     phone: "",
@@ -411,6 +415,7 @@ const NewEmployee = () => {
   const [isTouched, setIsTouched] = useState({
     name: false,
     email: false,
+    personalEmail: false,
     password: false,
     address: false,
     phone: false,
@@ -839,6 +844,11 @@ const NewEmployee = () => {
       isValid = false;
     }
 
+    if (!formData.personalEmail || !formData.personalEmail.trim()) {
+      errors.personalEmail = "Please enter your personal email";
+      isValid = false;
+    }
+
     if (!formData.password || !formData.password.trim()) {
       errors.password = "Please enter password";
       isValid = false;
@@ -989,10 +999,10 @@ const NewEmployee = () => {
       isValid = false;
     }
 
-    if (!formData.reportingDepartment) {
-      errors.reportingDepartment = "Please select reporting department";
-      isValid = false;
-    }
+    // if (!formData.reportingDepartment) {
+    //   errors.reportingDepartment = "Please select reporting department";
+    //   isValid = false;
+    // }
 
     if (!formData.reportingOffice) {
       errors.reportingOffice = "Please select reporting office";
@@ -1253,17 +1263,17 @@ const NewEmployee = () => {
                 InputLabelProps={{ shrink: true }}
                 required
                 sx={{ marginTop: "20px", width: "50%" }}
-                name="email"
+                name="personalEmail"
                 type="email"
-                label="Email"
-                value={formData.email}
+                label="Personal Email"
+                value={formData.personalEmail}
                 onChange={handleFieldChange}
                 onBlur={handleBlur}
                 onFocus={handleFocus}
-                error={!!errors.email && isTouched.email}
-                helperText={errors.email && isTouched.email && errors.email}
+                error={!!errors.personalEmail && isTouched.personalEmail}
+                helperText={errors.personalEmail && isTouched.personalEmail && errors.personalEmail}
               />
-              <br />
+              <br/>
               <TextField
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
@@ -1452,6 +1462,21 @@ const NewEmployee = () => {
               />
               <br />
               <TextField
+                InputLabelProps={{ shrink: true }}
+                required
+                sx={{ marginTop: "20px", width: "50%" }}
+                name="email"
+                type="email"
+                label="Email"
+                value={formData.email}
+                onChange={handleFieldChange}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                error={!!errors.email && isTouched.email}
+                helperText={errors.email && isTouched.email && errors.email}
+              />
+              <br />
+              <TextField
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="department"
                 select
@@ -1597,14 +1622,11 @@ const NewEmployee = () => {
                 value={formData.reportingDepartment}
                 onChange={handleFieldChange}
                 onBlur={handleBlur}
-                error={
-                  !!errors.reportingDepartment && isTouched.reportingDepartment
-                }
-                helperText={
-                  errors.reportingDepartment && isTouched.reportingDepartment
-                    ? errors.reportingDepartment
-                    : "Please select reporting department"
-                }
+                helperText="Please select reporting department"
+                // error={
+                //   !!errors.reportingDepartment && isTouched.reportingDepartment
+                // }
+               
               >
                 {reportingDepartmentOpt.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
