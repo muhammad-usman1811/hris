@@ -60,6 +60,10 @@ const updateSupervisorApproval = asyncHandler(async (req, res) => {
   //Update supervisor approval
   if (request) {
     request.supervisorApproval = true;
+    if (request.supervisor === request.engagementManager) {
+      request.lineManagerApproval = true;
+      request.status = "Approved";
+    }
     await request.save();
     res.json({ message: "Request approved by supervisor" });
   } else {
@@ -122,6 +126,7 @@ const getTeamAttendanceRequests = asyncHandler(async (req, res) => {
 const getTeamAttendanceRequestsForEM = asyncHandler(async (req, res) => {
   const attendanceRequests = await AttendanceRequest.find({
     engagementManager: req.params.engagementManager,
+    status: "Pending",
   });
   res.json(attendanceRequests);
 });

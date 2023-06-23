@@ -316,7 +316,7 @@ const EmployeeLeaveScreen = () => {
       }}
     >
       <>
-        {userInfo.role === "Supervisor" && (
+        {userInfo.role.includes("Line Manager") && (
           <Box sx={{ width: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs
@@ -468,8 +468,8 @@ const EmployeeLeaveScreen = () => {
             </Snackbar>
           </Box>
         )}
-        {(userInfo.role === "Employee" ||
-          userInfo.role === "Engagement Manager") && (
+        {(userInfo.role.includes("Employee") ||
+          userInfo.role.includes("Engagement Manager")) && (
           <>
             <div
               style={{

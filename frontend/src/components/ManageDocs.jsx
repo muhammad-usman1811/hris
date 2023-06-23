@@ -72,7 +72,7 @@ const ManageDocs = () => {
   };
 
   useEffect(() => {
-    if (userInfo && userInfo.role === "Admin") {
+    if (userInfo && userInfo.role.includes("Admin")) {
       dispatch(getDocs());
     } else {
       navigate("/");

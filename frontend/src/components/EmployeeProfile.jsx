@@ -22,6 +22,10 @@ import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import Stack from "@mui/material/Stack";
 import LoadingButton from "@mui/lab/LoadingButton";
+import Checkbox from "@mui/material/Checkbox";
+import Autocomplete from "@mui/material/Autocomplete";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -63,6 +67,9 @@ function a11yProps(index) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
+
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 export default function EmployeeProfile() {
   const departments = [
@@ -127,7 +134,7 @@ export default function EmployeeProfile() {
       value: "Engagement Manager",
     },
     {
-      value: "Supervisor",
+      value: "Line Manager",
     },
     {
       value: "Employee",
@@ -440,7 +447,7 @@ export default function EmployeeProfile() {
   const [degreeEndDate, setDegreeEndDate] = useState("");
   const [date, setDate] = useState("");
   const [workType, setWorkType] = useState("");
-  const [role, setRole] = useState("");
+  const [role, setRole] = useState([]);
   const [employmentStatus, setEmploymentStatus] = useState("");
   const [salary, setSalary] = useState("");
   const [emergencyName, setEmergencyName] = useState("");
@@ -455,6 +462,7 @@ export default function EmployeeProfile() {
   const [paidCertifications, setPaidCertifications] = useState("");
   const [paidTimeOff, setPaidTimeOff] = useState("");
   const [annualBonus, setAnnualBonus] = useState("");
+  console.log(role);
   //Other states
   //const [openToast, setOpenToast] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -513,6 +521,12 @@ export default function EmployeeProfile() {
     paidTimeOff: false,
     annualBonus: false,
   });
+
+  //Handle role change
+  const handleRoleChange = (event, selectedRoles) => {
+    const selectedRoleValues = selectedRoles.map((role) => role.value);
+    setRole(selectedRoleValues);
+  };
 
   //Project and its custom options
   const customProjectFromLocalStorage = JSON.parse(
@@ -857,61 +871,6 @@ export default function EmployeeProfile() {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (isValid) {
-      console.log({
-        id,
-        imageUrl,
-        imageIsChanged,
-        name,
-        email,
-        password,
-        address,
-        passport,
-        dob,
-        maritalStatus,
-        gender,
-        phone,
-        cnic,
-        department,
-        employeeId,
-        designation,
-        shiftStartTime,
-        shiftEndTime,
-        title,
-        supervisor,
-        engagementManager,
-        reportingDepartment,
-        reportingOffice,
-        permanentDate,
-        client,
-        projectName,
-        projectRole,
-        projectType,
-        region,
-        billableHours,
-        projectStartDate,
-        projectEndDate,
-        date,
-        workType,
-        role,
-        employmentStatus,
-        salary,
-        emergencyAddress,
-        emergencyName,
-        relation,
-        contact,
-        blood,
-        degree,
-        degreeStartDate,
-        degreeEndDate,
-        institute,
-        fuel,
-        medicalAllowance,
-        providentFund,
-        empOfQuarter,
-        paidCertifications,
-        annualBonus,
-        paidTimeOff,
-      });
       dispatch(
         editUser({
           id,
@@ -1692,7 +1651,39 @@ export default function EmployeeProfile() {
                 ))}
               </TextField>
               <br />
-              <TextField
+              <Autocomplete
+                multiple
+                id="checkboxes-tags-demo"
+                options={roles}
+                disableCloseOnSelect
+                getOptionLabel={(option) => option.value}
+                renderOption={(props, option, { selected }) => (
+                  <li {...props}>
+                    <Checkbox
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={selected}
+                    />
+                    {option.value}
+                  </li>
+                )}
+                style={{ marginTop: "20px", width: "50%" }}
+                value={roles.filter((roles) => role.includes(roles.value))}
+                onChange={handleRoleChange}
+                onBlur={handleBlur}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Role"
+                    name="role"
+                    InputLabelProps={{ shrink: true }}
+                    error={!!errors.role && isTouched.role}
+                    helperText={errors.role && isTouched.role && errors.role}
+                  />
+                )}
+              />
+              {/* <TextField
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="role"
                 select
@@ -1712,7 +1703,7 @@ export default function EmployeeProfile() {
                     {option.value}
                   </MenuItem>
                 ))}
-              </TextField>
+              </TextField> */}
               <br />
               <TextField
                 sx={{ marginTop: "20px", width: "50%" }}

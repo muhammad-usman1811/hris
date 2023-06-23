@@ -23,6 +23,10 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
+import Checkbox from "@mui/material/Checkbox";
+import Autocomplete from "@mui/material/Autocomplete";
+import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import CheckBoxIcon from "@mui/icons-material/CheckBox";
 //import DeleteIcon from "@mui/icons-material/Delete";
 // import FormHelperText from "@mui/material/FormHelperText";
 // import FormControl from "@mui/material/FormControl";
@@ -68,6 +72,9 @@ function a11yProps(index) {
     "aria-controls": `simple-tabpanel-${index}`,
   };
 }
+
+const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
+const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
 const NewEmployee = () => {
   const departments = [
@@ -132,7 +139,7 @@ const NewEmployee = () => {
       value: "Engagement Manager",
     },
     {
-      value: "Supervisor",
+      value: "Line Manager",
     },
     {
       value: "Employee",
@@ -373,7 +380,7 @@ const NewEmployee = () => {
     supervisor: "",
     date: "",
     workType: "",
-    role: "",
+    role: [],
     employmentStatus: "",
     salary: "",
     emergencyName: "",
@@ -487,6 +494,11 @@ const NewEmployee = () => {
       ...prev,
       [name]: false,
     }));
+  };
+
+  //Handle role change
+  const handleRoleChange = (event, value) => {
+    setFormData({ ...formData, role: value.map((option) => option.value) });
   };
 
   //Hanlde dynamic dependency of projects based on client
@@ -707,6 +719,21 @@ const NewEmployee = () => {
     setErrors((prevErrors) => ({ ...prevErrors, [name]: null }));
   };
 
+  const handleEmployeeIdChange = (e) => {
+    let value = e.target.value;
+
+    // Remove any non-digit characters from the input
+    value = value.replace(/\D/g, "");
+
+    // Limit the input to three digits
+    value = value.slice(0, 3);
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      employeeId: value,
+    }));
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     if (isValid) {
@@ -892,8 +919,8 @@ const NewEmployee = () => {
       isValid = false;
     }
 
-    if (!formData.employeeId || !formData.employeeId.trim()) {
-      errors.employeeId = "Please enter employee ID";
+    if (!formData.employeeId) {
+      errors.employeeId = "Employee ID must be a 3-digit number";
       isValid = false;
     }
 
@@ -922,7 +949,7 @@ const NewEmployee = () => {
       isValid = false;
     }
 
-    if (!formData.role) {
+    if (!formData.role || formData.role.length === 0) {
       errors.role = "Please specify a role";
     }
 
@@ -1411,12 +1438,17 @@ const NewEmployee = () => {
                 required
                 label="Employee ID"
                 value={formData.employeeId}
-                onChange={handleFieldChange}
+                onChange={handleEmployeeIdChange}
                 onBlur={handleBlur}
                 error={!!errors.employeeId && isTouched.employeeId}
                 helperText={
                   errors.employeeId && isTouched.employeeId && errors.employeeId
                 }
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">df-</InputAdornment>
+                  ),
+                }}
               />
               <br />
               <TextField
@@ -1674,10 +1706,45 @@ const NewEmployee = () => {
                 ))}
               </TextField>
               <br />
-              <TextField
+              <Autocomplete
+                multiple
+                id="checkboxes-tags-demo"
+                options={roles}
+                disableCloseOnSelect
+                getOptionLabel={(option) => option.value}
+                renderOption={(props, option, { selected }) => (
+                  <li {...props}>
+                    <Checkbox
+                      icon={icon}
+                      checkedIcon={checkedIcon}
+                      style={{ marginRight: 8 }}
+                      checked={selected}
+                    />
+                    {option.value}
+                  </li>
+                )}
+                style={{ marginTop: "20px", width: "50%" }}
+                value={roles.filter((role) =>
+                  formData.role.includes(role.value)
+                )}
+                onChange={handleRoleChange}
+                onBlur={handleBlur}
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    label="Role"
+                    name="role"
+                    InputLabelProps={{ shrink: true }}
+                    error={!!errors.role && isTouched.role}
+                    helperText={errors.role && isTouched.role && errors.role}
+                  />
+                )}
+              />
+              {/* <TextField
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="role"
                 select
+                multiple
                 value={formData.role}
                 onChange={handleFieldChange}
                 onBlur={handleBlur}
@@ -1693,7 +1760,7 @@ const NewEmployee = () => {
                     {option.value}
                   </MenuItem>
                 ))}
-              </TextField>
+              </TextField> */}
               <br />
               <TextField
                 sx={{ marginTop: "20px", width: "50%" }}

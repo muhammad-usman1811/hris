@@ -168,7 +168,7 @@ const HomeScreen = () => {
       };
       try {
         const result = await axios.get(
-          `/api/attendance/${userInfo._id}`,
+          `/api/attendance/todayAttendance/${userInfo._id}`,
           config
         );
 

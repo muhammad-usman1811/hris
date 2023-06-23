@@ -327,7 +327,7 @@ const ManualAttendanceScreen = () => {
       }}
     >
       <>
-        {userInfo.role === "Engagement Manager" && (
+        {userInfo.role.includes("Engagement Manager") && (
           <Box sx={{ width: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs
@@ -404,7 +404,7 @@ const ManualAttendanceScreen = () => {
           </Box>
         )}
 
-        {userInfo.role === "Supervisor" && (
+        {userInfo.role.includes("Line Manager") && (
           <Box sx={{ width: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs
@@ -480,7 +480,7 @@ const ManualAttendanceScreen = () => {
             </Snackbar> */}
           </Box>
         )}
-        {userInfo.role === "Employee" && (
+        {userInfo.role.includes("Employee") && (
           <>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Box>

@@ -28,10 +28,6 @@ import { logout } from "./../../actions/userActions";
 const Navbar = () => {
   const [open, setOpen] = React.useState(false);
 
-  // const handleClick = () => {
-  //   setOpen(!open);
-  // };
-
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -58,7 +54,7 @@ const Navbar = () => {
         />
       </Toolbar>
       <Divider />
-      {userInfo.role === "Admin" && (
+      {userInfo.role.includes("Admin") && (
         <>
           <List component="nav">
             <ListItemButton
@@ -158,9 +154,9 @@ const Navbar = () => {
         </>
       )}
 
-      {(userInfo.role === "Employee" ||
-        userInfo.role === "Supervisor" ||
-        userInfo.role === "Engagement Manager") && (
+      {(userInfo.role.includes("Employee") ||
+        userInfo.role.includes("Line Manager") ||
+        userInfo.role.includes("Engagement Manager")) && (
         <>
           <List component="nav">
             <ListItemButton

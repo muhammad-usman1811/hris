@@ -133,7 +133,7 @@ function EmployeeTable() {
   };
 
   useEffect(() => {
-    if (userInfo && userInfo.role === "Admin") {
+    if (userInfo && userInfo.role.includes("Admin")) {
       dispatch(listUsers());
       const userData =
         users &&
