@@ -202,7 +202,7 @@ export const addUser = (userData) => async (dispatch) => {
     formData.append("contact", userData.contact);
     formData.append("employeeId", userData.employeeId);
     formData.append("relation", userData.relation);
-    formData.append("role", userData.role);
+    formData.append("role", JSON.stringify(userData.role));
     formData.append("employmentStatus", userData.employmentStatus);
     formData.append("salary", userData.salary);
     formData.append("supervisor", userData.supervisor);

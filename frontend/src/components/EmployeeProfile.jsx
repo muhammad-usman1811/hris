@@ -126,20 +126,7 @@ export default function EmployeeProfile() {
     },
   ];
 
-  const roles = [
-    {
-      value: "Admin",
-    },
-    {
-      value: "Engagement Manager",
-    },
-    {
-      value: "Line Manager",
-    },
-    {
-      value: "Employee",
-    },
-  ];
+  const roles = ["Admin", "Engagement Manager", "Line Manager", "Employee"];
 
   const workTypes = [
     {
@@ -194,7 +181,7 @@ export default function EmployeeProfile() {
       value: "Permanent",
     },
     {
-      value: "Contractual"
+      value: "Contractual",
     },
   ];
   const maritalStatusOptions = [
@@ -466,7 +453,7 @@ export default function EmployeeProfile() {
   const [paidCertifications, setPaidCertifications] = useState("");
   const [paidTimeOff, setPaidTimeOff] = useState("");
   const [annualBonus, setAnnualBonus] = useState("");
-  console.log(role);
+
   //Other states
   //const [openToast, setOpenToast] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -529,8 +516,7 @@ export default function EmployeeProfile() {
 
   //Handle role change
   const handleRoleChange = (event, selectedRoles) => {
-    const selectedRoleValues = selectedRoles.map((role) => role.value);
-    setRole(selectedRoleValues);
+    setRole(selectedRoles);
   };
 
   //Project and its custom options
@@ -919,7 +905,7 @@ export default function EmployeeProfile() {
           projectEndDate,
           date,
           workType,
-          role,
+          role: JSON.stringify(role),
           employmentStatus,
           salary,
           emergencyAddress,
@@ -991,6 +977,7 @@ export default function EmployeeProfile() {
     }
   };
 
+  console.log("state", role);
   useEffect(() => {
     if (success) {
       dispatch({ type: "USER_EDIT_RESET" });
@@ -1034,6 +1021,7 @@ export default function EmployeeProfile() {
         setDate(user.jobDetails.dateOfJoining);
         setWorkType(user.jobDetails.workType);
         setRole(user.role);
+        console.log("db", user.role);
         setEmploymentStatus(user.jobDetails.employmentStatus);
         setSalary(user.jobDetails.salary);
         setEmergencyName(user.emergencyDetails.name);
@@ -1231,7 +1219,11 @@ export default function EmployeeProfile() {
                 onBlur={handleBlur}
                 onFocus={handleFocus}
                 error={!!errors.personalEmail && isTouched.personalEmail}
-                helperText={errors.personalEmail && isTouched.personalEmail && errors.personalEmail}
+                helperText={
+                  errors.personalEmail &&
+                  isTouched.personalEmail &&
+                  errors.personalEmail
+                }
               />
               <br />
               <TextField
@@ -1679,7 +1671,7 @@ export default function EmployeeProfile() {
                 id="checkboxes-tags-demo"
                 options={roles}
                 disableCloseOnSelect
-                getOptionLabel={(option) => option.value}
+                getOptionLabel={(option) => option}
                 renderOption={(props, option, { selected }) => (
                   <li {...props}>
                     <Checkbox
@@ -1688,11 +1680,11 @@ export default function EmployeeProfile() {
                       style={{ marginRight: 8 }}
                       checked={selected}
                     />
-                    {option.value}
+                    {option}
                   </li>
                 )}
                 style={{ marginTop: "20px", width: "50%" }}
-                value={roles.filter((roles) => role.includes(roles.value))}
+                value={roles.filter((roleObject) => role.includes(roleObject))}
                 onChange={handleRoleChange}
                 onBlur={handleBlur}
                 renderInput={(params) => (
@@ -1710,6 +1702,7 @@ export default function EmployeeProfile() {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="role"
                 select
+                multiple
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
                 onBlur={handleBlur}

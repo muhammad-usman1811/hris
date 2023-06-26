@@ -131,20 +131,7 @@ const NewEmployee = () => {
     },
   ];
 
-  const roles = [
-    {
-      value: "Admin",
-    },
-    {
-      value: "Engagement Manager",
-    },
-    {
-      value: "Line Manager",
-    },
-    {
-      value: "Employee",
-    },
-  ];
+  const roles = ["Admin", "Engagement Manager", "Line Manager", "Employee"];
 
   const workTypes = [
     {
@@ -199,8 +186,8 @@ const NewEmployee = () => {
       value: "Permanent",
     },
     {
-      value: "Contractual"
-    }
+      value: "Contractual",
+    },
   ];
   const maritalStatusOptions = [
     {
@@ -502,8 +489,11 @@ const NewEmployee = () => {
   };
 
   //Handle role change
-  const handleRoleChange = (event, value) => {
-    setFormData({ ...formData, role: value.map((option) => option.value) });
+  const handleRoleChange = (event, selectedRoles) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      role: selectedRoles,
+    }));
   };
 
   //Hanlde dynamic dependency of projects based on client
@@ -1271,9 +1261,13 @@ const NewEmployee = () => {
                 onBlur={handleBlur}
                 onFocus={handleFocus}
                 error={!!errors.personalEmail && isTouched.personalEmail}
-                helperText={errors.personalEmail && isTouched.personalEmail && errors.personalEmail}
+                helperText={
+                  errors.personalEmail &&
+                  isTouched.personalEmail &&
+                  errors.personalEmail
+                }
               />
-              <br/>
+              <br />
               <TextField
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "50%" }}
@@ -1626,7 +1620,6 @@ const NewEmployee = () => {
                 // error={
                 //   !!errors.reportingDepartment && isTouched.reportingDepartment
                 // }
-               
               >
                 {reportingDepartmentOpt.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -1733,7 +1726,7 @@ const NewEmployee = () => {
                 id="checkboxes-tags-demo"
                 options={roles}
                 disableCloseOnSelect
-                getOptionLabel={(option) => option.value}
+                getOptionLabel={(option) => option}
                 renderOption={(props, option, { selected }) => (
                   <li {...props}>
                     <Checkbox
@@ -1742,13 +1735,11 @@ const NewEmployee = () => {
                       style={{ marginRight: 8 }}
                       checked={selected}
                     />
-                    {option.value}
+                    {option}
                   </li>
                 )}
                 style={{ marginTop: "20px", width: "50%" }}
-                value={roles.filter((role) =>
-                  formData.role.includes(role.value)
-                )}
+                value={roles.filter((role) => formData.role.includes(role))}
                 onChange={handleRoleChange}
                 onBlur={handleBlur}
                 renderInput={(params) => (
