@@ -275,6 +275,7 @@ const ManualAttendanceScreen = () => {
         status: request.status,
       };
     });
+  console.log(rowsForAttendanceRequestsEM);
 
   const rowsForAttendanceRequests = attendanceRequests?.map((request) => {
     return {
@@ -327,84 +328,8 @@ const ManualAttendanceScreen = () => {
       }}
     >
       <>
-        {userInfo.role.includes("Engagement Manager") && (
-          <Box sx={{ width: "100%" }}>
-            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-              <Tabs
-                value={value}
-                onChange={handleChange}
-                aria-label="basic tabs example"
-              >
-                <Tab label="My Attendance Requests" {...a11yProps(0)} />
-                <Tab
-                  label={
-                    <Badge
-                      //badgeContent={numberOfPendingLeaves}
-                      color="error"
-                      anchorOrigin={{
-                        vertical: "top",
-                        horizontal: "right",
-                      }}
-                    >
-                      Attendance Requests
-                    </Badge>
-                  }
-                  {...a11yProps(1)}
-                />
-
-                <Box sx={{ marginLeft: "24px" }}>
-                  <Button
-                    variant="contained"
-                    color="error"
-                    onClick={handleToggle}
-                  >
-                    Apply For Attendance
-                  </Button>
-                </Box>
-              </Tabs>
-            </Box>
-            <TabPanel value={value} index={0}>
-              <DataTable
-                data={rows}
-                columns={columns}
-                pagination
-                highlightOnHover
-              />
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-              <Box sx={{ height: "calc(100vh - 215px)" }}>
-                <DataTable
-                  data={rowsForAttendanceRequestsEM}
-                  columns={columnsForAttendanceRequestsForEM}
-                  pagination
-                  highlightOnHover
-                />
-              </Box>
-            </TabPanel>
-            {/* <Snackbar
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              open={openApproveToast}
-              autoHideDuration={3000}
-              onClose={handleCloseApproveToast}
-            >
-              <Alert severity="success" sx={{ width: "100%" }}>
-                Leave request approved successfully
-              </Alert>
-            </Snackbar>
-            <Snackbar
-              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-              open={openCancelToast}
-              autoHideDuration={3000}
-              onClose={handleCloseCancelToast}
-            >
-              <Alert severity="success" sx={{ width: "100%" }}>
-                Leave request cancelled
-              </Alert>
-            </Snackbar> */}
-          </Box>
-        )}
-
-        {userInfo.role.includes("Line Manager") && (
+        {userInfo.role.includes("Line Manager") &&
+        !userInfo.role.includes("Engagement Manager") ? (
           <Box sx={{ width: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs
@@ -479,8 +404,170 @@ const ManualAttendanceScreen = () => {
               </Alert>
             </Snackbar> */}
           </Box>
-        )}
-        {userInfo.role.includes("Employee") && (
+        ) : userInfo.role.includes("Engagement Manager") &&
+          !userInfo.role.includes("Line Manager") ? (
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="basic tabs example"
+              >
+                <Tab label="My Attendance Requests" {...a11yProps(0)} />
+                <Tab
+                  label={
+                    <Badge
+                      //badgeContent={numberOfPendingLeaves}
+                      color="error"
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                    >
+                      Attendance Requests
+                    </Badge>
+                  }
+                  {...a11yProps(1)}
+                />
+
+                <Box sx={{ marginLeft: "24px" }}>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={handleToggle}
+                  >
+                    Apply For Attendance
+                  </Button>
+                </Box>
+              </Tabs>
+            </Box>
+            <TabPanel value={value} index={0}>
+              <DataTable
+                data={rows}
+                columns={columns}
+                pagination
+                highlightOnHover
+              />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <Box sx={{ height: "calc(100vh - 215px)" }}>
+                <DataTable
+                  data={rowsForAttendanceRequestsEM}
+                  columns={columnsForAttendanceRequestsForEM}
+                  pagination
+                  highlightOnHover
+                />
+              </Box>
+            </TabPanel>
+            {/* <Snackbar
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              open={openApproveToast}
+              autoHideDuration={3000}
+              onClose={handleCloseApproveToast}
+            >
+              <Alert severity="success" sx={{ width: "100%" }}>
+                Leave request approved successfully
+              </Alert>
+            </Snackbar>
+            <Snackbar
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              open={openCancelToast}
+              autoHideDuration={3000}
+              onClose={handleCloseCancelToast}
+            >
+              <Alert severity="success" sx={{ width: "100%" }}>
+                Leave request cancelled
+              </Alert>
+            </Snackbar> */}
+          </Box>
+        ) : userInfo.role.includes("Line Manager") &&
+          userInfo.role.includes("Engagement Manager") ? (
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="basic tabs example"
+              >
+                <Tab label="My Attendance Requests" {...a11yProps(0)} />
+                <Tab
+                  label={
+                    <Badge
+                      //badgeContent={numberOfPendingLeaves}
+                      color="error"
+                      anchorOrigin={{
+                        vertical: "top",
+                        horizontal: "right",
+                      }}
+                    >
+                      Attendance Requests LM
+                    </Badge>
+                  }
+                  {...a11yProps(1)}
+                />
+                <Tab label="Attendance Requests EM" {...a11yProps(2)} />
+
+                <Box sx={{ marginLeft: "24px" }}>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    onClick={handleToggle}
+                  >
+                    Apply For Attendance
+                  </Button>
+                </Box>
+              </Tabs>
+            </Box>
+            <TabPanel value={value} index={0}>
+              <DataTable
+                data={rows}
+                columns={columns}
+                pagination
+                highlightOnHover
+              />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <Box sx={{ height: "calc(100vh - 215px)" }}>
+                <DataTable
+                  data={rowsForAttendanceRequests}
+                  columns={columnsForAttendanceRequests}
+                  pagination
+                  highlightOnHover
+                />
+              </Box>
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+              <Box sx={{ height: "calc(100vh - 215px)" }}>
+                <DataTable
+                  data={rowsForAttendanceRequestsEM}
+                  columns={columnsForAttendanceRequestsForEM}
+                  pagination
+                  highlightOnHover
+                />
+              </Box>
+            </TabPanel>
+            {/* <Snackbar
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              open={openApproveToast}
+              autoHideDuration={3000}
+              onClose={handleCloseApproveToast}
+            >
+              <Alert severity="success" sx={{ width: "100%" }}>
+                Leave request approved successfully
+              </Alert>
+            </Snackbar>
+            <Snackbar
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              open={openCancelToast}
+              autoHideDuration={3000}
+              onClose={handleCloseCancelToast}
+            >
+              <Alert severity="success" sx={{ width: "100%" }}>
+                Leave request cancelled
+              </Alert>
+            </Snackbar> */}
+          </Box>
+        ) : (
           <>
             <Box sx={{ display: "flex", flexDirection: "column" }}>
               <Box>

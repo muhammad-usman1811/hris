@@ -316,7 +316,7 @@ const EmployeeLeaveScreen = () => {
       }}
     >
       <>
-        {userInfo.role.includes("Line Manager") && (
+        {userInfo.role.includes("Line Manager") ? (
           <Box sx={{ width: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
               <Tabs
@@ -467,9 +467,7 @@ const EmployeeLeaveScreen = () => {
               </Alert>
             </Snackbar>
           </Box>
-        )}
-        {(userInfo.role.includes("Employee") ||
-          userInfo.role.includes("Engagement Manager")) && (
+        ) : (
           <>
             <div
               style={{
@@ -537,88 +535,6 @@ const EmployeeLeaveScreen = () => {
                   pagination
                   highlightOnHover
                 />
-                {/* <TableContainer component={Paper}>
-                  <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>
-                          <Typography
-                            sx={{ fontWeight: "bold" }}
-                            variant="subtitle1"
-                          >
-                            Type
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            sx={{ fontWeight: "bold" }}
-                            variant="subtitle1"
-                          >
-                            Start Date
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            sx={{ fontWeight: "bold" }}
-                            variant="subtitle1"
-                          >
-                            End Date
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            sx={{ fontWeight: "bold" }}
-                            variant="subtitle1"
-                          >
-                            Days
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            sx={{ fontWeight: "bold" }}
-                            variant="subtitle1"
-                          >
-                            Reason
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography
-                            sx={{ fontWeight: "bold" }}
-                            variant="subtitle1"
-                          >
-                            Status
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {userLeavesData?.map((leave) => (
-                        <TableRow
-                          key={leave._id}
-                          sx={{
-                            "&:hover": {
-                              backgroundColor: "rgba(0, 0, 0, 0.04)",
-                            },
-                            "&.Mui-selected": {
-                              backgroundColor: "rgba(0, 0, 0, 0.08)",
-                            },
-                          }}
-                        >
-                          <TableCell component="th" scope="row">
-                            {leave.type}
-                          </TableCell>
-                          <TableCell>{leave.startDate}</TableCell>
-                          <TableCell>{leave.endDate}</TableCell>
-                          <TableCell>
-                            {calculateDays(leave.startDate, leave.endDate)}
-                          </TableCell>
-                          <TableCell>{leave.reason}</TableCell>
-                          <TableCell>{leave.status}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer> */}
               </Grid>
             </Grid>
           </>

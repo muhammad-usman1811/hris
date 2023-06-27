@@ -66,7 +66,9 @@ const AttendanceList = () => {
       hours: hour,
       minutes: minute,
       seconds: second,
-    }).format("HH:mm:ss");
+    })
+      .subtract(1, "hour")
+      .format("HH:mm:ss");
     return totalWorkHours;
   };
 

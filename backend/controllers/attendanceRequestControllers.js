@@ -63,6 +63,42 @@ const updateSupervisorApproval = asyncHandler(async (req, res) => {
     if (request.supervisor === request.engagementManager) {
       request.lineManagerApproval = true;
       request.status = "Approved";
+
+      //Fetch user details required for attendance document
+      const user = await User.findById(request.userId);
+      //Format shift start and end time
+      const startTime = new Date();
+      const [startHour, startMinute] = user.shiftStartTime.split(":");
+      startTime.setHours(startHour, startMinute);
+      const formattedStartTime = startTime.toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      });
+
+      const endTime = new Date();
+      const [endHour, endMinute] = user.shiftEndTime.split(":");
+      endTime.setHours(endHour, endMinute);
+      const formattedEndTime = endTime.toLocaleTimeString([], {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      });
+
+      //Convert date string to object
+      const createdAt = new Date(request.date);
+      //Create an attendance document
+      const attendance = new Attendance({
+        userId: request.userId,
+        name: request.name,
+        department: request.department,
+        email: user.email,
+        checkIn: formattedStartTime,
+        checkOut: formattedEndTime,
+        createdAt: createdAt,
+      });
+
+      await attendance.save();
     }
     await request.save();
     res.json({ message: "Request approved by supervisor" });
@@ -126,7 +162,7 @@ const getTeamAttendanceRequests = asyncHandler(async (req, res) => {
 const getTeamAttendanceRequestsForEM = asyncHandler(async (req, res) => {
   const attendanceRequests = await AttendanceRequest.find({
     engagementManager: req.params.engagementManager,
-    status: "Pending",
+    //status: "Pending",
   });
   res.json(attendanceRequests);
 });
