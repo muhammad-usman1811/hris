@@ -24,6 +24,11 @@ const AttendanceList = () => {
       sortable: true,
     },
     {
+      name: <b>Date</b>,
+      selector: (row) => row.date,
+      sortable: true,
+    },
+    {
       name: <b>Checked-In</b>,
       selector: (row) => row.checkedIn,
     },
@@ -34,11 +39,6 @@ const AttendanceList = () => {
     {
       name: <b>Work Hours</b>,
       selector: (row) => row.workHours,
-    },
-    {
-      name: <b>Date</b>,
-      selector: (row) => row.date,
-      sortable: true,
     },
   ];
 
@@ -54,7 +54,7 @@ const AttendanceList = () => {
 
   const calculateWorkHours = (starttime, endtime) => {
     if (!endtime) {
-      return "";
+      return "00:00:00";
     }
     let startTime = moment(starttime, "hh:mm:ss A");
     let endTime = moment(endtime, "hh:mm:ss A");
@@ -78,8 +78,10 @@ const AttendanceList = () => {
       name: row.name,
       department: row.department,
       status: "Present",
-      checkedIn: row.checkIn,
-      checkedOut: row.checkOut,
+      checkedIn: moment(row.checkIn, "hh:mm:ss:A").format("hh:mm:ss:A"),
+      checkedOut: row.checkOut
+        ? moment(row.checkOut, "hh:mm:ss:A").format("hh:mm:ss:A")
+        : "Not checked out",
       workHours: calculateWorkHours(row.checkIn, row.checkOut),
       date: row.createdAt.split("T")[0],
     };

@@ -3,10 +3,15 @@ import { Grid, Stack, TextField, Divider, Button } from "@mui/material";
 import DataTable from "react-data-table-component";
 import { useSelector, useDispatch } from "react-redux";
 import Graph from "./common/Graph";
-import { listUsers } from "../actions/userActions";
+import { getUserDetails, listUsers } from "../actions/userActions";
 import MenuItem from "@mui/material/MenuItem";
+import UpgradeIcon from "@mui/icons-material/Upgrade";
 import axios from "axios";
 import moment from "moment";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import logo from "../assets/logo.jpeg";
 
 const TimeSheet = () => {
   const columns = [
@@ -23,6 +28,10 @@ const TimeSheet = () => {
       selector: (row) => row.status,
     },
     {
+      name: <b>Date</b>,
+      selector: (row) => row.date,
+    },
+    {
       name: <b>Checked-In</b>,
       selector: (row) => row.checkedIn,
     },
@@ -34,10 +43,6 @@ const TimeSheet = () => {
       name: <b>Work Hours</b>,
       selector: (row) => row.workHours,
     },
-    {
-      name: <b>Date</b>,
-      selector: (row) => row.date,
-    },
   ];
 
   const dispatch = useDispatch();
@@ -45,6 +50,7 @@ const TimeSheet = () => {
   const [endDate, setEndDate] = useState("");
   const [employeeNames, setEmployeeNames] = useState([]);
   const [selectedName, setSelectedName] = useState("");
+  const [selectedUserId, setSelectedUserId] = useState("");
   const [attendance, setAttendance] = useState([]);
   const [isFilterApplied, setIsFilterApplied] = useState(false);
   const [filteredRows, setFilteredRows] = useState([]);
@@ -55,22 +61,18 @@ const TimeSheet = () => {
   const userList = useSelector((state) => state.userList);
   const { users } = userList;
 
+  const userDetails = useSelector((state) => state.userDetails);
+  const { user } = userDetails;
+
   const calculateWorkHours = (starttime, endtime) => {
-    if (!endtime) {
-      return "";
+    if (!endtime || endtime === "Not checked out") {
+      return 0;
     }
     let startTime = moment(starttime, "hh:mm:ss A");
     let endTime = moment(endtime, "hh:mm:ss A");
     let duration = moment.duration(endTime.diff(startTime));
-    let hour = duration.hours();
-    let minute = duration.minutes();
-    let second = duration.seconds();
-    let totalWorkHours = moment({
-      hours: hour,
-      minutes: minute,
-      seconds: second,
-    }).format("HH:mm:ss");
-    return totalWorkHours;
+    let hours = duration.asHours();
+    return (hours - 1).toFixed(2);
   };
 
   const rowsData = attendance.map((row) => {
@@ -79,8 +81,10 @@ const TimeSheet = () => {
       name: row.name,
       department: row.department,
       status: "Present",
-      checkedIn: row.checkIn,
-      checkedOut: row.checkOut,
+      checkedIn: moment(row.checkIn, "hh:mm:ss:A").format("hh:mm:ss:A"),
+      checkedOut: row.checkOut
+        ? moment(row.checkOut, "hh:mm:ss:A").format("hh:mm:ss:A")
+        : "Not checked out",
       workHours: calculateWorkHours(row.checkIn, row.checkOut),
       date: row.createdAt.split("T")[0],
     };
@@ -103,9 +107,16 @@ const TimeSheet = () => {
     setIsFilterApplied(true);
   };
 
+  const formatDate = (date) => {
+    const dateObject = new Date(date);
+    const options = { weekday: "short", month: "short", day: "numeric" };
+    return dateObject.toLocaleDateString("en-US", options);
+  };
+
   const dataForGraph = filteredRows.map((row) => {
     return {
-      workHours: calculateWorkHours(row.checkIn, row.checkOut),
+      workHours: calculateWorkHours(row.checkedIn, row.checkedOut),
+      date: formatDate(row.date),
     };
   });
 
@@ -115,6 +126,84 @@ const TimeSheet = () => {
     setEndDate("");
     setSelectedName("");
     setIsFilterApplied(false);
+  };
+
+  const handleNameChange = (event) => {
+    const selectedName = event.target.value;
+    const selectedUser = employeeNames.find(
+      (employee) => employee.name === selectedName
+    );
+    setSelectedName(selectedName);
+    setSelectedUserId(selectedUser ? selectedUser.id : null);
+  };
+
+  const graphRef = React.useRef(null);
+
+  const downloadPdf = () => {
+    const doc = new jsPDF("p", "pt", "a4", true);
+
+    const startMonth = moment(startDate).format("MMMM"); // Extract the month from the selected start date
+
+    // Add the table content to the PDF
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.text("Time Sheet", 230, 70);
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold"); // Set the font style to bold
+    doc.text("Name:", 50, 125);
+    doc.text("Designation:", 50, 150);
+    doc.text("Month:", 50, 175);
+    doc.text("Project:", 50, 200);
+    doc.text("Department:", 50, 225);
+    doc.text("Shift:", 300, 125);
+    doc.text("Client:", 300, 150);
+
+    doc.setFont("helvetica", "normal"); // Set the font style to normal
+    doc.text(selectedName, 95, 125); // Display the selected name as normal text
+    doc.text(`${user.jobDetails?.designation}`, 125, 150);
+    doc.text(`${startMonth}`, 95, 175);
+    doc.text(`${user.projectDetails?.projectName}`, 95, 200);
+    doc.text(`${user.jobDetails?.department}`, 125, 225);
+    doc.text(`${user.shiftStartTime}-${user.shiftEndTime}`, 340, 125);
+    doc.text(`${user.projectDetails?.client}`, 340, 150);
+
+    // Capture the graph element as an image using html2canvas
+    html2canvas(graphRef.current, {
+      scale: "2",
+      willReadFrequently: true,
+      useCORS: true,
+    }).then((canvas) => {
+      const imageData = canvas.toDataURL("image/jpeg", 0.3);
+
+      // Add the captured image to the PDF
+      doc.addImage(imageData, "JPEG", 30, 250, 550, 150, undefined, "FAST");
+
+      const logoImg = new Image();
+      logoImg.src = logo;
+      const logoWidth = 80; // Adjust the width of the logo as needed
+      const logoHeight = 30; // Adjust the height of the logo as needed
+      doc.addImage(logoImg, "JPEG", 50, 70, logoWidth, logoHeight);
+
+      const tableData = filteredRows.map((row) =>
+        columns.map((column) => column.selector(row))
+      );
+
+      const tableHeaders = columns.map((column) => column.name.props.children);
+
+      autoTable(doc, {
+        head: [tableHeaders],
+        body: tableData,
+        startY: 450,
+      });
+
+      //Add the footer
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(10);
+      doc.setTextColor(128);
+      doc.text("Powered by Digifloat", 10, doc.internal.pageSize.height - 10);
+
+      doc.save(`Timesheet_${selectedName}_${startMonth}`);
+    });
   };
 
   useEffect(() => {
@@ -137,11 +226,15 @@ const TimeSheet = () => {
       users &&
       users.map((user) => {
         return {
+          id: user._id,
           name: user.name,
         };
       });
     setEmployeeNames(userNames);
-  }, [userInfo, dispatch, users]);
+    if (selectedUserId) {
+      dispatch(getUserDetails(selectedUserId));
+    }
+  }, [userInfo, dispatch, users, selectedUserId]);
 
   return (
     <Grid
@@ -167,7 +260,7 @@ const TimeSheet = () => {
             name="selectedName"
             select
             value={selectedName}
-            onChange={(e) => setSelectedName(e.target.value)}
+            onChange={handleNameChange}
             //onBlur={handleBlur}
             // error={!!errors.department && isTouched.department}
             // helperText={
@@ -182,7 +275,6 @@ const TimeSheet = () => {
               </MenuItem>
             ))}
           </TextField>
-
           <TextField
             InputLabelProps={{ shrink: true }}
             sx={{ width: "180px", backgroundColor: "white" }}
@@ -209,7 +301,6 @@ const TimeSheet = () => {
             variant="middle"
             sx={{ mx: 3, bgcolor: "grey.500", width: "1px", my: 3 }}
           />
-
           <TextField
             InputLabelProps={{ shrink: true }}
             sx={{ width: "180px", backgroundColor: "white" }}
@@ -247,9 +338,40 @@ const TimeSheet = () => {
           </Stack>
         </Stack>
       </Grid>
+      {!isFilterApplied && (
+        <div
+          style={{
+            width: "100%",
+            height: "calc(100vh - 67px)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          Please apply filters to load an employee timesheet
+        </div>
+      )}
+      {isFilterApplied && (
+        <Button
+          endIcon={<UpgradeIcon />}
+          sx={{ m: 1, mb: 2, height: 35 }}
+          color="error"
+          variant="contained"
+          onClick={() => downloadPdf()}
+        >
+          Export
+        </Button>
+      )}
       {isFilterApplied && <DataTable data={filteredRows} columns={columns} />}
       {isFilterApplied && (
-        <Graph startDate={startDate} endDate={endDate} data={dataForGraph} />
+        <div ref={graphRef}>
+          <Graph
+            graphRef={graphRef}
+            startDate={startDate}
+            endDate={endDate}
+            data={dataForGraph}
+          />
+        </div>
       )}
     </Grid>
   );

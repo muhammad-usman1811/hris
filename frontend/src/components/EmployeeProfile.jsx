@@ -977,7 +977,18 @@ export default function EmployeeProfile() {
     }
   };
 
-  console.log("state", role);
+  const handleEmployeeIdChange = (e) => {
+    let value = e.target.value;
+
+    // Remove any non-digit characters from the input
+    value = value.replace(/\D/g, "");
+
+    // Limit the input to three digits
+    value = value.slice(0, 3);
+
+    setEmployeeId(value);
+  };
+
   useEffect(() => {
     if (success) {
       dispatch({ type: "USER_EDIT_RESET" });
@@ -1098,6 +1109,9 @@ export default function EmployeeProfile() {
                   alt="Profile"
                   loading="lazy"
                   style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
                     height: 180,
                     width: 180,
                     borderRadius: "50%",
@@ -1404,7 +1418,7 @@ export default function EmployeeProfile() {
                 label="Employee ID"
                 // variant="standard"
                 value={employeeId}
-                onChange={(e) => setEmployeeId(e.target.value)}
+                onChange={handleEmployeeIdChange}
                 onBlur={handleBlur}
                 error={!!errors.employeeId && isTouched.employeeId}
                 helperText={
@@ -1412,6 +1426,11 @@ export default function EmployeeProfile() {
                     ? errors.employeeId
                     : "Please set employee id"
                 }
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">df-</InputAdornment>
+                  ),
+                }}
               />
               <br />
               <TextField

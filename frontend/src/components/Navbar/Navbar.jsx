@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Drawer from "@mui/material/Drawer";
 import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import { Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "./../../actions/userActions";
+import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 
 const Navbar = () => {
   const [open, setOpen] = React.useState(false);
@@ -42,6 +43,32 @@ const Navbar = () => {
   const logoutHandler = () => {
     dispatch(logout(userInfo._id));
   };
+
+  useEffect(() => {
+    const currentPath = window.location.pathname;
+    if (currentPath.includes("/home/dashboard")) {
+      setSelectedIndex(0);
+    } else if (currentPath.includes("/home/employees")) {
+      setSelectedIndex(1);
+    } else if (currentPath.includes("/home/attendance")) {
+      setSelectedIndex(2);
+      setSelectedSubItem(1);
+    } else if (currentPath.includes("/home/leaves")) {
+      setSelectedIndex(3);
+    } else if (currentPath.includes("/home/docs")) {
+      setSelectedIndex(4);
+    } else if (currentPath.includes("/home/employeePortal")) {
+      setSelectedIndex(0);
+    } else if (currentPath.includes("/home/employee/profile")) {
+      setSelectedIndex(1);
+    } else if (currentPath.includes("/home/employee/leaves")) {
+      setSelectedIndex(2);
+    } else if (currentPath.includes("/home/employee/documents")) {
+      setSelectedIndex(3);
+    } else if (currentPath.includes("/home/employee/manualAttendance")) {
+      setSelectedIndex(4);
+    }
+  }, []);
 
   return (
     <Drawer sx={navbarStyles.drawer} variant="permanent" anchor="left">
@@ -84,6 +111,7 @@ const Navbar = () => {
               </ListItemIcon>
               <ListItemText primary="Employees" />
             </ListItemButton>
+            {/* List item with sub item */}
             <ListItemButton
               selected={selectedIndex === 2}
               onClick={(event) => {
@@ -109,7 +137,16 @@ const Navbar = () => {
                     setSelectedSubItem(1);
                     navigate("/home/attendance/timesheet");
                   }}
+                  sx={{
+                    pl: 6,
+                    pr: 2,
+                    py: 1,
+                    "&.Mui-selected": { bgcolor: "transparent" },
+                  }}
                 >
+                  <ListItemIcon>
+                    <AccessTimeFilledIcon fontSize="small" />
+                  </ListItemIcon>
                   <ListItemText primary="Timesheets" />
                 </ListItemButton>
               </List>

@@ -53,7 +53,7 @@ const AccountMenu = () => {
             aria-expanded={open ? "true" : undefined}
           >
             <Avatar
-              src={`http://10.51.100.66:5000/photos/${userInfo.imageUrl}`}
+              src={`http://localhost:5000/photos/${userInfo.imageUrl}`}
               //src="https://mui.com/static/images/avatar/2.jpg"
             />
           </IconButton>

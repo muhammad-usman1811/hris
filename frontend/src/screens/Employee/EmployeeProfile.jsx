@@ -141,7 +141,7 @@ const EmployeeProfile = () => {
       setImageUrl(user.imageUrl);
       setName(user.name);
       setEmail(user.email);
-      setPersonalEmail(user.personalEmail);
+      setPersonalEmail(user.personalEmail ?? "");
       setPassword(user.password);
       setAddress(user.address);
       setPhone(user.phone);
@@ -250,8 +250,12 @@ const EmployeeProfile = () => {
                 alt="Profile"
                 loading="lazy"
                 style={{
-                  height: 150,
-                  width: 150,
+                  textAlign: "center",
+                  lineHeight: "50px",
+                  display: "flex",
+                  justifyContent: "center",
+                  height: 180,
+                  width: 180,
                   borderRadius: "50%",
                   border: "5px solid #fff",
                 }}

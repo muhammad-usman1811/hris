@@ -2,40 +2,52 @@ import React from "react";
 import ReactEcharts from "echarts-for-react";
 
 const Graph = ({ startDate, endDate, data }) => {
-  const generateDatesForMonth = (date1, date2) => {
-    const start = new Date(date1);
-    const end = new Date(date2);
+  // const generateDatesForMonth = (date1, date2) => {
+  //   const start = new Date(date1);
+  //   const end = new Date(date2);
 
-    const dates = [];
-    let currentDate = start;
-    while (currentDate <= end) {
-      dates.push(formatDate(currentDate));
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
+  //   const dates = [];
+  //   let currentDate = start;
+  //   while (currentDate <= end) {
+  //     dates.push(formatDate(currentDate));
+  //     currentDate.setDate(currentDate.getDate() + 1);
+  //   }
 
+  //   return dates;
+  // };
+
+  const generateDatesForMonth = (data) => {
+    const dates = data.map((item) => item.date);
     return dates;
   };
 
-  const formatDate = (date) => {
-    const options = { month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-US", options);
-  };
+  // const formatDate = (date) => {
+  //   const options = { month: "short", day: "numeric" };
+  //   return date.toLocaleDateString("en-US", options);
+  // };
 
   const graphContent = {
-    grid: { top: 20, right: 30, bottom: 20, left: 30 },
+    grid: { top: 20, right: 30, bottom: 50, left: 30 },
     xAxis: {
       type: "category",
-      data: generateDatesForMonth(startDate, endDate),
+      data: generateDatesForMonth(data),
       axisLabel: {
         interval: 0, // Labels Display
+        rotate: 30,
       },
     },
     yAxis: {
-      type: "time",
+      type: "value",
+      // min: 0,
+      // max: 14,
     },
     series: [
       {
-        data: data,
+        data: data.map((item) => ({
+          value: item.workHours,
+          name: item.date,
+          itemStyle: { color: "#CB3837" },
+        })),
         type: "bar",
         smooth: true,
         color: ["#CB3837"],

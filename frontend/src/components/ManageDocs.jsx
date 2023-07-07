@@ -95,7 +95,7 @@ const ManageDocs = () => {
           <CircularProgress />
         </Box>
       )}
-      {documents && (
+      {documents?.length !== 0 ? (
         <Box sx={{ flexGrow: 1 }}>
           <Box component="div" display="flex" justifyContent="flex-end">
             <Button
@@ -165,6 +165,31 @@ const ManageDocs = () => {
                     </ListItem>
                   );
                 })}
+            </List>
+          </Demo>
+        </Box>
+      ) : (
+        <Box sx={{ flexGrow: 1 }}>
+          <Box component="div" display="flex" justifyContent="flex-end">
+            <Button
+              sx={{ ml: 2, mb: 2 }}
+              color="error"
+              variant="contained"
+              onClick={handleToggle}
+              startIcon={<Add />}
+            >
+              Add Document
+            </Button>
+            <DocModal open={open} onClose={handleClose} />
+          </Box>
+          <Demo>
+            <List>
+              <ListItem
+                alignItems="center"
+                sx={{ borderBottom: 1, borderColor: "grey.500" }}
+              >
+                <ListItemText primary="There are no docs to display" />
+              </ListItem>
             </List>
           </Demo>
         </Box>

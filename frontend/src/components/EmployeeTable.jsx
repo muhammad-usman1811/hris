@@ -80,7 +80,7 @@ function EmployeeTable() {
     users &&
     users.map((user) => {
       return {
-        EmployeeId: user.employeeId,
+        EmployeeId: `df-${user?.employeeId}`,
         Name: user.name,
         Email: user.email,
         Phone: user.phone,
@@ -140,7 +140,7 @@ function EmployeeTable() {
         users.map((user) => {
           return {
             id: user._id,
-            employeeId: user?.employeeId,
+            employeeId: `df-${user?.employeeId}`,
             name: user.name,
             email: user.email,
             designation: user.jobDetails.designation,
