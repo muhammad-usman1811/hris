@@ -142,12 +142,19 @@ const TimeSheet = () => {
   const downloadPdf = () => {
     const doc = new jsPDF("p", "pt", "a4", true);
 
+    //Change shift start and end time format
+    const startTime24Hour = user.shiftStartTime;
+    const endTime24Hour = user.shiftEndTime;
+
+    const startTime12Hour = moment(startTime24Hour, "HH:mm").format("hh:mm:A");
+    const endTime12Hour = moment(endTime24Hour, "HH:mm").format("hh:mm:A");
+
     const startMonth = moment(startDate).format("MMMM"); // Extract the month from the selected start date
 
     // Add the table content to the PDF
     doc.setFontSize(18);
     doc.setFont("helvetica", "bold");
-    doc.text("Time Sheet", 230, 70);
+    doc.text("Timesheet", 230, 70);
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold"); // Set the font style to bold
     doc.text("Name:", 50, 125);
@@ -164,7 +171,7 @@ const TimeSheet = () => {
     doc.text(`${startMonth}`, 95, 175);
     doc.text(`${user.projectDetails?.projectName}`, 95, 200);
     doc.text(`${user.jobDetails?.department}`, 125, 225);
-    doc.text(`${user.shiftStartTime}-${user.shiftEndTime}`, 340, 125);
+    doc.text(`${startTime12Hour}-${endTime12Hour}`, 340, 125);
     doc.text(`${user.projectDetails?.client}`, 340, 150);
 
     // Capture the graph element as an image using html2canvas

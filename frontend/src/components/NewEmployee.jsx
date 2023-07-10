@@ -2117,9 +2117,6 @@ const NewEmployee = () => {
                 name="degreeStartDate"
                 label="Start date"
                 type="date"
-                InputProps={{
-                  onKeyPress: handleKeyPress,
-                }}
                 value={formData.degreeStartDate}
                 onChange={handleFieldChange}
                 onBlur={handleBlur}
