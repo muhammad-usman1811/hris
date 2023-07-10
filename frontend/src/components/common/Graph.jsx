@@ -2,35 +2,44 @@ import React from "react";
 import ReactEcharts from "echarts-for-react";
 
 const Graph = ({ startDate, endDate, data }) => {
-  // const generateDatesForMonth = (date1, date2) => {
-  //   const start = new Date(date1);
-  //   const end = new Date(date2);
+  const generateDatesForMonth = (date1, date2, dataForGraph) => {
+    const start = new Date(date1);
+    const end = new Date(date2);
 
-  //   const dates = [];
-  //   let currentDate = start;
-  //   while (currentDate <= end) {
-  //     dates.push(formatDate(currentDate));
-  //     currentDate.setDate(currentDate.getDate() + 1);
-  //   }
+    const dates = [];
+    let currentDate = start;
+    while (currentDate <= end) {
+      const formattedDate = formatDate(currentDate);
+      const workHours =
+        dataForGraph.find((item) => item.date === formattedDate)?.workHours ||
+        null;
+      dates.push({
+        date: formattedDate,
+        workHours,
+      });
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
 
-  //   return dates;
-  // };
-
-  const generateDatesForMonth = (data) => {
-    const dates = data.map((item) => item.date);
     return dates;
   };
 
-  // const formatDate = (date) => {
-  //   const options = { month: "short", day: "numeric" };
-  //   return date.toLocaleDateString("en-US", options);
+  // const generateDatesForMonth = (data) => {
+  //   const dates = data.map((item) => item.date);
+  //   return dates;
   // };
 
+  const formatDate = (date) => {
+    const options = { weekday: "short", month: "short", day: "numeric" };
+    return date.toLocaleDateString("en-US", options);
+  };
+
   const graphContent = {
-    grid: { top: 20, right: 30, bottom: 50, left: 30 },
+    grid: { top: 20, right: 30, bottom: 50, left: 40 },
     xAxis: {
       type: "category",
-      data: generateDatesForMonth(data),
+      data: generateDatesForMonth(startDate, endDate, data).map(
+        (item) => item.date
+      ),
       axisLabel: {
         interval: 0, // Labels Display
         rotate: 30,
@@ -43,7 +52,7 @@ const Graph = ({ startDate, endDate, data }) => {
     },
     series: [
       {
-        data: data.map((item) => ({
+        data: generateDatesForMonth(startDate, endDate, data).map((item) => ({
           value: item.workHours,
           name: item.date,
           itemStyle: { color: "#CB3837" },

@@ -149,7 +149,7 @@ const TimeSheet = () => {
     const startTime12Hour = moment(startTime24Hour, "HH:mm").format("hh:mm:A");
     const endTime12Hour = moment(endTime24Hour, "HH:mm").format("hh:mm:A");
 
-    const startMonth = moment(startDate).format("MMMM"); // Extract the month from the selected start date
+    const startMonth = moment(startDate).format("MMMM-YY"); // Extract the month from the selected start date
 
     // Add the table content to the PDF
     doc.setFontSize(18);
@@ -188,8 +188,8 @@ const TimeSheet = () => {
       const logoImg = new Image();
       logoImg.src = logo;
       const logoWidth = 80; // Adjust the width of the logo as needed
-      const logoHeight = 30; // Adjust the height of the logo as needed
-      doc.addImage(logoImg, "JPEG", 50, 70, logoWidth, logoHeight);
+      const logoHeight = 25; // Adjust the height of the logo as needed
+      doc.addImage(logoImg, "JPEG", 450, 50, logoWidth, logoHeight);
 
       const tableData = filteredRows.map((row) =>
         columns.map((column) => column.selector(row))
@@ -207,7 +207,14 @@ const TimeSheet = () => {
       doc.setFont("helvetica", "italic");
       doc.setFontSize(10);
       doc.setTextColor(128);
-      doc.text("Powered by Digifloat", 10, doc.internal.pageSize.height - 10);
+
+      const footerText =
+        "Powered by Digifloat - This is a system generated report and does not require any signature or stamp.";
+      const textWidth = doc.getTextDimensions(footerText).w;
+
+      const xPos = (doc.internal.pageSize.getWidth() - textWidth) / 2;
+      const yPos = doc.internal.pageSize.getHeight() - 10;
+      doc.text(footerText, xPos, yPos);
 
       doc.save(`Timesheet_${selectedName}_${startMonth}`);
     });

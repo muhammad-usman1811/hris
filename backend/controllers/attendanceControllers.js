@@ -9,7 +9,7 @@ import moment from "moment";
 // @access private/admin
 
 const getAttendance = asyncHandler(async (req, res) => {
-  const attendance = await Attendance.find({});
+  const attendance = await Attendance.find({}).sort({ createdAt: 1 }).exec();
   res.json(attendance);
 });
 
