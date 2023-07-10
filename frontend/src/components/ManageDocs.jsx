@@ -184,11 +184,11 @@ const ManageDocs = () => {
           </Box>
           <Demo>
             <List>
-              <ListItem
-                alignItems="center"
-                sx={{ borderBottom: 1, borderColor: "grey.500" }}
-              >
-                <ListItemText primary="There are no docs to display" />
+              <ListItem sx={{ borderBottom: 1, borderColor: "grey.500" }}>
+                <ListItemText
+                  primary="There are no docs to display"
+                  sx={{ textAlign: "center" }}
+                />
               </ListItem>
             </List>
           </Demo>
