@@ -44,8 +44,9 @@ const __dirname = path.resolve();
 const uploadDir = path.join(__dirname, "/uploads");
 
 //Define directory to store uploaded profile photos
-const __dirname2 = path.resolve();
-const photoDir = path.join(__dirname2, "/profilePhotos");
+// const __dirname2 = path.resolve();
+// const photoDir = path.join(__dirname2, "/profilePhotos");
+const photoDir = "C:/profilePhotos";
 
 //Define directory for catch all route
 const __dirname3 = path.resolve();
@@ -57,9 +58,8 @@ if (!fs.existsSync(uploadDir)) {
 
 //Create directory for photos
 if (!fs.existsSync(photoDir)) {
-  fs.mkdirSync(photoDir);
+  fs.mkdir(photoDir, { recursive: true });
 }
-
 //Root route
 app.get("/", (req, res) => {
   res.send("API is running...");
