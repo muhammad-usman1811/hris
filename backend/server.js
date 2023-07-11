@@ -58,7 +58,7 @@ if (!fs.existsSync(uploadDir)) {
 
 //Create directory for photos
 if (!fs.existsSync(photoDir)) {
-  fs.mkdir(photoDir, { recursive: true });
+  fs.mkdirSync(photoDir, { recursive: true });
 }
 //Root route
 app.get("/", (req, res) => {
