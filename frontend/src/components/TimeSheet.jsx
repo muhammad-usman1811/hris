@@ -141,6 +141,11 @@ const TimeSheet = () => {
 
   const downloadPdf = () => {
     const doc = new jsPDF("p", "pt", "a4", true);
+    const headerHeight = 25; // Adjust the height as needed
+    const headerColor = "#CB3837"; // Specify the desired header color
+
+    doc.setFillColor(headerColor);
+    doc.rect(0, 0, doc.internal.pageSize.getWidth(), headerHeight, "F");
 
     //Change shift start and end time format
     const startTime24Hour = user.shiftStartTime;
@@ -157,22 +162,56 @@ const TimeSheet = () => {
     doc.text("Timesheet", 230, 70);
     doc.setFontSize(12);
     doc.setFont("helvetica", "bold"); // Set the font style to bold
-    doc.text("Name:", 50, 125);
-    doc.text("Designation:", 50, 150);
-    doc.text("Month:", 50, 175);
-    doc.text("Project:", 50, 200);
-    doc.text("Department:", 50, 225);
-    doc.text("Shift:", 300, 125);
-    doc.text("Client:", 300, 150);
+    const cellWidth = 140;
+    const cellHeight = 25;
+    const startX = 20;
+    const startY = 125;
+    const marginX = 5;
+    const marginY = 15;
+    const projectStartX = startX + cellWidth * 2;
+    const projectStartY = startY - 25 + cellHeight * 3;
 
-    doc.setFont("helvetica", "normal"); // Set the font style to normal
-    doc.text(selectedName, 95, 125); // Display the selected name as normal text
-    doc.text(`${user.jobDetails?.designation}`, 125, 150);
-    doc.text(`${startMonth}`, 95, 175);
-    doc.text(`${user.projectDetails?.projectName}`, 95, 200);
-    doc.text(`${user.jobDetails?.department}`, 125, 225);
-    doc.text(`${startTime12Hour}-${endTime12Hour}`, 340, 125);
-    doc.text(`${user.projectDetails?.client}`, 340, 150);
+    // Draw borders and display the information in a grid
+    const drawCell = (text, x, y) => {
+      doc.rect(x, y, cellWidth, cellHeight); // Draw border
+      doc.text(text, x + marginX, y + marginY); // Display text
+    };
+
+    // Draw the grid cells with borders and information
+    drawCell("Name:", startX, startY);
+    drawCell("Designation:", startX, startY + cellHeight);
+    drawCell("Month:", startX, startY + cellHeight * 2);
+    drawCell("Shift:", startX + cellWidth * 2, startY);
+    drawCell("Client:", startX + cellWidth * 2, startY + cellHeight);
+    drawCell("Project:", projectStartX, projectStartY);
+
+    // Set the font style to normal
+    doc.setFont("helvetica", "normal");
+
+    // Display the information in the grid cells
+    doc.setFontSize(10);
+    drawCell(selectedName, startX + cellWidth, startY);
+    drawCell(
+      `${user.jobDetails?.designation}`,
+      startX + cellWidth,
+      startY + cellHeight
+    );
+    drawCell(`${startMonth}`, startX + cellWidth, startY + cellHeight * 2);
+    drawCell(
+      `${user.projectDetails?.client}`,
+      projectStartX + cellWidth,
+      projectStartY
+    );
+    drawCell(
+      `${startTime12Hour}-${endTime12Hour}`,
+      startX + cellWidth * 3,
+      startY
+    );
+    drawCell(
+      `${user.projectDetails?.client}`,
+      startX + cellWidth * 3,
+      startY + cellHeight
+    );
 
     // Capture the graph element as an image using html2canvas
     html2canvas(graphRef.current, {
@@ -196,11 +235,14 @@ const TimeSheet = () => {
       );
 
       const tableHeaders = columns.map((column) => column.name.props.children);
+      const headerStyles = { fillColor: "#CB3837", textColor: "#FFFFFF" };
 
       autoTable(doc, {
         head: [tableHeaders],
         body: tableData,
         startY: 450,
+        theme: "grid", // Apply grid theme for borders
+        headStyles: headerStyles,
       });
 
       //Add the footer
