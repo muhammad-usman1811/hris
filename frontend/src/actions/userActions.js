@@ -157,7 +157,7 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
   }
 };
 
-export const addUser = (userData) => async (dispatch) => {
+export const addUser = (userData, projectData) => async (dispatch) => {
   try {
     dispatch({ type: "USER_ADD_REQUEST" });
 
@@ -180,14 +180,7 @@ export const addUser = (userData) => async (dispatch) => {
     formData.append("shiftStartTime", userData.shiftStartTime);
     formData.append("shiftEndTime", userData.shiftEndTime);
     formData.append("designation", userData.designation);
-    formData.append("client", userData.client);
-    formData.append("projectName", userData.projectName);
-    formData.append("projectType", userData.projectType);
-    formData.append("projectRole", userData.projectRole);
-    formData.append("billableHours", userData.billableHours);
-    formData.append("region", userData.region);
-    formData.append("projectStartDate", userData.projectStartDate);
-    formData.append("projectEndDate", userData.projectEndDate);
+    formData.append("projectDetails", JSON.stringify(projectData));
     formData.append("reportingOffice", userData.reportingOffice);
     formData.append("reportingDepartment", userData.reportingDepartment);
     formData.append("engagementManager", userData.engagementManager);
@@ -253,14 +246,7 @@ export const editUser = (userData) => async (dispatch, getState) => {
     formData.append("shiftStartTime", userData.shiftStartTime);
     formData.append("shiftEndTime", userData.shiftEndTime);
     formData.append("designation", userData.designation);
-    formData.append("client", userData.client);
-    formData.append("projectName", userData.projectName);
-    formData.append("projectType", userData.projectType);
-    formData.append("projectRole", userData.projectRole);
-    formData.append("billableHours", userData.billableHours);
-    formData.append("region", userData.region);
-    formData.append("projectStartDate", userData.projectStartDate);
-    formData.append("projectEndDate", userData.projectEndDate);
+    formData.append("projects", userData.projects);
     formData.append("reportingOffice", userData.reportingOffice);
     formData.append("reportingDepartment", userData.reportingDepartment);
     formData.append("engagementManager", userData.engagementManager);

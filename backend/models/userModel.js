@@ -78,40 +78,42 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    projectDetails: {
-      client: {
-        type: String,
-        required: true,
+    projects: [
+      {
+        client: {
+          type: String,
+          required: true,
+        },
+        projectName: {
+          type: String,
+          required: true,
+        },
+        projectRole: {
+          type: String,
+          required: true,
+        },
+        projectType: {
+          type: String,
+          required: true,
+        },
+        billableHours: {
+          type: String,
+          required: true,
+        },
+        region: {
+          type: String,
+          required: true,
+        },
+        startDate: {
+          type: String,
+          required: true,
+        },
+        endDate: {
+          type: String,
+          //required: true,
+        },
       },
-      projectName: {
-        type: String,
-        required: true,
-      },
-      projectRole: {
-        type: String,
-        required: true,
-      },
-      projectType: {
-        type: String,
-        required: true,
-      },
-      billableHours: {
-        type: String,
-        required: true,
-      },
-      region: {
-        type: String,
-        required: true,
-      },
-      startDate: {
-        type: String,
-        required: true,
-      },
-      endDate: {
-        type: String,
-        //required: true,
-      },
-    },
+    ],
     jobDetails: {
       title: {
         type: String,

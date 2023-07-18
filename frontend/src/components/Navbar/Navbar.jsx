@@ -48,7 +48,11 @@ const Navbar = () => {
     const currentPath = window.location.pathname;
     if (currentPath.includes("/home/dashboard")) {
       setSelectedIndex(0);
-    } else if (currentPath.includes("/home/employees")) {
+    } else if (
+      currentPath.includes("/home/employees") ||
+      currentPath.includes("/home/add") ||
+      currentPath.includes("/home/profile")
+    ) {
       setSelectedIndex(1);
     } else if (currentPath.includes("/home/attendance")) {
       setSelectedIndex(2);
@@ -68,7 +72,7 @@ const Navbar = () => {
     } else if (currentPath.includes("/home/employee/manualAttendance")) {
       setSelectedIndex(4);
     }
-  }, []);
+  }, [userInfo]);
 
   return (
     <Drawer sx={navbarStyles.drawer} variant="permanent" anchor="left">

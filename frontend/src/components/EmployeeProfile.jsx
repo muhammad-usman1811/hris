@@ -26,6 +26,8 @@ import Checkbox from "@mui/material/Checkbox";
 import Autocomplete from "@mui/material/Autocomplete";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import EditIcon from "@mui/icons-material/Edit";
+import EditUserModal from "./EditUserModal";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -184,6 +186,7 @@ export default function EmployeeProfile() {
       value: "Contractual",
     },
   ];
+
   const maritalStatusOptions = [
     {
       value: "Single",
@@ -192,39 +195,13 @@ export default function EmployeeProfile() {
       value: "Married",
     },
   ];
+
   const genders = [
     {
       value: "Male",
     },
     {
       value: "Female",
-    },
-  ];
-
-  const clients = [
-    {
-      value: "AP - SAGE",
-    },
-    {
-      value: "ATOS",
-    },
-    {
-      value: "Digifloat Internal",
-    },
-    {
-      value: "EXADIVE",
-    },
-    {
-      value: "HSO",
-    },
-    {
-      value: "KEYRUS BELGIUM",
-    },
-    {
-      value: "KEYRUS SINGAPORE",
-    },
-    {
-      value: "KEYRUS UAE",
     },
   ];
 
@@ -258,57 +235,6 @@ export default function EmployeeProfile() {
     },
   ];
 
-  const billableHourOptions = [
-    {
-      value: "N/A",
-    },
-    {
-      value: "1",
-    },
-    {
-      value: "1.5",
-    },
-    {
-      value: "2",
-    },
-    {
-      value: "2.5",
-    },
-    {
-      value: "3",
-    },
-    {
-      value: "3.5",
-    },
-    {
-      value: "4",
-    },
-    {
-      value: "4.5",
-    },
-    {
-      value: "5",
-    },
-    {
-      value: "5.5",
-    },
-    {
-      value: "6",
-    },
-    {
-      value: "6.5",
-    },
-    {
-      value: "7",
-    },
-    {
-      value: "7.5",
-    },
-    {
-      value: "8",
-    },
-  ];
-
   const fuelOptions = [
     { value: "N/A" },
     { value: "Assistant Consultant - 30L" },
@@ -317,64 +243,6 @@ export default function EmployeeProfile() {
     { value: "Senior Consultant - 100L" },
     { value: "Managing Director - 150" },
     { value: "Director - 175L" },
-  ];
-
-  //Hanlde dynamic dependency of projects based on client
-  const getProjectOptions = (client) => {
-    if (client === "Digifloat Internal") {
-      return [
-        "Yorktel",
-        "Training - Interns",
-        "Trainee",
-        "Sourcing Solutions",
-        "RMI",
-        "Proposal",
-        "Outsourcing",
-        "Management",
-        "Leave",
-        "IT and Networks",
-        "HR",
-        "General",
-        "DMX",
-        "Business Development",
-        "Boltwire",
-        "Blogs",
-      ];
-    } else if (client === "AP - SAGE") {
-      return ["AP - Sage"];
-    } else if (client === "ATOS") {
-      return ["NBB"];
-    } else if (client === "EXADIVE") {
-      return ["Ahold delhaize"];
-    } else if (client === "HSO") {
-      return [
-        "Warburg",
-        "Zenus",
-        "Mavis",
-        "Yorktel",
-        "EFI",
-        "Godiva",
-        "Sonesta",
-      ];
-    } else if (client === "KEYRUS BELGIUM") {
-      return ["Aliaxis", "Atlas Copco", "Borealis"];
-    } else if (client === "KEYRUS SINGAPORE") {
-      return ["BD", "JnJ"];
-    } else if (client === "KEYRUS UAE") {
-      return ["MAFP"];
-    } else {
-      return [];
-    }
-  };
-
-  //Client and its custom options
-  const customClientFromLocalStorage = JSON.parse(
-    localStorage.getItem("customClientOptions")
-  );
-
-  const customClientOptions = [
-    ...clients,
-    ...(customClientFromLocalStorage || []),
   ];
 
   // Fuel options and its custom options
@@ -391,7 +259,6 @@ export default function EmployeeProfile() {
 
   const { id } = useParams();
   const navigate = useNavigate();
-
   const dispatch = useDispatch();
 
   const userDetails = useSelector((state) => state.userDetails);
@@ -399,6 +266,27 @@ export default function EmployeeProfile() {
 
   const userEdit = useSelector((state) => state.userEdit);
   const { success } = userEdit;
+
+  const [projects, setProjects] = useState([]);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const handleOpenModal = (data) => {
+    setSelectedProject(data);
+    setIsOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+    setSelectedProject(null);
+  };
+
+  const handleSaveProject = (updatedProject) => {
+    const updatedProjects = projects.map((project) =>
+      project.client === updatedProject.client ? updatedProject : project
+    );
+    setProjects(updatedProjects);
+  };
 
   //States to store values
   const [imageUrl, setImageUrl] = useState("");
@@ -424,14 +312,6 @@ export default function EmployeeProfile() {
   const [permanentDate, setPermanentDate] = useState("");
   const [reportingDepartment, setReportingDepartment] = useState("");
   const [reportingOffice, setReportingOffice] = useState("");
-  const [client, setClient] = useState("");
-  const [projectName, setProjectName] = useState("");
-  const [projectType, setProjectType] = useState("");
-  const [projectRole, setProjectRole] = useState("");
-  const [region, setRegion] = useState("");
-  const [projectStartDate, setProjectStartDate] = useState("");
-  const [billableHours, setBillableHours] = useState("");
-  const [projectEndDate, setProjectEndDate] = useState("");
   const [degree, setDegree] = useState("");
   const [institute, setInstitute] = useState("");
   const [degreeStartDate, setDegreeStartDate] = useState("");
@@ -483,14 +363,6 @@ export default function EmployeeProfile() {
     permanentDate: false,
     reportingDepartment: false,
     reportingOffice: false,
-    client: false,
-    projectName: false,
-    projectRole: false,
-    projectType: false,
-    region: false,
-    billableHours: false,
-    projectStartDate: false,
-    //projectEndDate: false,
     date: false,
     workType: false,
     role: false,
@@ -518,32 +390,6 @@ export default function EmployeeProfile() {
   const handleRoleChange = (event, selectedRoles) => {
     setRole(selectedRoles);
   };
-
-  //Project and its custom options
-  const customProjectFromLocalStorage = JSON.parse(
-    localStorage.getItem("customProjectOptions")
-  );
-
-  let customProjectOptions = getProjectOptions(client);
-
-  if (
-    customProjectFromLocalStorage &&
-    Array.isArray(customProjectFromLocalStorage)
-  ) {
-    customProjectOptions = [
-      ...customProjectOptions,
-      ...customProjectFromLocalStorage
-        .filter((option) => option.client === client)
-        .map((option) => option.value),
-    ];
-  }
-
-  // const customProjectOptions = [
-  //   ...getProjectOptions(client),
-  //   ...customProjectFromLocalStorage
-  //     .filter((option) => option.client === client)
-  //     .map((option) => option.value),
-  // ];
 
   const isDisabled = Object.values(isTouched).some((value) => value === true);
 
@@ -675,11 +521,6 @@ export default function EmployeeProfile() {
     isValid = false;
   }
 
-  // if (!reportingDepartment) {
-  //   errors.reportingDepartment = "Please select reporting department";
-  //   isValid = false;
-  // }
-
   if (!reportingOffice) {
     errors.reportingOffice = "Please select reporting office";
     isValid = false;
@@ -689,46 +530,6 @@ export default function EmployeeProfile() {
     errors.permanentDate = "Please set date of permanent employment";
     isValid = false;
   }
-
-  if (!client) {
-    errors.client = "Please select client";
-    isValid = false;
-  }
-
-  if (!projectName) {
-    errors.projectName = "Please select project";
-    isValid = false;
-  }
-
-  if (!projectRole) {
-    errors.projectRole = "Please select project role";
-    isValid = false;
-  }
-
-  if (!projectType) {
-    errors.projectType = "Please select project type";
-    isValid = false;
-  }
-
-  if (!billableHours) {
-    errors.billingHours = "Please set billing hours";
-    isValid = false;
-  }
-
-  if (!region) {
-    errors.region = "Please enter region";
-    isValid = false;
-  }
-
-  if (!projectStartDate) {
-    errors.projectStartDate = "Please set project start date";
-    isValid = false;
-  }
-
-  // if (!projectEndDate) {
-  //   errors.endDate = "Please set project end date";
-  //   isValid = false;
-  // }
 
   if (!date) {
     errors.date = "Please enter date of joining";
@@ -827,16 +628,6 @@ export default function EmployeeProfile() {
     isValid = false;
   }
 
-  // if (!emergencyAddress.trim()) {
-  //   errors.emergencyAddress = "Please enter emergency contact's address";
-  //   isValid = false;
-  // }
-
-  // if (!blood) {
-  //   errors.blood = "Please enter blood group";
-  //   isValid = false;
-  // }
-
   const handleAttempt = () => {
     setAttemptedUpload(true);
     setIsTouched((prev) => ({
@@ -895,14 +686,7 @@ export default function EmployeeProfile() {
           reportingDepartment,
           reportingOffice,
           permanentDate,
-          client,
-          projectName,
-          projectRole,
-          projectType,
-          region,
-          billableHours,
-          projectStartDate,
-          projectEndDate,
+          projects: JSON.stringify(projects),
           date,
           workType,
           role: JSON.stringify(role),
@@ -1021,14 +805,7 @@ export default function EmployeeProfile() {
         setReportingDepartment(user.jobDetails.reportingDepartment);
         setReportingOffice(user.jobDetails?.reportingOffice ?? "add");
         setPermanentDate(user.jobDetails?.permanentDate ?? "add");
-        setClient(user.projectDetails?.client ?? "add");
-        setProjectName(user.projectDetails?.projectName ?? "add");
-        setProjectRole(user.projectDetails?.projectRole ?? "add");
-        setProjectType(user.projectDetails?.projectType ?? "add");
-        setBillableHours(user.projectDetails?.billableHours ?? "add");
-        setRegion(user.projectDetails?.region ?? "add");
-        setProjectStartDate(user.projectDetails?.startDate ?? "add");
-        setProjectEndDate(user.projectDetails?.endDate ?? "add");
+        setProjects(user.projects);
         setDate(user.jobDetails.dateOfJoining);
         setWorkType(user.jobDetails.workType);
         setRole(user.role);
@@ -1067,7 +844,7 @@ export default function EmployeeProfile() {
         <Grid item xs={12} sx={{ height: 250 }}>
           <Item sx={{ height: 250 }}>
             <img
-              src="/images/cover.jpg"
+              src="/images/cover1.png"
               alt="cover"
               style={{
                 height: "100%",
@@ -1213,7 +990,6 @@ export default function EmployeeProfile() {
                   onKeyPress: handleKeyPress,
                 }}
                 label="Full Name"
-                // variant="standard"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 onBlur={handleBlur}
@@ -1227,7 +1003,6 @@ export default function EmployeeProfile() {
                 name="personalEmail"
                 type="email"
                 label="Personal Email"
-                // variant="standard"
                 value={personalEmail}
                 onChange={(e) => setPersonalEmail(e.target.value)}
                 onBlur={handleBlur}
@@ -1246,7 +1021,6 @@ export default function EmployeeProfile() {
                 name="password"
                 type={showPassword ? "text" : "password"}
                 label="Password"
-                // variant="standard"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 onBlur={handleBlur}
@@ -1277,7 +1051,6 @@ export default function EmployeeProfile() {
                 name="phone"
                 type="tel"
                 label="Phone Number"
-                // variant="standard"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 onBlur={handleBlur}
@@ -1291,7 +1064,6 @@ export default function EmployeeProfile() {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="address"
                 label="Address"
-                // variant="standard"
                 multiline
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
@@ -1307,7 +1079,6 @@ export default function EmployeeProfile() {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="cnic"
                 label="CNIC"
-                // variant="standard"
                 value={cnic}
                 onChange={(e) => setCnic(e.target.value)}
                 onBlur={handleBlur}
@@ -1321,7 +1092,6 @@ export default function EmployeeProfile() {
               <TextField
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="dob"
-                // variant="standard"
                 type="date"
                 value={dob}
                 onChange={(e) => setDob(e.target.value)}
@@ -1347,7 +1117,6 @@ export default function EmployeeProfile() {
                     ? errors.maritalStatus
                     : "Please select marital status"
                 }
-                // variant="standard"
               >
                 {maritalStatusOptions.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -1363,7 +1132,6 @@ export default function EmployeeProfile() {
                 onChange={(e) => setGender(e.target.value)}
                 select
                 helperText="Please select gender"
-                // variant="standard"
               >
                 {genders.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -1377,7 +1145,6 @@ export default function EmployeeProfile() {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="passport"
                 label="Passport (optional)"
-                // variant="standard"
                 value={passport}
                 onChange={(e) => setPassport(e.target.value)}
                 onBlur={handleBlur}
@@ -1397,7 +1164,6 @@ export default function EmployeeProfile() {
                 onBlur={handleBlur}
                 error={!!errors.blood && isTouched.blood}
                 helperText="Select blood group (optional)"
-                // variant="standard"
               >
                 {bloodGroups.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -1416,7 +1182,6 @@ export default function EmployeeProfile() {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="employeeId"
                 label="Employee ID"
-                // variant="standard"
                 value={employeeId}
                 onChange={handleEmployeeIdChange}
                 onBlur={handleBlur}
@@ -1439,7 +1204,6 @@ export default function EmployeeProfile() {
                 name="email"
                 type="email"
                 label="Email"
-                // variant="standard"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 onBlur={handleBlur}
@@ -1461,7 +1225,6 @@ export default function EmployeeProfile() {
                     ? errors.department
                     : "Please select the department"
                 }
-                // variant="standard"
               >
                 {departments.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -1473,7 +1236,6 @@ export default function EmployeeProfile() {
               <TextField
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="shiftStartTime"
-                // variant="standard"
                 type="time"
                 value={shiftStartTime}
                 onChange={(e) => setShiftStartTime(e.target.value)}
@@ -1489,7 +1251,6 @@ export default function EmployeeProfile() {
               <TextField
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="shiftEndTime"
-                // variant="standard"
                 type="time"
                 value={shiftEndTime}
                 onChange={(e) => setShiftEndTime(e.target.value)}
@@ -1509,7 +1270,6 @@ export default function EmployeeProfile() {
                 InputProps={{
                   onKeyPress: handleKeyPress,
                 }}
-                // variant="standard"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 onBlur={handleBlur}
@@ -1526,7 +1286,6 @@ export default function EmployeeProfile() {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="designation"
                 select
-                // variant="standard"
                 value={designation}
                 onChange={(e) => setDesignation(e.target.value)}
                 onBlur={handleBlur}
@@ -1557,7 +1316,6 @@ export default function EmployeeProfile() {
                     ? errors.reportingOffice
                     : "Please select reporting office"
                 }
-                // variant="standard"
               >
                 {officeOptions.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -1574,9 +1332,6 @@ export default function EmployeeProfile() {
                 onChange={(e) => setReportingDepartment(e.target.value)}
                 onBlur={handleBlur}
                 helperText="Please select reporting department"
-                // error={
-                //   !!errors.reportingDepartment && isTouched.reportingDepartment
-                // }
               >
                 {reportingDepartmentOpt.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -1595,7 +1350,6 @@ export default function EmployeeProfile() {
                 InputProps={{
                   onKeyPress: handleKeyPress,
                 }}
-                // variant="standard"
                 value={supervisor}
                 onChange={(e) => setSupervisor(e.target.value)}
                 onBlur={handleBlur}
@@ -1615,7 +1369,6 @@ export default function EmployeeProfile() {
                 InputProps={{
                   onKeyPress: handleKeyPress,
                 }}
-                // variant="standard"
                 value={engagementManager}
                 onChange={(e) => setEngagementManager(e.target.value)}
                 onBlur={handleBlur}
@@ -1635,7 +1388,6 @@ export default function EmployeeProfile() {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="date"
                 type="date"
-                // variant="standard"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 onBlur={handleBlur}
@@ -1651,7 +1403,6 @@ export default function EmployeeProfile() {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="permanent date"
                 type="date"
-                // variant="standard"
                 value={permanentDate}
                 onChange={(e) => setPermanentDate(e.target.value)}
                 onBlur={handleBlur}
@@ -1676,7 +1427,6 @@ export default function EmployeeProfile() {
                     ? errors.workType
                     : "Please select the work location"
                 }
-                // variant="standard"
               >
                 {workTypes.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -1717,28 +1467,6 @@ export default function EmployeeProfile() {
                   />
                 )}
               />
-              {/* <TextField
-                sx={{ marginTop: "20px", width: "50%" }}
-                name="role"
-                select
-                multiple
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                onBlur={handleBlur}
-                error={!!errors.role && isTouched.role}
-                helperText={
-                  errors.role && isTouched.role
-                    ? errors.role
-                    : "Please select the user role"
-                }
-                // variant="standard"
-              >
-                {roles.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.value}
-                  </MenuItem>
-                ))}
-              </TextField> */}
               <br />
               <TextField
                 sx={{ marginTop: "20px", width: "50%" }}
@@ -1753,7 +1481,6 @@ export default function EmployeeProfile() {
                     ? errors.employmentStatus
                     : "Please select employment status"
                 }
-                // variant="standard"
               >
                 {employmentStatusOptions.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
@@ -1768,7 +1495,6 @@ export default function EmployeeProfile() {
                 name="salary"
                 type="number"
                 label="Salary"
-                // variant="standard"
                 InputProps={{
                   endAdornment: (
                     <InputAdornment position="end">PKR</InputAdornment>
@@ -1794,7 +1520,6 @@ export default function EmployeeProfile() {
                 InputProps={{
                   onKeyPress: handleKeyPress,
                 }}
-                // variant="standard"
                 value={emergencyName}
                 onChange={(e) => setEmergencyName(e.target.value)}
                 onBlur={handleBlur}
@@ -1814,7 +1539,6 @@ export default function EmployeeProfile() {
                 InputProps={{
                   onKeyPress: handleKeyPress,
                 }}
-                // variant="standard"
                 value={relation}
                 onChange={(e) => setRelation(e.target.value)}
                 onBlur={handleBlur}
@@ -1831,7 +1555,6 @@ export default function EmployeeProfile() {
                 sx={{ marginTop: "20px", width: "50%" }}
                 name="emergencyAddress"
                 label="Address (optional)"
-                // variant="standard"
                 multiline
                 value={emergencyAddress}
                 onChange={(e) => setEmergencyAddress(e.target.value)}
@@ -1850,7 +1573,6 @@ export default function EmployeeProfile() {
                 name="contact"
                 type="tel"
                 label="Contact"
-                // variant="standard"
                 value={contact}
                 onChange={(e) => setContact(e.target.value)}
                 onBlur={handleBlur}
@@ -2037,7 +1759,6 @@ export default function EmployeeProfile() {
                 InputProps={{
                   onKeyPress: handleKeyPress,
                 }}
-                // variant="standard"
                 value={degree}
                 onChange={(e) => setDegree(e.target.value)}
                 onBlur={handleBlur}
@@ -2056,7 +1777,6 @@ export default function EmployeeProfile() {
                 InputProps={{
                   onKeyPress: handleKeyPress,
                 }}
-                // variant="standard"
                 value={institute}
                 onChange={(e) => setInstitute(e.target.value)}
                 onBlur={handleBlur}
@@ -2110,181 +1830,124 @@ export default function EmployeeProfile() {
         </TabPanel>
         <TabPanel value={value} index={2}>
           <Grid container spacing={1} xs={12}>
-            <Grid xs={6}>
-              <TextField
-                sx={{ marginTop: "20px", width: "50%" }}
-                name="client"
-                select
-                error={!!errors.client && isTouched.client && errors.client}
-                value={client}
-                onChange={(e) => setClient(e.target.value)}
-                onBlur={handleBlur}
-                helperText={
-                  errors.client && isTouched.client
-                    ? errors.client
-                    : "Please select client"
-                }
-                // variant="standard"
-              >
-                {customClientOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.value}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <br />
-              <TextField
-                InputLabelProps={{ shrink: true }}
-                sx={{ marginTop: "20px", width: "50%" }}
-                name="projectType"
-                label="Project Type"
-                // variant="standard"
-                value={projectType}
-                onChange={(e) => setProjectType(e.target.value)}
-                onBlur={handleBlur}
-                onFocus={handleFocus}
-                error={!!errors.projectType && isTouched.projectType}
-                helperText={
-                  errors.projectType &&
-                  isTouched.projectType &&
-                  errors.projectType
-                    ? errors.projectType
-                    : "Please set project type"
-                }
-              />
-              <br />
-              <TextField
-                InputLabelProps={{ shrink: true }}
-                sx={{ marginTop: "20px", width: "50%" }}
-                name="projectRole"
-                label="Project Role"
-                // variant="standard"
-                value={projectRole}
-                onChange={(e) => setProjectRole(e.target.value)}
-                onBlur={handleBlur}
-                onFocus={handleFocus}
-                error={!!errors.projectRole && isTouched.projectRole}
-                helperText={
-                  errors.projectRole &&
-                  isTouched.projectRole &&
-                  errors.projectRole
-                    ? errors.projectRole
-                    : "Please set project role"
-                }
-              />
-              <br />
-              <TextField
-                InputLabelProps={{ shrink: true }}
-                sx={{ marginTop: "20px", width: "50%" }}
-                name="region"
-                label="Region"
-                // variant="standard"
-                value={region}
-                onChange={(e) => setRegion(e.target.value)}
-                onBlur={handleBlur}
-                onFocus={handleFocus}
-                error={!!errors.region && isTouched.region}
-                helperText={
-                  errors.region && isTouched.region && errors.region
-                    ? errors.region
-                    : "Please set region"
-                }
-              />
-
-              <br />
-            </Grid>
-            <Grid xs={6}>
-              <TextField
-                sx={{ marginTop: "20px", width: "50%" }}
-                name="projectName"
-                select
-                error={!!errors.project && isTouched.project && errors.project}
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-                onBlur={handleBlur}
-                helperText={
-                  errors.projectName && isTouched.projectName
-                    ? errors.projectName
-                    : "Please select project"
-                }
-                // variant="standard"
-              >
-                {customProjectOptions.map((option) => (
-                  <MenuItem key={option} value={option}>
-                    {option}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <br />
-
-              <TextField
-                InputLabelProps={{ shrink: true }}
-                sx={{ marginTop: "20px", width: "50%" }}
-                name="projectStartDate"
-                label="Starting Date"
-                type="date"
-                // variant="standard"
-                value={projectStartDate}
-                onChange={(e) => setProjectStartDate(e.target.value)}
-                onBlur={handleBlur}
-                onFocus={handleFocus}
-                error={!!errors.projectStartDate && isTouched.projectStartDate}
-                helperText={
-                  errors.projectStartDate &&
-                  isTouched.projectStartDate &&
-                  errors.projectStartDate
-                    ? errors.startDate
-                    : "Please set project start date"
-                }
-              />
-              <br />
-              <TextField
-                InputLabelProps={{ shrink: true }}
-                sx={{ marginTop: "20px", width: "50%" }}
-                name="billable hours"
-                label="Billable Hours"
-                select
-                // variant="standard"
-                value={billableHours}
-                onChange={(e) => setBillableHours(e.target.value)}
-                onBlur={handleBlur}
-                onFocus={handleFocus}
-                error={!!errors.billableHours && isTouched.billableHours}
-                helperText={
-                  errors.billableHours &&
-                  isTouched.billableHours &&
-                  errors.billableHours
-                }
-              >
-                {billableHourOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    {option.value}
-                  </MenuItem>
-                ))}
-              </TextField>
-              <br />
-              <TextField
-                InputLabelProps={{ shrink: true }}
-                sx={{ marginTop: "20px", width: "50%" }}
-                name="projectEndDate"
-                label="Ending Date (optional)"
-                type="date"
-                // variant="standard"
-                value={projectEndDate}
-                onChange={(e) => setProjectEndDate(e.target.value)}
-                // onBlur={handleBlur}
-                // onFocus={handleFocus}
-                // error={!!errors.projectEndDate && isTouched.projectEndDate}
-                // helperText={
-                //   errors.projectEndDate &&
-                //   isTouched.projectEndDate &&
-                //   errors.projectEndDate
-                // }
-              />
-              <br />
-            </Grid>
+            {projects.length !== 0 &&
+              projects.map((project, index) => {
+                return (
+                  <>
+                    <Grid xs={6}>
+                      <Typography
+                        variant="h6"
+                        width="20%"
+                        sx={{
+                          marginTop: "20px",
+                          backgroundColor: "#C62828",
+                          color: "white",
+                          textAlign: "center",
+                          padding: "5px",
+                        }}
+                      >
+                        Project {index + 1}
+                      </Typography>
+                      <TextField
+                        sx={{ marginTop: "20px", width: "50%" }}
+                        name="client"
+                        label="Client"
+                        multiple
+                        required
+                        value={project.client}
+                      />
+                      <br />
+                      <TextField
+                        InputLabelProps={{ shrink: true }}
+                        sx={{ marginTop: "20px", width: "50%" }}
+                        name="projectType"
+                        label="Project Type"
+                        required
+                        value={project.projectType}
+                      />
+                      <br />
+                      <TextField
+                        InputLabelProps={{ shrink: true }}
+                        sx={{ marginTop: "20px", width: "50%" }}
+                        name="projectRole"
+                        label="Project Role"
+                        required
+                        value={project.projectRole}
+                      />
+                      <br />
+                      <TextField
+                        InputLabelProps={{ shrink: true }}
+                        sx={{ marginTop: "20px", width: "50%" }}
+                        name="region"
+                        label="Region"
+                        required
+                        value={project.region}
+                      />
+                      <br />
+                    </Grid>
+                    <Grid xs={6} marginTop="20px">
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          alignItems: "center",
+                        }}
+                      >
+                        <IconButton
+                          color="primary"
+                          onClick={() => handleOpenModal(project)}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                      </div>
+                      <TextField
+                        sx={{ marginTop: "20px", width: "50%" }}
+                        name="projectName"
+                        label="Project"
+                        required
+                        value={project.projectName}
+                      />
+                      <br />
+                      <TextField
+                        InputLabelProps={{ shrink: true }}
+                        sx={{ marginTop: "20px", width: "50%" }}
+                        name="projectStartDate"
+                        label="Starting Date"
+                        type="date"
+                        required
+                        value={project.startDate}
+                      />
+                      <br />
+                      <TextField
+                        InputLabelProps={{ shrink: true }}
+                        sx={{ marginTop: "20px", width: "50%" }}
+                        name="billableHours"
+                        label="Billable Hours"
+                        value={project.billableHours}
+                      />
+                      <br />
+                      <TextField
+                        InputLabelProps={{ shrink: true }}
+                        sx={{ marginTop: "20px", width: "50%" }}
+                        name="projectEndDate"
+                        label="Ending Date (optional)"
+                        type="date"
+                        value={project.endDate}
+                      />
+                      <br />
+                    </Grid>
+                  </>
+                );
+              })}
           </Grid>
         </TabPanel>
+        {isOpen && (
+          <EditUserModal
+            project={selectedProject}
+            onSave={handleSaveProject}
+            onClose={handleCloseModal}
+          />
+        )}
       </Box>
     </>
   );
