@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import Modal from "@mui/material/Modal";
-import { TextField } from "@mui/material";
-import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
 import MenuItem from "@mui/material/MenuItem";
+import Button from "@mui/material/Button";
 
-const EditUserModal = ({ project, onSave, onClose }) => {
+const AddProjectModal = ({ onClose, onSave }) => {
   const clients = [
     {
       value: "AP - SAGE",
@@ -133,17 +133,33 @@ const EditUserModal = ({ project, onSave, onClose }) => {
     }
   };
 
-  //Client and its custom options
+  //State for handling project options and its custom options
+  const [customProjectOptions, setCustomProjectOptions] = useState(
+    JSON.parse(localStorage.getItem("customProjectOptions")) || []
+  );
+
+  //State for handling client options and its custom options
   const customClientFromLocalStorage = JSON.parse(
     localStorage.getItem("customClientOptions")
   );
 
-  const customClientOptions = [
+  const [clientOptions, setClientOptions] = useState([
     ...clients,
     ...(customClientFromLocalStorage || []),
-  ];
+  ]);
 
-  const [formData, setFormData] = useState(project);
+  const [formData, setFormData] = useState({
+    client: "",
+    projectName: "",
+    projectType: "",
+    projectRole: "",
+    billableHours: "",
+    region: "",
+    startDate: "",
+    endDate: "",
+  });
+  const [customProjectOption, setCustomProjectOption] = useState("");
+  const [customClientOption, setCustomClientOption] = useState("");
   const [isTouched, setIsTouched] = useState({
     client: false,
     projectName: false,
@@ -154,24 +170,13 @@ const EditUserModal = ({ project, onSave, onClose }) => {
     startDate: false,
   });
 
-  //Project and its custom options
-  const customProjectFromLocalStorage = JSON.parse(
-    localStorage.getItem("customProjectOptions")
-  );
-
-  let customProjectOptions = getProjectOptions(formData.client);
-
-  if (
-    customProjectFromLocalStorage &&
-    Array.isArray(customProjectFromLocalStorage)
-  ) {
-    customProjectOptions = [
-      ...customProjectOptions,
-      ...customProjectFromLocalStorage
-        .filter((option) => option.client === formData.client)
-        .map((option) => option.value),
-    ];
-  }
+  //Dynamic project options
+  const projectOptions = [
+    ...getProjectOptions(formData.client),
+    ...customProjectOptions
+      .filter((option) => option.client === formData.client)
+      .map((option) => option.value),
+  ];
 
   const errors = {};
   let isValid = true;
@@ -197,7 +202,7 @@ const EditUserModal = ({ project, onSave, onClose }) => {
   }
 
   if (!formData.billableHours) {
-    errors.billingHours = "Please set billing hours";
+    errors.billableHours = "Please set billing hours";
     isValid = false;
   }
 
@@ -207,35 +212,16 @@ const EditUserModal = ({ project, onSave, onClose }) => {
   }
 
   if (!formData.startDate) {
-    errors.projectStartDate = "Please set project start date";
+    errors.startDate = "Please set project start date";
     isValid = false;
   }
 
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 700,
-    bgcolor: "background.paper",
-    border: "2px solid #E23D3F",
-    boxShadow: 24,
-    p: 4,
-  };
-
-  const handleInputChange = (e) => {
+  const handleFieldChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
-  };
-
-  const handleSave = () => {
-    if (isValid) {
-      onSave(formData);
-      onClose();
-    }
   };
 
   const handleBlur = (e) => {
@@ -246,6 +232,67 @@ const EditUserModal = ({ project, onSave, onClose }) => {
     }));
   };
 
+  const handleSave = () => {
+    if (isValid) {
+      onSave(formData);
+      onClose();
+    }
+  };
+
+  const handleAddProjectOption = () => {
+    if (formData.client && customProjectOption) {
+      const newOption = {
+        client: formData.client,
+        value: customProjectOption,
+      };
+      setCustomProjectOptions([...customProjectOptions, newOption]);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        projectName: customProjectOption,
+      }));
+      setCustomProjectOption("");
+      const existingOptions =
+        JSON.parse(localStorage.getItem("customProjectOptions")) || [];
+
+      const updatedOptions = [...existingOptions, newOption];
+      localStorage.setItem(
+        "customProjectOptions",
+        JSON.stringify(updatedOptions)
+      );
+    }
+  };
+
+  const handleAddClientOption = () => {
+    if (customClientOption) {
+      const newOption = { value: customClientOption };
+      setClientOptions([...clientOptions, newOption]);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        client: customClientOption,
+      }));
+      setCustomClientOption("");
+
+      const existingOptions =
+        JSON.parse(localStorage.getItem("customClientOptions")) || [];
+      const updatedOptions = [...existingOptions, newOption];
+      localStorage.setItem(
+        "customClientOptions",
+        JSON.stringify(updatedOptions)
+      );
+    }
+  };
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 750,
+    bgcolor: "background.paper",
+    border: "2px solid #E23D3F",
+    boxShadow: 24,
+    p: 4,
+  };
   return (
     <div>
       <Modal open={true} onClose={onClose}>
@@ -255,41 +302,54 @@ const EditUserModal = ({ project, onSave, onClose }) => {
               <TextField
                 sx={{ marginTop: "20px", width: "70%" }}
                 name="client"
+                multiple
+                required
                 select
                 error={!!errors.client && isTouched.client && errors.client}
                 value={formData.client}
-                onChange={handleInputChange}
+                onChange={handleFieldChange}
                 onBlur={handleBlur}
                 helperText={
                   errors.client && isTouched.client
                     ? errors.client
                     : "Please select client"
                 }
-                // variant="standard"
               >
-                {customClientOptions.map((option) => (
+                {clientOptions.map((option) => (
                   <MenuItem key={option.value} value={option.value}>
                     {option.value}
                   </MenuItem>
                 ))}
+                <MenuItem value="addCustom">Add Custom</MenuItem>
               </TextField>
+              {formData.client === "addCustom" && (
+                <>
+                  <br />
+                  <TextField
+                    sx={{ width: "50%", ml: 2 }}
+                    name="customClientOption"
+                    variant="standard"
+                    value={customClientOption}
+                    onChange={(e) => setCustomClientOption(e.target.value)}
+                  />
+                  <Button onClick={handleAddClientOption}>Add</Button>
+                </>
+              )}
               <br />
               <TextField
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "70%" }}
                 name="projectType"
                 label="Project Type"
-                // variant="standard"
+                required
                 value={formData.projectType}
-                onChange={handleInputChange}
+                onChange={handleFieldChange}
                 onBlur={handleBlur}
                 error={!!errors.projectType && isTouched.projectType}
                 helperText={
                   errors.projectType &&
                   isTouched.projectType &&
                   errors.projectType
-                    ? errors.projectType
-                    : "Please set project type"
                 }
               />
               <br />
@@ -298,17 +358,15 @@ const EditUserModal = ({ project, onSave, onClose }) => {
                 sx={{ marginTop: "20px", width: "70%" }}
                 name="projectRole"
                 label="Project Role"
-                // variant="standard"
+                required
                 value={formData.projectRole}
-                onChange={handleInputChange}
+                onChange={handleFieldChange}
                 onBlur={handleBlur}
                 error={!!errors.projectRole && isTouched.projectRole}
                 helperText={
                   errors.projectRole &&
                   isTouched.projectRole &&
                   errors.projectRole
-                    ? errors.projectRole
-                    : "Please set project role"
                 }
               />
               <br />
@@ -317,16 +375,12 @@ const EditUserModal = ({ project, onSave, onClose }) => {
                 sx={{ marginTop: "20px", width: "70%" }}
                 name="region"
                 label="Region"
-                // variant="standard"
+                required
                 value={formData.region}
-                onChange={handleInputChange}
+                onChange={handleFieldChange}
                 onBlur={handleBlur}
                 error={!!errors.region && isTouched.region}
-                helperText={
-                  errors.region && isTouched.region && errors.region
-                    ? errors.region
-                    : "Please set region"
-                }
+                helperText={errors.region && isTouched.region && errors.region}
               />
               <br />
             </Grid>
@@ -334,10 +388,15 @@ const EditUserModal = ({ project, onSave, onClose }) => {
               <TextField
                 sx={{ marginTop: "20px", width: "70%", ml: 14 }}
                 name="projectName"
+                required
                 select
-                error={!!errors.project && isTouched.project && errors.project}
+                error={
+                  !!errors.projectName &&
+                  isTouched.projectName &&
+                  errors.projectName
+                }
                 value={formData.projectName}
-                onChange={handleInputChange}
+                onChange={handleFieldChange}
                 onBlur={handleBlur}
                 helperText={
                   errors.projectName && isTouched.projectName
@@ -345,30 +404,41 @@ const EditUserModal = ({ project, onSave, onClose }) => {
                     : "Please select project"
                 }
               >
-                {customProjectOptions.map((option) => (
+                {projectOptions.map((option) => (
                   <MenuItem key={option} value={option}>
                     {option}
                   </MenuItem>
                 ))}
+                <MenuItem value="addCustom">Add Custom</MenuItem>
               </TextField>
+
+              {formData.projectName === "addCustom" && (
+                <>
+                  <br />
+                  <TextField
+                    sx={{ width: "50%", ml: 15 }}
+                    name="customProjectOption"
+                    variant="standard"
+                    value={customProjectOption}
+                    onChange={(e) => setCustomProjectOption(e.target.value)}
+                  />
+                  <Button onClick={handleAddProjectOption}>Add</Button>
+                </>
+              )}
               <br />
               <TextField
                 InputLabelProps={{ shrink: true }}
                 sx={{ marginTop: "20px", width: "70%", ml: 14 }}
-                name="projectStartDate"
+                name="startDate"
                 label="Starting Date"
                 type="date"
-                // variant="standard"
+                required
                 value={formData.startDate}
-                onChange={handleInputChange}
+                onChange={handleFieldChange}
                 onBlur={handleBlur}
-                error={!!errors.projectStartDate && isTouched.projectStartDate}
+                error={!!errors.startDate && isTouched.startDate}
                 helperText={
-                  errors.projectStartDate &&
-                  isTouched.projectStartDate &&
-                  errors.projectStartDate
-                    ? errors.startDate
-                    : "Please set project start date"
+                  errors.startDate && isTouched.startDate && errors.startDate
                 }
               />
               <br />
@@ -380,7 +450,7 @@ const EditUserModal = ({ project, onSave, onClose }) => {
                 select
                 // variant="standard"
                 value={formData.billableHours}
-                onChange={handleInputChange}
+                onChange={handleFieldChange}
                 onBlur={handleBlur}
                 error={!!errors.billableHours && isTouched.billableHours}
                 helperText={
@@ -404,7 +474,7 @@ const EditUserModal = ({ project, onSave, onClose }) => {
                 type="date"
                 // variant="standard"
                 value={formData.endDate}
-                onChange={handleInputChange}
+                onChange={handleFieldChange}
               />
               <br />
               <div
@@ -428,7 +498,7 @@ const EditUserModal = ({ project, onSave, onClose }) => {
                   color="error"
                   onClick={handleSave}
                 >
-                  Save Changes
+                  Add Project
                 </Button>
               </div>
             </Grid>
@@ -439,4 +509,4 @@ const EditUserModal = ({ project, onSave, onClose }) => {
   );
 };
 
-export default EditUserModal;
+export default AddProjectModal;

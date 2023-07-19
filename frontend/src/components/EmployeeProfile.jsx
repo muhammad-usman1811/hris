@@ -28,6 +28,8 @@ import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import EditIcon from "@mui/icons-material/Edit";
 import EditUserModal from "./EditUserModal";
+import AddIcon from "@mui/icons-material/Add";
+import AddProjectModal from "./common/AddProjectModal";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -270,6 +272,20 @@ export default function EmployeeProfile() {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isOpen, setIsOpen] = React.useState(false);
+  const [isOpenAddModal, setIsOpenAddModal] = useState(false);
+
+  const handleOpenAddModal = () => {
+    setIsOpenAddModal(true);
+  };
+
+  const handleCloseAddModal = () => {
+    setIsOpenAddModal(false);
+  };
+
+  const handleSaveProject = (newProject) => {
+    const updatedProjects = [...projects, newProject];
+    setProjects(updatedProjects);
+  };
 
   const handleOpenModal = (data) => {
     setSelectedProject(data);
@@ -281,7 +297,7 @@ export default function EmployeeProfile() {
     setSelectedProject(null);
   };
 
-  const handleSaveProject = (updatedProject) => {
+  const handleEditProject = (updatedProject) => {
     const updatedProjects = projects.map((project) =>
       project.client === updatedProject.client ? updatedProject : project
     );
@@ -1829,6 +1845,11 @@ export default function EmployeeProfile() {
           </Grid>
         </TabPanel>
         <TabPanel value={value} index={2}>
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <Button onClick={handleOpenAddModal} startIcon={<AddIcon />}>
+              Add Project
+            </Button>
+          </Box>
           <Grid container spacing={1} xs={12}>
             {projects.length !== 0 &&
               projects.map((project, index) => {
@@ -1939,12 +1960,18 @@ export default function EmployeeProfile() {
                   </>
                 );
               })}
+            {isOpenAddModal && (
+              <AddProjectModal
+                onClose={handleCloseAddModal}
+                onSave={handleSaveProject}
+              />
+            )}
           </Grid>
         </TabPanel>
         {isOpen && (
           <EditUserModal
             project={selectedProject}
-            onSave={handleSaveProject}
+            onSave={handleEditProject}
             onClose={handleCloseModal}
           />
         )}

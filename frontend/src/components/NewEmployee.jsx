@@ -32,8 +32,8 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 // import FormControl from "@mui/material/FormControl";
 // import Input from "@mui/material/Input";
 import { addUser } from "../actions/userActions";
-import Modal from "@mui/material/Modal";
 import AddIcon from "@mui/icons-material/Add";
+import AddProjectModal from "./common/AddProjectModal";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -209,33 +209,6 @@ const NewEmployee = () => {
     },
   ];
 
-  const clients = [
-    {
-      value: "AP - SAGE",
-    },
-    {
-      value: "ATOS",
-    },
-    {
-      value: "Digifloat Internal",
-    },
-    {
-      value: "EXADIVE",
-    },
-    {
-      value: "HSO",
-    },
-    {
-      value: "KEYRUS BELGIUM",
-    },
-    {
-      value: "KEYRUS SINGAPORE",
-    },
-    {
-      value: "KEYRUS UAE",
-    },
-  ];
-
   const reportingDepartmentOpt = [
     {
       value: "HR",
@@ -266,57 +239,6 @@ const NewEmployee = () => {
     },
   ];
 
-  const billableHourOptions = [
-    {
-      value: "N/A",
-    },
-    {
-      value: "1",
-    },
-    {
-      value: "1.5",
-    },
-    {
-      value: "2",
-    },
-    {
-      value: "2.5",
-    },
-    {
-      value: "3",
-    },
-    {
-      value: "3.5",
-    },
-    {
-      value: "4",
-    },
-    {
-      value: "4.5",
-    },
-    {
-      value: "5",
-    },
-    {
-      value: "5.5",
-    },
-    {
-      value: "6",
-    },
-    {
-      value: "6.5",
-    },
-    {
-      value: "7",
-    },
-    {
-      value: "7.5",
-    },
-    {
-      value: "8",
-    },
-  ];
-
   const fuelOptions = [
     { value: "N/A" },
     { value: "Assistant Consultant - 30L" },
@@ -331,6 +253,17 @@ const NewEmployee = () => {
 
   //State to store form field values
   const [projects, setProjects] = useState([]);
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  const handleCloseModal = () => {
+    setIsOpen(false);
+  };
+
+  const handleSaveProject = (newProject) => {
+    const updatedProjects = [...projects, newProject];
+    setProjects(updatedProjects);
+  };
+
   const [formData, setFormData] = useState({
     file: null,
     name: "",
@@ -349,8 +282,6 @@ const NewEmployee = () => {
     shiftEndTime: "",
     customDepartmentOption: "",
     customDesignationOption: "",
-    customClientOption: "",
-    customProjectOption: "",
     customFuelOption: "",
     employeeId: "",
     designation: "",
@@ -358,14 +289,6 @@ const NewEmployee = () => {
     permanentDate: "",
     reportingDepartment: "",
     reportingOffice: "",
-    client: "",
-    projectName: "",
-    projectType: "",
-    projectRole: "",
-    region: "",
-    projectStartDate: "",
-    billableHours: "",
-    projectEndDate: "",
     degree: "",
     institute: "",
     degreeStartDate: "",
@@ -403,9 +326,7 @@ const NewEmployee = () => {
   const [isValid, setIsValid] = useState(false);
   const [attemptedUpload, setAttemptedUpload] = useState(false);
 
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleOpen = () => setIsOpen(true);
 
   const [isTouched, setIsTouched] = useState({
     name: false,
@@ -428,14 +349,6 @@ const NewEmployee = () => {
     permanentDate: false,
     reportingDepartment: false,
     reportingOffice: false,
-    client: false,
-    projectName: false,
-    projectType: false,
-    projectRole: false,
-    region: false,
-    projectStartDate: false,
-    billableHours: false,
-    //projectEndDate: false,
     degree: false,
     institute: false,
     degreeStartDate: false,
@@ -504,66 +417,6 @@ const NewEmployee = () => {
     }));
   };
 
-  //Hanlde dynamic dependency of projects based on client
-  const getProjectOptions = (client) => {
-    if (client === "Digifloat Internal") {
-      return [
-        "Yorktel",
-        "Training - Interns",
-        "Trainee",
-        "Sourcing Solutions",
-        "RMI",
-        "Proposal",
-        "Outsourcing",
-        "Management",
-        "Leave",
-        "IT and Networks",
-        "HR",
-        "General",
-        "DMX",
-        "Business Development",
-        "Boltwire",
-        "Blogs",
-      ];
-    } else if (client === "AP - SAGE") {
-      return ["AP - Sage"];
-    } else if (client === "ATOS") {
-      return ["NBB"];
-    } else if (client === "EXADIVE") {
-      return ["Ahold delhaize"];
-    } else if (client === "HSO") {
-      return [
-        "Warburg",
-        "Zenus",
-        "Mavis",
-        "Yorktel",
-        "EFI",
-        "Godiva",
-        "Sonesta",
-      ];
-    } else if (client === "KEYRUS BELGIUM") {
-      return ["Aliaxis", "Atlas Copco", "Borealis"];
-    } else if (client === "KEYRUS SINGAPORE") {
-      return ["BD", "JnJ"];
-    } else if (client === "KEYRUS UAE") {
-      return ["MAFP"];
-    } else {
-      return [];
-    }
-  };
-
-  const style = {
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    transform: "translate(-50%, -50%)",
-    width: 700,
-    bgcolor: "background.paper",
-    border: "2px solid #E23D3F",
-    boxShadow: 24,
-    p: 4,
-  };
-
   //State for handling fuel options
   const customFuelFromLocalStorage = JSON.parse(
     localStorage.getItem("customFuelOptions")
@@ -572,29 +425,6 @@ const NewEmployee = () => {
   const [customFuelOptions, setCustomFuelOptions] = useState([
     ...fuelOptions,
     ...(customFuelFromLocalStorage || []),
-  ]);
-
-  //State for handling project options and its custom options
-  const [customProjectOptions, setCustomProjectOptions] = useState(
-    JSON.parse(localStorage.getItem("customProjectOptions")) || []
-  );
-
-  //Dynamic project options
-  const projectOptions = [
-    ...getProjectOptions(formData.client),
-    ...customProjectOptions
-      .filter((option) => option.client === formData.client)
-      .map((option) => option.value),
-  ];
-
-  //State for handling client options and its custom options
-  const customClientFromLocalStorage = JSON.parse(
-    localStorage.getItem("customClientOptions")
-  );
-
-  const [clientOptions, setClientOptions] = useState([
-    ...clients,
-    ...(customClientFromLocalStorage || []),
   ]);
 
   //State for handling designation options and its custom options
@@ -629,50 +459,6 @@ const NewEmployee = () => {
         JSON.parse(localStorage.getItem("customFuelOptions")) || [];
       const updatedOptions = [...existingOptions, newOption];
       localStorage.setItem("customFuelOptions", JSON.stringify(updatedOptions));
-    }
-  };
-
-  const handleAddProjectOption = () => {
-    if (formData.client && formData.customProjectOption) {
-      const newOption = {
-        client: formData.client,
-        value: formData.customProjectOption,
-      };
-      setCustomProjectOptions([...customProjectOptions, newOption]);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        projectName: formData.customProjectOption,
-        customProjectOption: "",
-      }));
-
-      const existingOptions =
-        JSON.parse(localStorage.getItem("customProjectOptions")) || [];
-
-      const updatedOptions = [...existingOptions, newOption];
-      localStorage.setItem(
-        "customProjectOptions",
-        JSON.stringify(updatedOptions)
-      );
-    }
-  };
-
-  const handleAddClientOption = () => {
-    if (formData.customClientOption) {
-      const newOption = { value: formData.customClientOption };
-      setClientOptions([...clientOptions, newOption]);
-      setFormData((prevFormData) => ({
-        ...prevFormData,
-        client: formData.customClientOption,
-        customClientOption: "",
-      }));
-
-      const existingOptions =
-        JSON.parse(localStorage.getItem("customClientOptions")) || [];
-      const updatedOptions = [...existingOptions, newOption];
-      localStorage.setItem(
-        "customClientOptions",
-        JSON.stringify(updatedOptions)
-      );
     }
   };
 
@@ -732,32 +518,6 @@ const NewEmployee = () => {
 
     setFormData((prevFormData) => ({ ...prevFormData, [name]: value }));
     setErrors((prevErrors) => ({ ...prevErrors, [name]: null }));
-  };
-
-  const handleAddProject = () => {
-    const newProject = {
-      client: formData.client,
-      projectName: formData.projectName,
-      projectRole: formData.projectRole,
-      projectType: formData.projectType,
-      billableHours: formData.billableHours,
-      region: formData.region,
-      startDate: formData.projectStartDate,
-      endDate: formData.projectEndDate,
-    };
-    setProjects([...projects, newProject]);
-    setOpen(false);
-    setErrors((prevErrors) => ({
-      ...prevErrors,
-      client: null,
-      projectName: null,
-      projectRole: null,
-      projectType: null,
-      billableHours: null,
-      region: null,
-      projectStartDate: null,
-      projectEndDate: null,
-    }));
   };
 
   const handleEmployeeIdChange = (e) => {
@@ -1049,46 +809,6 @@ const NewEmployee = () => {
       errors.permanentDate = "Please set date of permanent employment";
       isValid = false;
     }
-
-    if (!formData.client && projects.length === 0) {
-      errors.client = "Please select client";
-      isValid = false;
-    }
-
-    if (!formData.projectName && projects.length === 0) {
-      errors.projectName = "Please select project";
-      isValid = false;
-    }
-
-    if (!formData.projectRole && projects.length === 0) {
-      errors.projectRole = "Please select project role";
-      isValid = false;
-    }
-
-    if (!formData.projectType && projects.length === 0) {
-      errors.projectType = "Please select project type";
-      isValid = false;
-    }
-
-    if (!formData.billableHours && projects.length === 0) {
-      errors.billableHours = "Please select billable hours";
-      isValid = false;
-    }
-
-    if (!formData.region && projects.length === 0) {
-      errors.region = "Please set region";
-      isValid = false;
-    }
-
-    if (!formData.projectStartDate && projects.length === 0) {
-      errors.projectStartDate = "Please select project start date";
-      isValid = false;
-    }
-
-    // if (!formData.projectEndDate) {
-    //   errors.projectEndDate = "Please select project end date";
-    //   isValid = false;
-    // }
 
     if (!formData.degree.trim()) {
       errors.degree = "Please enter degree";
@@ -2183,6 +1903,7 @@ const NewEmployee = () => {
                     <Grid xs={6}>
                       <Typography
                         variant="h6"
+                        width="20%"
                         sx={{
                           marginTop: "20px",
                           backgroundColor: "#C62828",
@@ -2229,7 +1950,7 @@ const NewEmployee = () => {
                       />
                       <br />
                     </Grid>
-                    <Grid xs={6} marginTop="45px">
+                    <Grid xs={6} marginTop="60px">
                       <TextField
                         sx={{ marginTop: "20px", width: "50%" }}
                         name="projectName"
@@ -2271,227 +1992,12 @@ const NewEmployee = () => {
                   </>
                 );
               })}
-            <Modal open={open} onClose={handleClose}>
-              <Box sx={style}>
-                <Grid container spacing={1} xs={12}>
-                  <Grid xs={6}>
-                    <TextField
-                      sx={{ marginTop: "20px", width: "70%" }}
-                      name="client"
-                      multiple
-                      required
-                      select
-                      error={
-                        !!errors.client && isTouched.client && errors.client
-                      }
-                      value={formData.client}
-                      onChange={handleFieldChange}
-                      onBlur={handleBlur}
-                      helperText={
-                        errors.client && isTouched.client
-                          ? errors.client
-                          : "Please select client"
-                      }
-                    >
-                      {clientOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.value}
-                        </MenuItem>
-                      ))}
-                      <MenuItem value="addCustom">Add Custom</MenuItem>
-                    </TextField>
-                    {formData.client === "addCustom" && (
-                      <>
-                        <br />
-                        <TextField
-                          sx={{ width: "40%" }}
-                          name="customClientOption"
-                          variant="standard"
-                          value={formData.customClientOption}
-                          onChange={handleFieldChange}
-                        />
-                        <Button onClick={handleAddClientOption}>Add</Button>
-                      </>
-                    )}
-                    <br />
-                    <TextField
-                      InputLabelProps={{ shrink: true }}
-                      sx={{ marginTop: "20px", width: "70%" }}
-                      name="projectType"
-                      label="Project Type"
-                      required
-                      value={formData.projectType}
-                      onChange={handleFieldChange}
-                      onBlur={handleBlur}
-                      onFocus={handleFocus}
-                      error={!!errors.projectType && isTouched.projectType}
-                      helperText={
-                        errors.projectType &&
-                        isTouched.projectType &&
-                        errors.projectType
-                      }
-                    />
-                    <br />
-                    <TextField
-                      InputLabelProps={{ shrink: true }}
-                      sx={{ marginTop: "20px", width: "70%" }}
-                      name="projectRole"
-                      label="Project Role"
-                      required
-                      value={formData.projectRole}
-                      onChange={handleFieldChange}
-                      onBlur={handleBlur}
-                      onFocus={handleFocus}
-                      error={!!errors.projectRole && isTouched.projectRole}
-                      helperText={
-                        errors.projectRole &&
-                        isTouched.projectRole &&
-                        errors.projectRole
-                      }
-                    />
-                    <br />
-                    <TextField
-                      InputLabelProps={{ shrink: true }}
-                      sx={{ marginTop: "20px", width: "70%" }}
-                      name="region"
-                      label="Region"
-                      required
-                      value={formData.region}
-                      onChange={handleFieldChange}
-                      onBlur={handleBlur}
-                      onFocus={handleFocus}
-                      error={!!errors.region && isTouched.region}
-                      helperText={
-                        errors.region && isTouched.region && errors.region
-                      }
-                    />
-                    <br />
-                  </Grid>
-                  <Grid xs={6}>
-                    <TextField
-                      sx={{ marginTop: "20px", width: "70%", ml: 14 }}
-                      name="projectName"
-                      required
-                      select
-                      error={
-                        !!errors.project && isTouched.project && errors.project
-                      }
-                      value={formData.projectName}
-                      onChange={handleFieldChange}
-                      onBlur={handleBlur}
-                      helperText={
-                        errors.projectName && isTouched.projectName
-                          ? errors.projectName
-                          : "Please select project"
-                      }
-                    >
-                      {projectOptions.map((option) => (
-                        <MenuItem key={option} value={option}>
-                          {option}
-                        </MenuItem>
-                      ))}
-                      <MenuItem value="addCustom">Add Custom</MenuItem>
-                    </TextField>
-
-                    {formData.projectName === "addCustom" && (
-                      <>
-                        <br />
-                        <TextField
-                          sx={{ width: "40%" }}
-                          name="customProjectOption"
-                          variant="standard"
-                          value={formData.customProjectOption}
-                          onChange={handleFieldChange}
-                        />
-                        <Button onClick={handleAddProjectOption}>Add</Button>
-                      </>
-                    )}
-                    <br />
-                    <TextField
-                      InputLabelProps={{ shrink: true }}
-                      sx={{ marginTop: "20px", width: "70%", ml: 14 }}
-                      name="projectStartDate"
-                      label="Starting Date"
-                      type="date"
-                      required
-                      value={formData.projectStartDate}
-                      onChange={handleFieldChange}
-                      onBlur={handleBlur}
-                      onFocus={handleFocus}
-                      error={
-                        !!errors.projectStartDate && isTouched.projectStartDate
-                      }
-                      helperText={
-                        errors.projectStartDate &&
-                        isTouched.projectStartDate &&
-                        errors.projectStartDate
-                      }
-                    />
-                    <br />
-                    <TextField
-                      InputLabelProps={{ shrink: true }}
-                      sx={{ marginTop: "20px", width: "70%", ml: 14 }}
-                      name="billableHours"
-                      label="Billable Hours"
-                      select
-                      // variant="standard"
-                      value={formData.billableHours}
-                      onChange={handleFieldChange}
-                      onBlur={handleBlur}
-                      onFocus={handleFocus}
-                      error={!!errors.billableHours && isTouched.billableHours}
-                      helperText={
-                        errors.billableHours &&
-                        isTouched.billableHours &&
-                        errors.billableHours
-                      }
-                    >
-                      {billableHourOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.value}
-                        </MenuItem>
-                      ))}
-                    </TextField>
-                    <br />
-                    <TextField
-                      InputLabelProps={{ shrink: true }}
-                      sx={{ marginTop: "35px", width: "70%", ml: 14 }}
-                      name="projectEndDate"
-                      label="Ending Date (optional)"
-                      type="date"
-                      // variant="standard"
-                      value={formData.projectEndDate}
-                      onChange={handleFieldChange}
-                    />
-                    <br />
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Button
-                        sx={{ marginTop: "20px", marginRight: "10px" }}
-                        variant="outlined"
-                        color="error"
-                        onClick={handleClose}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        sx={{ marginTop: "20px" }}
-                        variant="contained"
-                        color="error"
-                        onClick={handleAddProject}
-                      >
-                        Add Project
-                      </Button>
-                    </div>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Modal>
+            {isOpen && (
+              <AddProjectModal
+                onClose={handleCloseModal}
+                onSave={handleSaveProject}
+              />
+            )}
           </Grid>
         </TabPanel>
       </Box>

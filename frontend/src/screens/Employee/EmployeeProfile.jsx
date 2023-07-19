@@ -89,14 +89,6 @@ const EmployeeProfile = () => {
   const [permanentDate, setPermanentDate] = useState("");
   const [reportingDepartment, setReportingDepartment] = useState("");
   const [reportingOffice, setReportingOffice] = useState("");
-  const [client, setClient] = useState("");
-  const [projectName, setProjectName] = useState("");
-  const [projectType, setProjectType] = useState("");
-  const [projectRole, setProjectRole] = useState("");
-  const [region, setRegion] = useState("");
-  const [projectStartDate, setProjectStartDate] = useState("");
-  const [billableHours, setBillableHours] = useState("");
-  const [projectEndDate, setProjectEndDate] = useState("");
   const [degree, setDegree] = useState("");
   const [institute, setInstitute] = useState("");
   const [degreeStartDate, setDegreeStartDate] = useState("");
@@ -120,6 +112,7 @@ const EmployeeProfile = () => {
   const [paidCertifications, setPaidCertifications] = useState("");
   const [paidTimeOff, setPaidTimeOff] = useState("");
   const [annualBonus, setAnnualBonus] = useState("");
+  const [projects, setProjects] = useState(null);
 
   const [showPassword, setShowPassword] = useState(false);
 
@@ -161,14 +154,15 @@ const EmployeeProfile = () => {
       setReportingDepartment(user.jobDetails?.reportingDepartment ?? "add");
       setReportingOffice(user.jobDetails?.reportingOffice ?? "add");
       setPermanentDate(user.jobDetails?.permanentDate ?? "add");
-      setClient(user.projectDetails?.client ?? "add");
-      setProjectName(user.projectDetails?.projectName ?? "add");
-      setProjectRole(user.projectDetails?.projectRole ?? "add");
-      setProjectType(user.projectDetails?.projectType ?? "add");
-      setBillableHours(user.projectDetails?.billableHours ?? "add");
-      setRegion(user.projectDetails?.region ?? "add");
-      setProjectStartDate(user.projectDetails?.startDate ?? "add");
-      setProjectEndDate(user.projectDetails?.endDate ?? "add");
+      setProjects(user.projects);
+      // setClient(user.projectDetails?.client ?? "add");
+      // setProjectName(user.projectDetails?.projectName ?? "add");
+      // setProjectRole(user.projectDetails?.projectRole ?? "add");
+      // setProjectType(user.projectDetails?.projectType ?? "add");
+      // setBillableHours(user.projectDetails?.billableHours ?? "add");
+      // setRegion(user.projectDetails?.region ?? "add");
+      // setProjectStartDate(user.projectDetails?.startDate ?? "add");
+      // setProjectEndDate(user.projectDetails?.endDate ?? "add");
       setDate(user.jobDetails.dateOfJoining);
       setWorkType(user.jobDetails.workType);
       setEmploymentStatus(user.jobDetails.employmentStatus);
@@ -246,7 +240,7 @@ const EmployeeProfile = () => {
             >
               <img
                 //src={`/photos/${imageUrl}`}
-                src={`http://.10.51.100.66:5000/photos/${imageUrl}`}
+                src={`http://localhost:5000/photos/${imageUrl}`}
                 alt="Profile"
                 loading="lazy"
                 style={{
@@ -539,75 +533,101 @@ const EmployeeProfile = () => {
             </TabPanel>
             <TabPanel value={value} index={2}>
               <Grid container spacing={1} xs={12}>
-                <Grid xs={6}>
-                  <TextField
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ marginTop: "20px", width: "50%" }}
-                    name="client"
-                    value={client}
-                    label="Client"
-                  />
-
-                  <br />
-                  <TextField
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ marginTop: "20px", width: "50%" }}
-                    name="projectType"
-                    label="Project Type"
-                    value={projectType}
-                  />
-                  <br />
-                  <TextField
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ marginTop: "20px", width: "50%" }}
-                    name="projectRole"
-                    label="Project Role"
-                    value={projectRole}
-                  />
-                  <br />
-                  <TextField
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ marginTop: "20px", width: "50%" }}
-                    name="region"
-                    label="Region"
-                    value={region}
-                  />
-                </Grid>
-                <Grid xs={6}>
-                  <TextField
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ marginTop: "20px", width: "50%" }}
-                    name="projectName"
-                    value={projectName}
-                    label="Project"
-                  />
-
-                  <br />
-
-                  <TextField
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ marginTop: "20px", width: "50%" }}
-                    name="projectStartDate"
-                    label="Starting Date"
-                    value={projectStartDate}
-                  />
-                  <br />
-                  <TextField
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ marginTop: "20px", width: "50%" }}
-                    name="billable hours"
-                    label="Billable Hours"
-                    value={billableHours}
-                  />
-                  <br />
-                  <TextField
-                    InputLabelProps={{ shrink: true }}
-                    sx={{ marginTop: "20px", width: "50%" }}
-                    name="projectEndDate"
-                    label="Ending Date"
-                    value={projectEndDate}
-                  />
-                </Grid>
+                {projects?.length !== 0 &&
+                  projects?.map((project, index) => {
+                    return (
+                      <>
+                        <Grid xs={6}>
+                          <Typography
+                            variant="h6"
+                            width="20%"
+                            sx={{
+                              marginTop: "20px",
+                              backgroundColor: "#C62828",
+                              color: "white",
+                              textAlign: "center",
+                              padding: "5px",
+                            }}
+                          >
+                            Project {index + 1}
+                          </Typography>
+                          <TextField
+                            sx={{ marginTop: "20px", width: "50%" }}
+                            name="client"
+                            label="Client"
+                            multiple
+                            required
+                            value={project.client}
+                          />
+                          <br />
+                          <TextField
+                            InputLabelProps={{ shrink: true }}
+                            sx={{ marginTop: "20px", width: "50%" }}
+                            name="projectType"
+                            label="Project Type"
+                            required
+                            value={project.projectType}
+                          />
+                          <br />
+                          <TextField
+                            InputLabelProps={{ shrink: true }}
+                            sx={{ marginTop: "20px", width: "50%" }}
+                            name="projectRole"
+                            label="Project Role"
+                            required
+                            value={project.projectRole}
+                          />
+                          <br />
+                          <TextField
+                            InputLabelProps={{ shrink: true }}
+                            sx={{ marginTop: "20px", width: "50%" }}
+                            name="region"
+                            label="Region"
+                            required
+                            value={project.region}
+                          />
+                          <br />
+                        </Grid>
+                        <Grid xs={6} marginTop="60px">
+                          <TextField
+                            sx={{ marginTop: "20px", width: "50%" }}
+                            name="projectName"
+                            label="Project"
+                            required
+                            value={project.projectName}
+                          />
+                          <br />
+                          <TextField
+                            InputLabelProps={{ shrink: true }}
+                            sx={{ marginTop: "20px", width: "50%" }}
+                            name="projectStartDate"
+                            label="Starting Date"
+                            type="date"
+                            required
+                            value={project.startDate}
+                          />
+                          <br />
+                          <TextField
+                            InputLabelProps={{ shrink: true }}
+                            sx={{ marginTop: "20px", width: "50%" }}
+                            name="billableHours"
+                            label="Billable Hours"
+                            value={project.billableHours}
+                          />
+                          <br />
+                          <TextField
+                            InputLabelProps={{ shrink: true }}
+                            sx={{ marginTop: "20px", width: "50%" }}
+                            name="projectEndDate"
+                            label="Ending Date (optional)"
+                            type="date"
+                            value={project.endDate}
+                          />
+                          <br />
+                        </Grid>
+                      </>
+                    );
+                  })}
               </Grid>
             </TabPanel>
             <TabPanel value={value} index={3}>
