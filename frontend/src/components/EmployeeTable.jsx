@@ -7,8 +7,8 @@ import InputAdornment from "@mui/material/InputAdornment";
 import { Button } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { Search, Upgrade } from "@mui/icons-material";
-import Alert from "@mui/material/Alert";
-import Snackbar from "@mui/material/Snackbar";
+// import Alert from "@mui/material/Alert";
+// import Snackbar from "@mui/material/Snackbar";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { deleteUser, listUsers } from "../actions/userActions";
@@ -67,11 +67,11 @@ function EmployeeTable() {
   const { success: successAdd } = userAdd;
 
   const userEdit = useSelector((state) => state.userEdit);
-  const { message, success: successEdit } = userEdit;
+  const { success: successEdit } = userEdit;
 
   const [records, setRecords] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
-  const [openToast, setOpenToast] = useState(true);
+  //const [openToast, setOpenToast] = useState(true);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -128,9 +128,9 @@ function EmployeeTable() {
     XLSX.writeFile(workbook, "Employees.xlsx");
   }
 
-  const handleToastClose = () => {
-    setOpenToast(false);
-  };
+  // const handleToastClose = () => {
+  //   setOpenToast(false);
+  // };
 
   useEffect(() => {
     if (userInfo && userInfo.role.includes("Admin")) {
@@ -207,18 +207,6 @@ function EmployeeTable() {
           navigate(`/home/profile/${row.id}`);
         }}
       />
-      {message && (
-        <Snackbar
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          open={openToast}
-          onClose={handleToastClose}
-          autoHideDuration={3000}
-        >
-          <Alert severity="success" sx={{ width: "100%" }}>
-            {message.message}
-          </Alert>
-        </Snackbar>
-      )}
     </div>
   );
 }

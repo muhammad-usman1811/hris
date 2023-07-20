@@ -302,6 +302,10 @@ export default function EmployeeProfile() {
       project.client === updatedProject.client ? updatedProject : project
     );
     setProjects(updatedProjects);
+    setIsTouched((prevData) => ({
+      ...prevData,
+      projectEdit: true,
+    }));
   };
 
   //States to store values
@@ -356,6 +360,7 @@ export default function EmployeeProfile() {
   const [attemptedUpload, setAttemptedUpload] = useState(false);
   const [imageIsChanged, setImageIsChanged] = useState(false);
   const [isTouched, setIsTouched] = useState({
+    projectEdit: false,
     imageUrl: false,
     name: false,
     email: false,

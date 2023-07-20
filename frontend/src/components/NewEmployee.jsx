@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Paper from "@mui/material/Paper";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import Grid from "@mui/material/Grid";
@@ -17,8 +17,8 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import { Typography } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import InputAdornment from "@mui/material/InputAdornment";
-// import Alert from "@mui/material/Alert";
-// import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import Snackbar from "@mui/material/Snackbar";
 import CancelIcon from "@mui/icons-material/Cancel";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
@@ -27,10 +27,6 @@ import Checkbox from "@mui/material/Checkbox";
 import Autocomplete from "@mui/material/Autocomplete";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
-//import DeleteIcon from "@mui/icons-material/Delete";
-// import FormHelperText from "@mui/material/FormHelperText";
-// import FormControl from "@mui/material/FormControl";
-// import Input from "@mui/material/Input";
 import { addUser } from "../actions/userActions";
 import AddIcon from "@mui/icons-material/Add";
 import AddProjectModal from "./common/AddProjectModal";
@@ -317,11 +313,11 @@ const NewEmployee = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const userAdd = useSelector((state) => state.userAdd);
-  // const { loading, message, error } = userAdd;
+  const userAdd = useSelector((state) => state.userAdd);
+  const { loading, success, error } = userAdd;
 
   const [showPassword, setShowPassword] = useState(false);
-  // const [openToast, setOpenToast] = useState(true);
+  const [openToast, setOpenToast] = useState(false);
   const [errors, setErrors] = useState({});
   const [isValid, setIsValid] = useState(false);
   const [attemptedUpload, setAttemptedUpload] = useState(false);
@@ -540,7 +536,9 @@ const NewEmployee = () => {
     if (isValid) {
       dispatch(addUser(formData, projects));
       setErrors({});
-      navigate("/home/employees");
+      if (success) {
+        navigate("/home/employees");
+      }
     } else {
       return;
     }
@@ -572,13 +570,13 @@ const NewEmployee = () => {
     }));
   };
 
-  // const handleToastClose = () => {
-  //   setOpenToast(false);
-  // };
+  const handleToastClose = () => {
+    setOpenToast(false);
+  };
 
-  // const handleClick = () => {
-  //   setOpenToast(true);
-  // };
+  const handleClick = () => {
+    setOpenToast(true);
+  };
 
   const handleClickShowPassword = () => {
     setShowPassword((show) => !show);
@@ -795,11 +793,6 @@ const NewEmployee = () => {
       isValid = false;
     }
 
-    // if (!formData.reportingDepartment) {
-    //   errors.reportingDepartment = "Please select reporting department";
-    //   isValid = false;
-    // }
-
     if (!formData.reportingOffice) {
       errors.reportingOffice = "Please select reporting office";
       isValid = false;
@@ -867,7 +860,7 @@ const NewEmployee = () => {
 
     setIsValid(isValid);
     setErrors(errors);
-  }, [formData, hasBlurred, projects]);
+  }, [formData, hasBlurred, projects, error]);
 
   return (
     //profile picture and cover picture
@@ -963,12 +956,12 @@ const NewEmployee = () => {
           >
             <Stack spacing={2} direction="row">
               <LoadingButton
-                //loading={loading}
+                loading={loading}
                 color="error"
                 variant="contained"
                 type="submit"
                 disabled={!isValid}
-                // onClick={handleClick}
+                onClick={handleClick}
               >
                 Save Changes
               </LoadingButton>
@@ -2001,6 +1994,18 @@ const NewEmployee = () => {
           </Grid>
         </TabPanel>
       </Box>
+      {error && (
+        <Snackbar
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          open={openToast}
+          onClose={handleToastClose}
+          autoHideDuration={3000}
+        >
+          <Alert severity="success" sx={{ width: "100%" }}>
+            {error}
+          </Alert>
+        </Snackbar>
+      )}
     </>
   );
 };

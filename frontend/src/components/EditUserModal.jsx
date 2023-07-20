@@ -255,16 +255,12 @@ const EditUserModal = ({ project, onSave, onClose }) => {
               <TextField
                 sx={{ marginTop: "20px", width: "70%" }}
                 name="client"
-                select
-                error={!!errors.client && isTouched.client && errors.client}
+                label="Client"
+                //select
+                //error={!!errors.client && isTouched.client && errors.client}
                 value={formData.client}
-                onChange={handleInputChange}
-                onBlur={handleBlur}
-                helperText={
-                  errors.client && isTouched.client
-                    ? errors.client
-                    : "Please select client"
-                }
+                //onChange={handleInputChange}
+                //onBlur={handleBlur}
                 // variant="standard"
               >
                 {customClientOptions.map((option) => (
@@ -334,15 +330,16 @@ const EditUserModal = ({ project, onSave, onClose }) => {
               <TextField
                 sx={{ marginTop: "20px", width: "70%", ml: 14 }}
                 name="projectName"
+                label="Project"
                 select
                 error={!!errors.project && isTouched.project && errors.project}
                 value={formData.projectName}
                 onChange={handleInputChange}
                 onBlur={handleBlur}
                 helperText={
-                  errors.projectName && isTouched.projectName
-                    ? errors.projectName
-                    : "Please select project"
+                  errors.projectName &&
+                  isTouched.projectName &&
+                  errors.projectName
                 }
               >
                 {customProjectOptions.map((option) => (
