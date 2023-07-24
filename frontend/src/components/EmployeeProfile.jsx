@@ -869,7 +869,7 @@ export default function EmployeeProfile() {
         <Grid item xs={12} sx={{ height: 250 }}>
           <Item sx={{ height: 250 }}>
             <img
-              src="/images/cover3.png"
+              src="/images/cover1.png"
               alt="cover"
               style={{
                 height: "100%",
