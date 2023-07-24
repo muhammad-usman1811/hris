@@ -869,7 +869,7 @@ const NewEmployee = () => {
         <Grid item xs={12} sx={{ height: 250 }}>
           <Item sx={{ height: 250 }}>
             <img
-              src="/images/cover1.png"
+              src="/images/cover3.png"
               alt="cover"
               style={{
                 height: "100%",
@@ -888,12 +888,12 @@ const NewEmployee = () => {
               justifyContent: "center",
               position: "relative",
               top: -100,
-              left: -250,
+              left: -280,
             }}
             {...getRootProps()}
           >
             {formData.file ? (
-              <div style={{ position: "relative" }}>
+              <div style={{ position: "relative", left: -35 }}>
                 <img
                   src={formData.file.preview}
                   alt="Profile"
@@ -902,7 +902,7 @@ const NewEmployee = () => {
                     height: 180,
                     width: 180,
                     borderRadius: "50%",
-                    border: "5px solid #fff",
+                    border: "1px solid #fff",
                   }}
                 />
                 <IconButton
@@ -927,6 +927,8 @@ const NewEmployee = () => {
                   border: "1px solid grey",
                   display: "flex",
                   justifyContent: "center",
+                  left: -35,
+                  backgroundColor: "white",
                   alignItems: "center",
                   overflow: "hidden",
                   position: "relative",

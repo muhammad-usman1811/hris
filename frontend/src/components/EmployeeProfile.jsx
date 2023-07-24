@@ -285,6 +285,10 @@ export default function EmployeeProfile() {
   const handleSaveProject = (newProject) => {
     const updatedProjects = [...projects, newProject];
     setProjects(updatedProjects);
+    setIsTouched((prevData) => ({
+      ...prevData,
+      projectAdd: true,
+    }));
   };
 
   const handleOpenModal = (data) => {
@@ -361,6 +365,7 @@ export default function EmployeeProfile() {
   const [imageIsChanged, setImageIsChanged] = useState(false);
   const [isTouched, setIsTouched] = useState({
     projectEdit: false,
+    projectAdd: false,
     imageUrl: false,
     name: false,
     email: false,
@@ -830,7 +835,6 @@ export default function EmployeeProfile() {
         setDate(user.jobDetails.dateOfJoining);
         setWorkType(user.jobDetails.workType);
         setRole(user.role);
-        console.log("db", user.role);
         setEmploymentStatus(user.jobDetails.employmentStatus);
         setSalary(user.jobDetails.salary);
         setEmergencyName(user.emergencyDetails.name);
@@ -865,7 +869,7 @@ export default function EmployeeProfile() {
         <Grid item xs={12} sx={{ height: 250 }}>
           <Item sx={{ height: 250 }}>
             <img
-              src="/images/cover1.png"
+              src="/images/cover3.png"
               alt="cover"
               style={{
                 height: "100%",
@@ -884,7 +888,7 @@ export default function EmployeeProfile() {
               justifyContent: "center",
               position: "relative",
               top: -100,
-              left: -250,
+              left: -280,
             }}
             {...getRootProps()}
           >
@@ -910,6 +914,7 @@ export default function EmployeeProfile() {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
+                    left: -50,
                     height: 180,
                     width: 180,
                     borderRadius: "50%",

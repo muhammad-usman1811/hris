@@ -207,6 +207,18 @@ function EmployeeTable() {
           navigate(`/home/profile/${row.id}`);
         }}
       />
+      {/* {message && (
+        <Snackbar
+          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+          open={openToast}
+          onClose={handleToastClose}
+          autoHideDuration={3000}
+        >
+          <Alert severity="success" sx={{ width: "100%" }}>
+            {message}
+          </Alert>
+        </Snackbar>
+      )} */}
     </div>
   );
 }
