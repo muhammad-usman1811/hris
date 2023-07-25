@@ -137,6 +137,10 @@ const TimeSheet = () => {
     setSelectedUserId(selectedUser ? selectedUser.id : null);
   };
 
+  const totalWorkHours = filteredRows
+    .reduce((acc, row) => acc + parseFloat(row.workHours), 0)
+    .toFixed(2);
+
   const graphRef = React.useRef(null);
 
   const downloadPdf = () => {
@@ -244,6 +248,29 @@ const TimeSheet = () => {
         theme: "grid", // Apply grid theme for borders
         headStyles: headerStyles,
       });
+
+      // Get the final Y position of the autoTable
+      const autoTableFinalY = doc.previousAutoTable.finalY;
+
+      //Summary
+      const summaryStartY = autoTableFinalY + 10;
+      doc.setLineWidth(1);
+      doc.setDrawColor(203, 56, 55);
+      doc.line(
+        20,
+        summaryStartY + cellHeight * 5.5,
+        570,
+        summaryStartY + cellHeight * 5.5
+      ); // Adjust the y-coordinate as needed for the summary line
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Summary", 30, summaryStartY + cellHeight * 5.5 + 20); // Adjust the y-coordinate as needed for the summary heading
+      doc.setFontSize(10);
+      doc.text(
+        `Total Work Hours: ${totalWorkHours}`,
+        30,
+        summaryStartY + cellHeight * 5.5 + 35
+      );
 
       //Add the footer
       doc.setFont("helvetica", "italic");
