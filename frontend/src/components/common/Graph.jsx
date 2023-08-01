@@ -12,7 +12,7 @@ const Graph = ({ startDate, endDate, data }) => {
       const formattedDate = formatDate(currentDate);
       const workHours =
         dataForGraph.find((item) => item.date === formattedDate)?.workHours ||
-        null;
+        0;
       dates.push({
         date: formattedDate,
         workHours,

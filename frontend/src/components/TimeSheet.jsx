@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Stack, TextField, Divider, Button } from "@mui/material";
+import {
+  Grid,
+  Stack,
+  TextField,
+  Divider,
+  Button,
+  Typography,
+} from "@mui/material";
 import DataTable from "react-data-table-component";
 import { useSelector, useDispatch } from "react-redux";
 import Graph from "./common/Graph";
@@ -12,6 +19,7 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import logo from "../assets/logo.jpeg";
+import PieChart from "./common/PieChart";
 
 const TimeSheet = () => {
   const columns = [
@@ -48,7 +56,6 @@ const TimeSheet = () => {
   const dispatch = useDispatch();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [employeeNames, setEmployeeNames] = useState([]);
   const [selectedName, setSelectedName] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
   const [attendance, setAttendance] = useState([]);
@@ -63,6 +70,15 @@ const TimeSheet = () => {
 
   const userDetails = useSelector((state) => state.userDetails);
   const { user } = userDetails;
+
+  const employeeNames =
+    users &&
+    users.map((user) => {
+      return {
+        id: user._id,
+        name: user.name,
+      };
+    });
 
   const calculateWorkHours = (starttime, endtime) => {
     if (!endtime || endtime === "Not checked out") {
@@ -81,9 +97,9 @@ const TimeSheet = () => {
       name: row.name,
       department: row.department,
       status: "Present",
-      checkedIn: moment(row.checkIn, "hh:mm:ss:A").format("hh:mm:ss:A"),
+      checkedIn: moment(row.checkIn, "hh:mm:ss A").format("hh:mm:ss A"),
       checkedOut: row.checkOut
-        ? moment(row.checkOut, "hh:mm:ss:A").format("hh:mm:ss:A")
+        ? moment(row.checkOut, "hh:mm:ss A").format("hh:mm:ss A")
         : "Not checked out",
       workHours: calculateWorkHours(row.checkIn, row.checkOut),
       date: row.createdAt.split("T")[0],
@@ -141,153 +157,166 @@ const TimeSheet = () => {
     .reduce((acc, row) => acc + parseFloat(row.workHours), 0)
     .toFixed(2);
 
+  const userProjects = user?.projects?.map((project) => ({
+    value: ((parseInt(project.billableHours) / 8) * totalWorkHours).toFixed(2),
+    name: project.projectName,
+  }));
+
+  //Projects and clients for pdf report
+  const clientsForPdf = user?.projects
+    ?.map((project) => project.client)
+    .join(", ");
+
+  const projectsForPdf = user?.projects
+    ?.map((project) => project.projectName)
+    .join(", ");
   const graphRef = React.useRef(null);
+  const pieRef = React.useRef(null);
 
-  const downloadPdf = () => {
+  //Helper function to draw a cell with border and text
+  const drawCell = (doc, text, x, y) => {
+    const cellWidth = 140;
+    const cellHeight = 25;
+    const marginX = 5;
+    const marginY = 15;
+
+    doc.rect(x, y, cellWidth, cellHeight); // Draw border
+    doc.text(text, x + marginX, y + marginY); // Display text
+  };
+
+  //Helper function to capture an element as an image
+  const captureElementAsImage = async (elementRef) => {
+    const canvas = await html2canvas(elementRef.current, {
+      scale: 2,
+      willReadFrequently: true,
+      useCORS: true,
+    });
+    return canvas.toDataURL("image/jpeg", 0.3);
+  };
+
+  const downloadPdf = async () => {
     const doc = new jsPDF("p", "pt", "a4", true);
-    const headerHeight = 25; // Adjust the height as needed
-    const headerColor = "#CB3837"; // Specify the desired header color
-
-    doc.setFillColor(headerColor);
-    doc.rect(0, 0, doc.internal.pageSize.getWidth(), headerHeight, "F");
-
-    //Change shift start and end time format
-    const startTime24Hour = user.shiftStartTime;
-    const endTime24Hour = user.shiftEndTime;
-
-    const startTime12Hour = moment(startTime24Hour, "HH:mm").format("hh:mm:A");
-    const endTime12Hour = moment(endTime24Hour, "HH:mm").format("hh:mm:A");
-
-    const startMonth = moment(startDate).format("MMMM-YY"); // Extract the month from the selected start date
-
-    // Add the table content to the PDF
-    doc.setFontSize(18);
-    doc.setFont("helvetica", "bold");
-    doc.text("Timesheet", 230, 70);
-    doc.setFontSize(12);
-    doc.setFont("helvetica", "bold"); // Set the font style to bold
+    const headerHeight = 25;
+    const headerColor = "#CB3837";
     const cellWidth = 140;
     const cellHeight = 25;
     const startX = 20;
     const startY = 125;
-    const marginX = 5;
-    const marginY = 15;
     const projectStartX = startX + cellWidth * 2;
     const projectStartY = startY - 25 + cellHeight * 3;
 
-    // Draw borders and display the information in a grid
-    const drawCell = (text, x, y) => {
-      doc.rect(x, y, cellWidth, cellHeight); // Draw border
-      doc.text(text, x + marginX, y + marginY); // Display text
-    };
+    doc.setFillColor(headerColor);
+    doc.rect(0, 0, doc.internal.pageSize.getWidth(), headerHeight, "F");
 
-    // Draw the grid cells with borders and information
-    drawCell("Name:", startX, startY);
-    drawCell("Designation:", startX, startY + cellHeight);
-    drawCell("Month:", startX, startY + cellHeight * 2);
-    drawCell("Shift:", startX + cellWidth * 2, startY);
-    drawCell("Client:", startX + cellWidth * 2, startY + cellHeight);
-    drawCell("Project:", projectStartX, projectStartY);
+    const startTime24Hour = user.shiftStartTime;
+    const endTime24Hour = user.shiftEndTime;
+    const startTime12Hour = moment(startTime24Hour, "HH:mm").format("hh:mm A");
+    const endTime12Hour = moment(endTime24Hour, "HH:mm").format("hh:mm A");
+    const startMonth = moment(startDate).format("MMMM-YY");
 
-    // Set the font style to normal
+    doc.setFontSize(18);
+    doc.setFont("helvetica", "bold");
+    doc.text("Timesheet", 230, 70);
+    doc.setFontSize(12);
+    doc.setFont("helvetica", "bold");
+
+    // Draw cells with borders and information
+    drawCell(doc, "Name:", startX, startY);
+    drawCell(doc, "Designation:", startX, startY + cellHeight);
+    drawCell(doc, "Month:", startX, startY + cellHeight * 2);
+
+    doc.text(`Total Work Hours: ${totalWorkHours}`, startX, startY + 100);
+
+    drawCell(doc, "Shift:", startX + cellWidth * 2, startY);
+    drawCell(doc, "Client:", startX + cellWidth * 2, startY + cellHeight);
+    drawCell(doc, "Project:", projectStartX, projectStartY);
+
     doc.setFont("helvetica", "normal");
-
-    // Display the information in the grid cells
     doc.setFontSize(10);
-    drawCell(selectedName, startX + cellWidth, startY);
+
+    drawCell(doc, selectedName, startX + cellWidth, startY);
     drawCell(
+      doc,
       `${user.jobDetails?.designation}`,
       startX + cellWidth,
       startY + cellHeight
     );
-    drawCell(`${startMonth}`, startX + cellWidth, startY + cellHeight * 2);
+    drawCell(doc, `${startMonth}`, startX + cellWidth, startY + cellHeight * 2);
+    drawCell(doc, `${clientsForPdf}`, projectStartX + cellWidth, projectStartY);
     drawCell(
-      `${user.projectDetails?.client}`,
-      projectStartX + cellWidth,
-      projectStartY
-    );
-    drawCell(
+      doc,
       `${startTime12Hour}-${endTime12Hour}`,
       startX + cellWidth * 3,
       startY
     );
     drawCell(
-      `${user.projectDetails?.client}`,
+      doc,
+      `${projectsForPdf}`,
       startX + cellWidth * 3,
       startY + cellHeight
     );
 
-    // Capture the graph element as an image using html2canvas
-    html2canvas(graphRef.current, {
-      scale: "2",
-      willReadFrequently: true,
-      useCORS: true,
-    }).then((canvas) => {
-      const imageData = canvas.toDataURL("image/jpeg", 0.3);
+    try {
+      // Capture the graph and pie chart elements as images using html2canvas
+      const imageData = await captureElementAsImage(graphRef);
+      const pieData = await captureElementAsImage(pieRef);
 
-      // Add the captured image to the PDF
-      doc.addImage(imageData, "JPEG", 30, 250, 550, 150, undefined, "FAST");
+      // Add the captured images to the PDF
+      doc.addImage(imageData, "JPEG", 30, 250, 550, 200, undefined, "FAST");
+      doc.addImage(pieData, "JPEG", 30, 500, 750, 200, undefined, "FAST");
+    } catch (error) {
+      console.error("Error capturing images:", error);
+      return;
+    }
+    const logoImg = new Image();
+    logoImg.src = logo;
+    const logoWidth = 80; // Adjust the width of the logo as needed
+    const logoHeight = 25; // Adjust the height of the logo as needed
+    doc.addImage(logoImg, "JPEG", 450, 50, logoWidth, logoHeight);
 
-      const logoImg = new Image();
-      logoImg.src = logo;
-      const logoWidth = 80; // Adjust the width of the logo as needed
-      const logoHeight = 25; // Adjust the height of the logo as needed
-      doc.addImage(logoImg, "JPEG", 450, 50, logoWidth, logoHeight);
+    const tableData = filteredRows.map((row) =>
+      columns.map((column) => column.selector(row))
+    );
 
-      const tableData = filteredRows.map((row) =>
-        columns.map((column) => column.selector(row))
-      );
+    const tableHeaders = columns.map((column) => column.name.props.children);
+    const headerStyles = { fillColor: "#CB3837", textColor: "#FFFFFF" };
 
-      const tableHeaders = columns.map((column) => column.name.props.children);
-      const headerStyles = { fillColor: "#CB3837", textColor: "#FFFFFF" };
-
-      autoTable(doc, {
-        head: [tableHeaders],
-        body: tableData,
-        startY: 450,
-        theme: "grid", // Apply grid theme for borders
-        headStyles: headerStyles,
-      });
-
-      // Get the final Y position of the autoTable
-      const autoTableFinalY = doc.previousAutoTable.finalY;
-
-      //Summary
-      const summaryStartY = autoTableFinalY + 10;
-      doc.setLineWidth(1);
-      doc.setDrawColor(203, 56, 55);
-      doc.line(
-        20,
-        summaryStartY + cellHeight * 5.5,
-        570,
-        summaryStartY + cellHeight * 5.5
-      ); // Adjust the y-coordinate as needed for the summary line
-      doc.setFontSize(12);
-      doc.setFont("helvetica", "bold");
-      doc.text("Summary", 30, summaryStartY + cellHeight * 5.5 + 20); // Adjust the y-coordinate as needed for the summary heading
-      doc.setFontSize(10);
-      doc.text(
-        `Total Work Hours: ${totalWorkHours}`,
-        30,
-        summaryStartY + cellHeight * 5.5 + 35
-      );
-
-      //Add the footer
-      doc.setFont("helvetica", "italic");
-      doc.setFontSize(10);
-      doc.setTextColor(128);
-
-      const footerText =
-        "Powered by Digifloat - This is a system generated report and does not require any signature or stamp.";
-      const textWidth = doc.getTextDimensions(footerText).w;
-
-      const xPos = (doc.internal.pageSize.getWidth() - textWidth) / 2;
-      const yPos = doc.internal.pageSize.getHeight() - 10;
-      doc.text(footerText, xPos, yPos);
-
-      doc.save(`Timesheet_${selectedName}_${startMonth}`);
+    autoTable(doc, {
+      head: [tableHeaders],
+      body: tableData,
+      startY: doc.addPage(),
+      theme: "grid", // Apply grid theme for borders
+      headStyles: headerStyles,
     });
+
+    // Get the final Y position of the autoTable
+    // const autoTableFinalY = doc.previousAutoTable.finalY + 30;
+
+    // doc.setFont("helvetica", "bold");
+    // doc.setFontSize(10);
+    // doc.text(`Total Work Hours: ${totalWorkHours}`, 40, autoTableFinalY);
+
+    //Add the footer
+    doc.setFont("helvetica", "italic");
+    doc.setFontSize(10);
+    doc.setTextColor(128);
+
+    const footerText =
+      "Powered by Digifloat - This is a system generated report and does not require any signature or stamp.";
+    const textWidth = doc.getTextDimensions(footerText).w;
+
+    const xPos = (doc.internal.pageSize.getWidth() - textWidth) / 2;
+    const yPos = doc.internal.pageSize.getHeight() - 10;
+    doc.text(footerText, xPos, yPos);
+
+    doc.save(`Timesheet_${selectedName}_${startMonth}`);
   };
+
+  useEffect(() => {
+    if (selectedUserId) {
+      dispatch(getUserDetails(selectedUserId));
+    }
+  }, [dispatch, selectedUserId]);
 
   useEffect(() => {
     const fetchAttendance = async () => {
@@ -305,19 +334,7 @@ const TimeSheet = () => {
     };
     fetchAttendance();
     dispatch(listUsers());
-    const userNames =
-      users &&
-      users.map((user) => {
-        return {
-          id: user._id,
-          name: user.name,
-        };
-      });
-    setEmployeeNames(userNames);
-    if (selectedUserId) {
-      dispatch(getUserDetails(selectedUserId));
-    }
-  }, [userInfo, dispatch, users, selectedUserId]);
+  }, [dispatch, userInfo]);
 
   return (
     <Grid
@@ -344,13 +361,6 @@ const TimeSheet = () => {
             select
             value={selectedName}
             onChange={handleNameChange}
-            //onBlur={handleBlur}
-            // error={!!errors.department && isTouched.department}
-            // helperText={
-            //   errors.department && isTouched.department
-            //     ? errors.department
-            //     : "Please select the department"
-            // }
           >
             {employeeNames.map((option) => (
               <MenuItem key={option.name} value={option.name}>
@@ -367,18 +377,7 @@ const TimeSheet = () => {
             margin="normal"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-
-            // onBlur={handleBlur}
-
-            // error={!!errors.startDate && isTouched.startDate}
-
-            // helperText={
-
-            //   errors.startDate && isTouched.startDate && errors.startDate
-
-            // }
           />
-
           <Divider
             orientation="horizontal"
             variant="middle"
@@ -393,12 +392,6 @@ const TimeSheet = () => {
             margin="normal"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-
-            // onBlur={handleBlur}
-
-            // error={!!errors.endDate && isTouched.endDate}
-
-            // helperText={errors.endDate && isTouched.endDate && errors.endDate}
           />
           <Stack sx={{ direction: "column" }}>
             <Button
@@ -447,14 +440,22 @@ const TimeSheet = () => {
       )}
       {isFilterApplied && <DataTable data={filteredRows} columns={columns} />}
       {isFilterApplied && (
-        <div ref={graphRef}>
-          <Graph
-            graphRef={graphRef}
-            startDate={startDate}
-            endDate={endDate}
-            data={dataForGraph}
-          />
-        </div>
+        <>
+          <div ref={graphRef}>
+            <Graph
+              graphRef={graphRef}
+              startDate={startDate}
+              endDate={endDate}
+              data={dataForGraph}
+            />
+          </div>
+          <div ref={pieRef}>
+            <Typography sx={{ mt: 3 }} variant="h5">
+              Summary of Work Hours
+            </Typography>
+            <PieChart pieChartRef={pieRef} graphData={userProjects} />
+          </div>
+        </>
       )}
     </Grid>
   );

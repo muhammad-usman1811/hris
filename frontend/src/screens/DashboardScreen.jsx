@@ -87,7 +87,7 @@ const DashboardScreen = () => {
           >
             <CardMedia
               sx={{ height: 170 }}
-              image="/images/birthday.jpg"
+              image="/images/hbd.png"
               title="Employee"
             />
             <CardContent>
@@ -120,7 +120,7 @@ const DashboardScreen = () => {
           >
             <CardMedia
               sx={{ height: 170 }}
-              image="/images/2023.png"
+              image="/images/events.png"
               title="event"
             />
             <CardContent>

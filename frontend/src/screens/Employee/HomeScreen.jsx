@@ -453,28 +453,28 @@ const HomeScreen = () => {
                         color="primary"
                       />
                     </Badge>
-                    <Badge badgeContent={2} color="error">
+                    <Badge badgeContent={0} color="error">
                       <Chip
                         sx={{ width: 200, height: 50 }}
                         label="Late Days"
                         color="error"
                       />
                     </Badge>
-                    <Badge badgeContent={1} color="error">
+                    <Badge badgeContent={0} color="error">
                       <Chip
                         sx={{ width: 200, height: 50 }}
                         label="Half Days"
                         color="secondary"
                       />
                     </Badge>
-                    <Badge badgeContent={7} color="error">
+                    <Badge badgeContent={0} color="error">
                       <Chip
                         sx={{ width: 200, height: 50 }}
                         label="On Time"
                         color="success"
                       />
                     </Badge>
-                    <Badge badgeContent={5} color="error">
+                    <Badge badgeContent={0} color="error">
                       <Chip
                         sx={{
                           width: 200,

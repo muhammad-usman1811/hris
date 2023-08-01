@@ -9,6 +9,7 @@ import Attendance from "../models/attendanceModel.js";
 import Leave from "../models/leaveModel.js";
 import crypto from "crypto";
 import nodemailer from "nodemailer";
+import logger from "../config/logger.js";
 
 //Function to calcualate leave quota
 const calculateLeaveQuota = async (dateOfJoining) => {
@@ -54,6 +55,7 @@ const authUser = asyncHandler(async (req, res) => {
       passwordChangeRequired: user.passwordChangeRequired,
       token: generateToken(user._id),
     });
+    logger.info(`Login successful by ${user.email}`);
   } else {
     if (user && user.password !== password) {
       throw new Error("Password is invalid");

@@ -20,6 +20,7 @@ import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import CircularProgress from "@mui/material/CircularProgress";
 import DocModal from "./DocModal";
 import { deleteDoc, getDocs } from "../actions/docActions";
+import { Typography } from "@mui/material";
 
 const ManageDocs = () => {
   const dispatch = useDispatch();
@@ -42,6 +43,10 @@ const ManageDocs = () => {
 
   const Demo = styled("div")(({ theme }) => ({
     backgroundColor: theme.palette.background.paper,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "8vh",
   }));
 
   const handleToggle = () => {
@@ -183,14 +188,9 @@ const ManageDocs = () => {
             <DocModal open={open} onClose={handleClose} />
           </Box>
           <Demo>
-            <List>
-              <ListItem sx={{ borderBottom: 1, borderColor: "grey.500" }}>
-                <ListItemText
-                  primary="There are no docs to display"
-                  sx={{ textAlign: "center" }}
-                />
-              </ListItem>
-            </List>
+            <Typography variant="subtitle1" textAlign="center">
+              There are no docs to display
+            </Typography>
           </Demo>
         </Box>
       )}

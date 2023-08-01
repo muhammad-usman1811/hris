@@ -13,9 +13,14 @@ import { Visibility } from "@mui/icons-material";
 import ArticleIcon from "@mui/icons-material/Article";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getDocs } from "../../actions/docActions";
+import { Typography } from "@mui/material";
 
 const Demo = styled("div")(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  height: "8vh",
 }));
 
 export default function EmployeeDoc() {
@@ -51,7 +56,7 @@ export default function EmployeeDoc() {
       }}
     >
       <>
-        {loading && (
+        {loading ? (
           <Box
             sx={{
               display: "flex",
@@ -61,90 +66,63 @@ export default function EmployeeDoc() {
           >
             <CircularProgress />
           </Box>
-        )}
-        {documents && (
-          <Box sx={{ flexGrow: 1 }}>
-            <Demo>
-              <List>
-                {documents &&
-                  documents.map((doc) => {
-                    return (
-                      <ListItem
-                        alignItems="center"
-                        key={doc.name}
-                        sx={{ borderBottom: 1, borderColor: "grey.500" }}
-                        secondaryAction={
-                          <Box
-                            sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              pl: 1,
-                              pr: 1,
-                              pb: 1,
-                            }}
+        ) : (
+          <>
+            {documents?.length !== 0 ? (
+              <Box sx={{ flexGrow: 1 }}>
+                <Demo>
+                  <List>
+                    {documents &&
+                      documents.map((doc) => {
+                        return (
+                          <ListItem
+                            alignItems="center"
+                            key={doc.name}
+                            sx={{ borderBottom: 1, borderColor: "grey.500" }}
+                            secondaryAction={
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  pl: 1,
+                                  pr: 1,
+                                  pb: 1,
+                                }}
+                              >
+                                <IconButton
+                                  sx={{ ml: 3 }}
+                                  color="error"
+                                  edge="end"
+                                  aria-label="view"
+                                  onClick={() => handlePreview(doc.url)}
+                                >
+                                  <Visibility />
+                                </IconButton>
+                              </Box>
+                            }
                           >
-                            <IconButton
-                              sx={{ ml: 3 }}
-                              color="error"
-                              edge="end"
-                              aria-label="view"
-                              onClick={() => handlePreview(doc.url)}
-                            >
-                              <Visibility />
-                            </IconButton>
-                          </Box>
-                        }
-                      >
-                        <ListItemAvatar>
-                          <Avatar>
-                            <ArticleIcon color="error" />
-                          </Avatar>
-                        </ListItemAvatar>
-                        <ListItemText primary={doc.name} />
-                      </ListItem>
-                    );
-                  })}
-              </List>
-            </Demo>
-          </Box>
+                            <ListItemAvatar>
+                              <Avatar>
+                                <ArticleIcon color="error" />
+                              </Avatar>
+                            </ListItemAvatar>
+                            <ListItemText primary={doc.name} />
+                          </ListItem>
+                        );
+                      })}
+                  </List>
+                </Demo>
+              </Box>
+            ) : (
+              <Demo>
+                <Typography variant="subtitle1" textAlign="center">
+                  There are no docs to display
+                </Typography>
+              </Demo>
+            )}
+          </>
         )}
       </>
-      {/* <Demo>
-        <List>
-          {generate(
-            <ListItem
-              sx={{ borderBottom: 1, borderColor: "grey.500" }}
-              secondaryAction={
-                <Box
-                  sx={{ display: "flex", alignItems: "center", pl: 1, pb: 1 }}
-                >
-                  <IconButton color="error" edge="end" aria-label="download">
-                    <DownloadIcon />
-                  </IconButton>
-                  <IconButton
-                    sx={{ ml: 3 }}
-                    color="error"
-                    edge="end"
-                    aria-label="view"
-                  >
-                    <Visibility />
-                  </IconButton>
-                </Box>
-              }
-            >
-              <ListItemAvatar>
-                <Avatar>
-                  <ArticleIcon color="error" />
-                </Avatar>
-              </ListItemAvatar>
-              <ListItemText
-                primary="Employee Handbook"
-                secondary={secondary ? "employee handbook" : null}
-              />
-            </ListItem>
-          )}
-        </List>
-      </Demo> */}
     </Grid>
   );
 }

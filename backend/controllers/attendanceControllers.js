@@ -3,6 +3,7 @@ import Attendance from "./../models/attendanceModel.js";
 import asyncHandler from "express-async-handler";
 import nodemailer from "nodemailer";
 import moment from "moment";
+import logger from "../config/logger.js";
 
 // @desc Get attendance list
 // @route GET/api/attendance
@@ -145,6 +146,7 @@ const addCheckIn = asyncHandler(async (req, res) => {
   });
   await newAttendance.save();
   res.status(201).json({ message: "Attendance added" });
+  logger.info(`${newAttendance.name} has checked in successfully`);
 });
 
 // @desc Add check-out time to attendance collection
@@ -173,6 +175,7 @@ const addCheckOut = asyncHandler(async (req, res) => {
     attendance.workHours = workHours;
     await attendance.save();
     res.json({ message: "Checkout time added" });
+    logger.info(`${attendance.name} has checked out successfully`);
   } else {
     res.status(404).json({ message: "Attendance not found" });
   }

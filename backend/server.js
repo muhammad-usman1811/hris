@@ -17,6 +17,7 @@ import {
   sendEmailForCheckOut,
 } from "./controllers/attendanceControllers.js";
 import attendanceRequestRoutes from "./routes/attendanceRequestRoutes.js";
+import logger from "./config/logger.js";
 
 dotenv.config();
 
