@@ -146,7 +146,11 @@ const addCheckIn = asyncHandler(async (req, res) => {
   });
   await newAttendance.save();
   res.status(201).json({ message: "Attendance added" });
-  logger.info(`${newAttendance.name} has checked in successfully`);
+  const meta = {
+    title: "Check-In",
+    userId: req.user._id,
+  };
+  logger.info("Attendance marked successfully");
 });
 
 // @desc Add check-out time to attendance collection

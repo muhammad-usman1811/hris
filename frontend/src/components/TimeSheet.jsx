@@ -188,10 +188,11 @@ const TimeSheet = () => {
   const captureElementAsImage = async (elementRef) => {
     const canvas = await html2canvas(elementRef.current, {
       scale: 2,
-      willReadFrequently: true,
       useCORS: true,
+      logging: false,
+      willReadFrequently: true,
     });
-    return canvas.toDataURL("image/jpeg", 0.3);
+    return canvas.toDataURL("image/jpeg", 1.0);
   };
 
   const downloadPdf = async () => {
@@ -263,7 +264,7 @@ const TimeSheet = () => {
 
       // Add the captured images to the PDF
       doc.addImage(imageData, "JPEG", 30, 250, 550, 200, undefined, "FAST");
-      doc.addImage(pieData, "JPEG", 30, 500, 750, 200, undefined, "FAST");
+      doc.addImage(pieData, "JPEG", 30, 500, 550, 200, undefined, "FAST");
     } catch (error) {
       console.error("Error capturing images:", error);
       return;
@@ -289,13 +290,6 @@ const TimeSheet = () => {
       headStyles: headerStyles,
     });
 
-    // Get the final Y position of the autoTable
-    // const autoTableFinalY = doc.previousAutoTable.finalY + 30;
-
-    // doc.setFont("helvetica", "bold");
-    // doc.setFontSize(10);
-    // doc.text(`Total Work Hours: ${totalWorkHours}`, 40, autoTableFinalY);
-
     //Add the footer
     doc.setFont("helvetica", "italic");
     doc.setFontSize(10);
@@ -303,8 +297,8 @@ const TimeSheet = () => {
 
     const footerText =
       "Powered by Digifloat - This is a system generated report and does not require any signature or stamp.";
-    const textWidth = doc.getTextDimensions(footerText).w;
 
+    const textWidth = doc.getTextDimensions(footerText).w;
     const xPos = (doc.internal.pageSize.getWidth() - textWidth) / 2;
     const yPos = doc.internal.pageSize.getHeight() - 10;
     doc.text(footerText, xPos, yPos);

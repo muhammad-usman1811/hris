@@ -9,7 +9,7 @@
       "request": "launch",
       "name": "Launch Program",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}\\frontend\\src\\components\\TimeSheet.jsx",
+      "program": "${workspaceFolder}\\backend\\server.js",
       "outFiles": ["${workspaceFolder}/**/*.js"]
     }
   ]

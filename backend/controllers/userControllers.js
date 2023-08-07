@@ -55,7 +55,12 @@ const authUser = asyncHandler(async (req, res) => {
       passwordChangeRequired: user.passwordChangeRequired,
       token: generateToken(user._id),
     });
-    logger.info(`Login successful by ${user.email}`);
+    const metaData = {
+      title: "login",
+      userId: user._id.toString(),
+      userEmail: user.email,
+    };
+    logger.info("Login successful", metaData);
   } else {
     if (user && user.password !== password) {
       throw new Error("Password is invalid");
