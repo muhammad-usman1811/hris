@@ -95,7 +95,7 @@ const HomeScreen = () => {
   const handleCheckOut = async () => {
     if (!isOneHourPassed) {
       setOpenAlertDialog(true);
-      //alert("You can check-out atleast after 1 hour since check-in");
+      //alert("You can check-out atleast after 1 hour since check-in"); testing...
     } else {
       let now = moment();
       const checkOutTime = now.format("hh:mm:ss A");
